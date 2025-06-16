@@ -1,0 +1,388 @@
+/* Container geral para app */
+.appContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Header fixo no topo */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 42px;
+  background-color: #2a2a31; 
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  color: white;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Logo na header */
+.logo {
+  display: flex;
+  align-items: center;
+  cursor: default;
+}
+
+.logoImg {
+  height: 30px;
+  width: 30px;
+}
+
+.logoText {
+    padding-left: 8px;
+    font-size: 13px;
+}
+
+/* Corpo da página abaixo do header */
+.dashboardContainer {
+  display: flex;
+  flex: 1;
+  margin-top: 40px; /* Espaço para header fixa */
+  height: calc(100vh - 50px);
+}
+
+/* Sidebar fixa no lado esquerdo, abaixo da header */
+.sidebar {
+  position: fixed;
+  top: 42px; /* logo abaixo do header */
+  left: 0;
+  height: calc(100vh - 42px); /* ocupa a altura da tela menos o header */
+  background-color: #2a2a31;
+  color: white;
+  transition: width 0.3s ease;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  padding-top: 1rem;
+  z-index: 999; /* abaixo do header, mas acima do conteúdo */
+}
+
+.sidebarOpen {
+  width: 230px;
+}
+
+.sidebarClosed {
+  width: 52px;
+}
+
+.menuButton {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  margin-left: 1rem;
+  margin-bottom: 1.5rem;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.menuItems {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.menuItems li {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.menuItems li:hover {
+  background-color: #16213e;
+}
+
+/* Ícones sempre visíveis */
+.icon {
+  font-size: 1.2rem;
+  margin-right: 10px;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Texto do item (aparece só quando aberto) */
+.itemText {
+  flex: 1;
+}
+
+/* Destaque do item ativo */
+.active {
+  background-color: #0f3460;
+  border-left: 4px solid #00adb5;
+}
+
+/* Conteúdo da página */
+.conteudoPagina {
+  flex: 1;
+  padding: 2rem;
+  background-color: #f7f7f7;
+  overflow-y: auto;
+}
+
+.headerMenu {
+  position: relative;
+  margin-left: auto;
+}
+
+.headerMenuButton {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.headerDropdown {
+  position: absolute;
+  right: 0;
+  top: 39px;
+  background-color: #1a1a2e;
+  border: 1px solid #333;
+  border-radius: 4px;
+  overflow: hidden;
+  z-index: 2000;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.headerDropdown div {
+  padding: 10px 16px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.headerDropdown div:hover {
+  background-color: #16213e;
+}
+
+/* Rodapé fixo na sidebar (modo desktop) */
+.sidebarFooter {
+  margin-top: auto;
+  width: 100%;
+  border-top: 1px solid #444;
+}
+
+.profileItem {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.profileItem:hover {
+  background-color: #16213e;
+}
+
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3000;
+  background-color: rgba(0, 0, 0, 0); /* fundo invisível */
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding-left: 10px;
+  padding-top: 20px;
+  padding-bottom: 5px;
+}
+
+
+.userModal {
+  background-color: #fff;
+  color: #000;
+  display: flex;
+  flex-direction: row;
+  border-radius: 8px;
+  width: 515px;
+  height: 545px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 3001;
+  animation: fadeIn 0.2s ease-in-out;
+  overflow: hidden;
+}
+
+/* Menu lateral esquerdo */
+.modalLeft {
+  width: 36%;
+  background-color: #f1f1f1;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalMenu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.modalMenu li {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  border-radius: 4px;
+}
+
+.modalMenu li:hover {
+  background-color: #ddd;
+}
+
+.activeMenuItem {
+  background-color: #ccc;
+  font-weight: bold;
+}
+
+/* Ícone dos itens */
+.menuIcon {
+  margin-right: 10px;
+}
+
+/* Conteúdo à direita */
+.modalRight {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+/* Rodapé da coluna esquerda */
+.modalFooterLeft {
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.profileFooterItem {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border-radius: 4px;
+}
+
+.profileFooterItem:hover {
+  background-color: #ddd;
+}
+
+
+
+.closeModal {
+  margin-top: 1rem;
+  background-color: #0f3460;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.closeModal:hover {
+  background-color: #16213e;
+}
+
+/* Opcional: animação de entrada */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+
+
+
+
+
+/* Responsividade para telas pequenas */
+@media (max-width: 768px) {
+  .dashboardContainer {
+    flex-direction: column;
+    margin-top: 42px;
+    height: calc(100vh - 100px); /* header + bottom nav */
+  }
+
+  .sidebar {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 42px;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0;
+    border-top: 1px solid #333;
+  }
+
+  .sidebarFooter {
+    display: none;
+  }
+
+  .sidebarOpen,
+  .sidebarClosed {
+    width: 100% !important;
+  }
+
+  .menuButton {
+    display: none;
+  }
+
+  .menuItems {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+  }
+
+  .menuItems li {
+    flex-direction: column;
+    padding: 5px;
+    text-align: center;
+  }
+
+  .itemText {
+    display: none;
+  }
+
+  .conteudoPagina {
+    margin-left: 0 !important;
+    margin-bottom: 42px; /* espaço para o bottom nav */
+    padding: 1rem;
+    height: calc(100vh - 100px);
+  }
+
+  .active {
+    border-left: none;
+    border-top: 3px solid #00adb5;
+    background-color: transparent;
+  }
+}
+
