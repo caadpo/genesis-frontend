@@ -17,15 +17,15 @@ export async function POST(request: Request) {
 
     const data = await externalApiResponse.json();
 
-    console.log('📦 Resposta da API externa:', data);
+    console.log('Resposta da API externa em api/auth/login/route.ts:', data);
 
     if (!externalApiResponse.ok) {
-  // Aqui repassamos a mensagem original da API externa
-    return NextResponse.json(
-      { error: data.message || 'Erro ao autenticar' },
-      { status: externalApiResponse.status }
-    );
-}
+      // Aqui repassamos a mensagem original da API externa
+      return NextResponse.json(
+        { error: data.message || 'Erro ao autenticar' },
+        { status: externalApiResponse.status }
+      );
+    }
 
 
     const response = NextResponse.json({ message: 'Autenticado com sucesso' });
@@ -33,6 +33,13 @@ export async function POST(request: Request) {
     // Setar token em cookie
     response.cookies.set('accessToken', data.accessToken, {
       httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      path: '/',
+    });
+
+    // 💡 ADICIONE ISSO: salvar userData visível no lado do cliente
+    response.cookies.set('userData', encodeURIComponent(btoa(JSON.stringify(data.user))), {
+      httpOnly: false, // importante: visível para o frontend
       secure: process.env.NODE_ENV === 'production',
       path: '/',
     });
