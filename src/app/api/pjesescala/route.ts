@@ -1,34 +1,87 @@
-// src/app/api/pjesteto/route.ts
-import { NextRequest, NextResponse } from 'next/server';
+// src/app/api/pjesescala/route.ts
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
-    const token = request.cookies.get('accessToken')?.value;
+  const token = request.cookies.get("accessToken")?.value;
 
-    if (!token) {
-        return NextResponse.json({ error: 'Não autenticado' }, { status: 401 });
+  if (!token) {
+    return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
+  }
+
+  const { searchParams } = new URL(request.url);
+  const operacaoId = searchParams.get("operacaoId");
+  const ano = searchParams.get("ano");
+  const mes = searchParams.get("mes");
+
+  try {
+    // Monta a URL com filtros, se fornecidos
+    const queryParams = new URLSearchParams();
+    if (operacaoId) queryParams.append("operacaoId", operacaoId);
+    if (ano) queryParams.append("ano", ano);
+    if (mes) queryParams.append("mes", mes);
+
+    const apiUrl = `http://localhost:8081/pjesescala${
+      queryParams.toString() ? `?${queryParams.toString()}` : ""
+    }`;
+
+    const res = await fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return NextResponse.json(
+        { error: data.message || "Erro ao buscar dados" },
+        { status: res.status }
+      );
     }
 
-    try {
-        const res = await fetch('http://localhost:8081/pjesescala', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
-        });
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error("Erro ao buscar PJES:", error);
+    return NextResponse.json({ error: "Erro interno" }, { status: 500 });
+  }
+}
 
-        const data = await res.json();
+export async function POST(request: NextRequest) {
+  const token = request.cookies.get("accessToken")?.value;
 
-        console.log('Dados recebidos da API externa do pjesescala:', data);
+  if (!token) {
+    return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
+  }
 
+  try {
+    const body = await request.json();
 
-        if (!res.ok) {
-            return NextResponse.json({ error: data.message || 'Erro ao buscar dados' }, { status: res.status });
-        }
+    const res = await fetch("http://localhost:8081/pjesescala", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
 
-        return NextResponse.json(data);
-    } catch (error) {
-        console.error('Erro ao buscar PJES:', error);
-        return NextResponse.json({ error: 'Erro interno' }, { status: 500 });
+    const data = await res.json();
+
+    if (!res.ok) {
+      return NextResponse.json(
+        { error: data.message || "Erro ao criar escala" },
+        { status: res.status }
+      );
     }
+
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error("Erro ao criar escala:", error);
+    return NextResponse.json(
+      { error: "Erro interno ao criar escala" },
+      { status: 500 }
+    );
+  }
 }

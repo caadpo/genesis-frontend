@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const res = await fetch("http://localhost:8081/pjesteto", {
+    const res = await fetch("http://localhost:8081/ome", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,

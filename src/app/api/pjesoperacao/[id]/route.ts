@@ -1,39 +1,11 @@
-// src/app/api/pjesdist/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
-  const token = request.cookies.get("accessToken")?.value;
+const API_BASE = "http://localhost:8081/pjesoperacao";
 
-  if (!token) {
-    return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
-  }
-
-  try {
-    const res = await fetch("http://localhost:8081/pjesdist", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      return NextResponse.json(
-        { error: data.message || "Erro ao buscar dados" },
-        { status: res.status }
-      );
-    }
-
-    return NextResponse.json(data);
-  } catch (error) {
-    console.error("Erro ao buscar PJES:", error);
-    return NextResponse.json({ error: "Erro interno" }, { status: 500 });
-  }
-}
-
-export async function POST(request: NextRequest) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   const token = request.cookies.get("accessToken")?.value;
 
   if (!token) {
@@ -43,8 +15,8 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
 
   try {
-    const res = await fetch("http://localhost:8081/pjesdist", {
-      method: "POST",
+    const res = await fetch(`${API_BASE}/${params.id}`, {
+      method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -56,14 +28,48 @@ export async function POST(request: NextRequest) {
 
     if (!res.ok) {
       return NextResponse.json(
-        { error: data.message || "Erro ao cadastrar" },
+        { error: data.message || "Erro ao atualizar operação" },
         { status: res.status }
       );
     }
 
     return NextResponse.json(data);
   } catch (error) {
-    console.error("Erro ao cadastrar:", error);
+    console.error("Erro ao atualizar operação:", error);
+    return NextResponse.json({ error: "Erro interno" }, { status: 500 });
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const token = request.cookies.get("accessToken")?.value;
+
+  if (!token) {
+    return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}/${params.id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      return NextResponse.json(
+        { error: data.message || "Erro ao excluir operação" },
+        { status: res.status }
+      );
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Erro ao excluir operação:", error);
     return NextResponse.json({ error: "Erro interno" }, { status: 500 });
   }
 }

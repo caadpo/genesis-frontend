@@ -11,14 +11,13 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 42px;
-  background-color: #13141F; 
+  height: 40px;
+  background-color: #eeecec; 
   display: flex;
   align-items: center;
   padding: 0 10px;
-  color: white;
+  color: rgb(0, 0, 0);
   z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 /* Logo na header */
@@ -49,11 +48,11 @@
 /* Sidebar fixa no lado esquerdo, abaixo da header */
 .sidebar {
   position: fixed;
-  top: 42px; /* logo abaixo do header */
+  top: 40px; /* logo abaixo do header */
   left: 0;
   height: calc(100vh - 42px); /* ocupa a altura da tela menos o header */
-  background-color: #13141F;
-  color: white;
+  background-color: #eeecec;
+  color: rgb(1, 168, 9);
   transition: width 0.3s ease;
   overflow: hidden;
   display: flex;
@@ -74,7 +73,7 @@
 .menuButton {
   background: none;
   border: none;
-  color: white;
+  color: #1c600f;
   font-size: 20px;
   margin-left: 1rem;
   margin-bottom: 1.5rem;
@@ -99,15 +98,14 @@
 }
 
 .menuItems li:hover {
-  background-color: #16213e;
+  background-color: #cbd0dd;
 }
 
 /* Ícones sempre visíveis */
 .icon {
-  font-size: 1.2rem;
-  margin-right: 10px;
-  min-width: 20px;
-  text-align: center;
+  font-size: 1rem;
+  margin-right: 8px;
+  min-width: 18px;
 }
 
 /* Texto do item (aparece só quando aberto) */
@@ -119,6 +117,7 @@
 .active {
   background-color: #1c600f;
   border-left: 4px solid #0fb500;
+  color: #ffffff;
 }
 
 /* Conteúdo da página */
@@ -166,14 +165,14 @@
 }
 
 .headerDropdown div:hover {
-  background-color: #16213e;
+  background-color: #cbd0dd;
 }
 
 /* Rodapé fixo na sidebar (modo desktop) */
 .sidebarFooter {
   margin-top: auto;
   width: 100%;
-  border-top: 1px solid #444;
+  border-top: 1px solid #d3cdcd;
 }
 
 .profileItem {
@@ -185,7 +184,7 @@
 }
 
 .profileItem:hover {
-  background-color: #16213e;
+  background-color: #cbd0dd;
 }
 
 
@@ -205,7 +204,6 @@
   padding-bottom: 5px;
 }
 
-
 .userModal {
   background-color: #fff;
   color: #000;
@@ -220,6 +218,67 @@
   animation: slideUp 0.5s ease-out;
   overflow: hidden;
 }
+
+.modalOverlayDist {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3000;
+  background-color: rgba(75, 30, 30, 0);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding-right: 10px;
+  padding-top: 240px;
+}
+
+.distModal {
+  background-color: #fff;
+  color: #000;
+  display: flex;
+  flex-direction: row;
+  border-radius: 8px;
+  width: 400px;
+  height: 300px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 3001;
+  animation: slideUp 0.5s ease-out;
+  overflow: hidden;
+}
+
+.modalOverlayEscala {
+  position: fixed;
+  top: 240;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3000;
+  background-color: rgba(75, 30, 30, 0);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.escalaModal {
+  background-color: #fff;
+  color: #000;
+  display: flex;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
+  flex-direction: row;
+  border-radius: 8px;
+  width: 510px;
+  border-right: 3px solid #000000;
+  border-bottom: 3px solid #000000;
+  position: relative;
+  z-index: 3001;
+  animation: slideInFromLeft 0.4s ease-out;
+  overflow: hidden;
+}
+
+
 
 /* Menu lateral esquerdo */
 .modalLeft {
@@ -263,6 +322,22 @@
 .modalRight {
   flex: 1;
   padding: 1.5rem;
+  overflow-y: auto;
+}
+
+/* Conteúdo à direita */
+.modalRightDist {
+  flex: 1;
+  padding: 1.5rem;
+  background-color: #fff;
+  overflow-y: auto;
+}
+
+/* Conteúdo à direita */
+.modalRightEscala {
+  flex: 1;
+  padding: 1rem;
+  background-color: #fff;
   overflow-y: auto;
 }
 
@@ -339,6 +414,320 @@
   overflow-y: auto;
 }
 
+.tabela-zebra tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.tabela-zebra tbody tr:nth-child(even) {
+  background-color: #ebebeb;
+}
+
+.inputGroup {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.inputGroup label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.error {
+    color: red;
+    margin-bottom: 10px;
+  }
+  
+  .button {
+    padding: 10px 20px;
+    width: 100%;
+    border: none;
+    border-radius: 5px;
+    background-color: #0070f3;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .button:hover {
+    background-color: #005bb5;
+  }
+
+/* DIVS DO SISTEMA */
+
+/* INICIO EVENTOS */
+
+.eventoPrincipal {
+  width:20%;
+  padding:5px;
+  border-right: 1px solid #cfcfcf;
+}
+.eventoTitulo {
+  display:flex;
+  justify-content:space-between;
+  padding:10px;
+  height:40px;
+  color:white;
+  font-size:12px;
+  align-items:center;
+  background:#c99a00;
+}
+
+.eventoNomePrincipal {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  width:100%;
+  font-size:15px;
+  flex: 1;
+}
+
+.eventoInputBuscar {
+  width:90%;
+  padding:6px;
+  margin:10px;
+  font-size:14px;
+  border-radius: 25px;
+  background: #ffffff;
+  border: 1px solid #ccc;
+}
+
+.eventoCadastrar {
+  display:flex;
+  justify-content:center;
+  align-items: center;
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+.eventoImagemLi {
+  position:relative;
+  display:flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 5px;
+  border-bottom: 1px solid #e6e3e3;
+  margin-bottom: 1px;
+  
+}
+
+.eventoMenuEditarExcluir {
+  position:absolute;
+  top: 1px;
+  right: 20px;
+  cursor: pointer;
+  font-size: 15px;
+  color: #000000;
+}
+
+.eventoSubMenuEditarExcluir {
+  position:absolute;
+  top: 32px;
+  right: 8px;
+  background-color: #222;
+  border: 1px solid #444;
+  border-radius: 4px;
+  z-index: 100;
+  min-width: 120px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+.eventoImagem {
+  flex-shrink: 0;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.eventoTextoADireita {
+  font-size:11px;
+  font-weight:bold;
+  color: #000000;
+}
+
+
+
+/* INICIO OPERAÇOES */
+
+.operacaoPrincipal {
+  width: 55%;
+  padding: 5px;
+  background: #faf8f8;
+  border-right: 1px solid #cfcfcf;
+}
+.operacaoTitulo {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  height: 40px;
+  color: white;
+  font-size: 12px;
+  align-items: center;
+  background: #025091;
+}
+
+.operacaoNomePrincipal {
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  font-size: 15px;
+  flex: 1;
+}
+
+.operacaoInputBuscar {
+  width: 90%;
+  padding: 6px;
+  margin: 10px;
+  font-size: 14px;
+  border-radius:25px;
+  background: #ffffff;
+  border:1px solid #ccc;
+}
+
+.operacaoCadastrar {
+  display: flex;
+  justify-content:center;
+  align-items:center;
+  font-size:20px;
+  margin-right:10px;
+}
+.operacaoImagemLi {
+  background: #ffffff;
+  margin-bottom:25px;
+  border: 1px solid #ccc;
+}
+.operacaoImagem {
+  display:flex;
+  justify-content:space-between;
+  align-items: center;
+  width: 100%;
+}
+.operacaoImagemReal {
+  border-radius:50%;
+  margin-left:10px;
+  margin-top: 5px;
+  margin-bottom:10px;
+}
+.operacaoBotaoAddPms {
+  text-align:center;
+  padding-right:12px;
+  vertical-align:middle;
+}
+
+.operacaoBotaoAddPmsReal {
+  color:#ffffff;
+  font-weight:bold;
+  font-size:15px;
+  background:#0d9e0d;
+  font-size:12px;
+  border-radius:12px;
+  padding:5px;
+}
+
+.operacaoBotaoEditarPmsReal {
+  color:#ff5e00;
+  font-weight:bold;
+  font-size:15px;
+}
+
+.operacaoBotaoExcluirPmsReal {
+  color:#e21111;
+  font-weight:bold;
+  font-size:15px;
+}
+
+.operacaoBotaoPdfPmsReal {
+  color:#111fe2;
+  font-weight:bold;
+  font-size:15px;
+}
+
+.operacaoBotaoBaixarPmsReal {
+  color:#0d9e0d;
+  font-weight:bold;
+  font-size:15px;
+}
+
+.operacaoNomeTabela {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  width:100%;
+  height:30px;
+  padding-left:10px;
+  padding-right:10px;
+  background:#ffffff;
+}
+
+.operacaoNomeClickTabela {
+  cursor:pointer;
+  color:#ffffff;
+  display:flex;
+  align-items:center;
+  width:100%;
+  padding:10px;
+  margin-top:2px;
+  gap:10px;
+}
+
+.operacaoIconOfPrc{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  color:#ffffff;
+  font-size:15px;
+  flex: 1;
+}
+
+.operacaoTableTh{
+  border:1px solid #555;
+  padding:10px;
+  text-align:center;
+  vertical-align:middle;
+}
+
+.operacaoPaginacaoPrinciapl{
+  display:flex;
+  justify-content:space-between;
+  padding: 10px;
+  color: #969393;
+  font-size: 12px;
+}
+
+.operacaoPaginacaoAnterior{
+  padding:5px 10px;
+  background:#025091;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.operacaoPaginacaoProxima{
+  padding:5px 10px;
+  background:#025091;
+  color:#fff;
+  border:none;
+  cursor:pointer;
+}
+
+/* FIM OPERAÇOES */
+
+
+ 
+
+
 
 
 
@@ -353,6 +742,20 @@
     transform: translateY(0);
   }
 }
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+
 
 
 
@@ -376,7 +779,7 @@
     justify-content: space-around;
     align-items: center;
     padding: 0;
-    border-top: 1px solid #333;
+    border-top: 1px solid #d3d1d1;
   }
 
   .sidebarFooter {
@@ -410,6 +813,13 @@
   }
 
   .modalOverlay {
+    justify-content: center;
+    align-items: flex-end;
+    padding-left: 0;
+    padding-bottom: 0;
+  }
+
+  .modalOverlayDist {
     justify-content: center;
     align-items: flex-end;
     padding-left: 0;
