@@ -41,9 +41,7 @@ export async function GET(request: NextRequest) {
       }
     );
 
-    const raw = await res.text(); // A API retorna só um número como texto
-
-    console.log("Resposta crua da API externa:", raw);
+    const raw = await res.text();
 
     if (!res.ok) {
       return NextResponse.json(

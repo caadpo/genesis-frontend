@@ -1,20 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 
 // PUT: atualizar um evento
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest, context: any) {
   const token = request.cookies.get("accessToken")?.value;
 
   if (!token) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
   }
 
+  const { id } = await context.params;
   const body = await request.json();
 
   try {
-    const res = await fetch(`http://localhost:8081/pjesevento/${params.id}`, {
+    const res = await fetch(`http://localhost:8081/pjesevento/${id}`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -43,18 +41,17 @@ export async function PUT(
 }
 
 // DELETE: excluir um evento
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, context: any) {
   const token = request.cookies.get("accessToken")?.value;
 
   if (!token) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
   }
 
+  const { id } = await context.params;
+
   try {
-    const res = await fetch(`http://localhost:8081/pjesevento/${params.id}`, {
+    const res = await fetch(`http://localhost:8081/pjesevento/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

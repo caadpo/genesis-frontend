@@ -2,20 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 
 const API_BASE = "http://localhost:8081/pjesoperacao";
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+// PUT: atualizar operação
+export async function PUT(request: NextRequest, context: any) {
   const token = request.cookies.get("accessToken")?.value;
-
   if (!token) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
   }
 
+  const { id } = await context.params;
   const body = await request.json();
 
   try {
-    const res = await fetch(`${API_BASE}/${params.id}`, {
+    const res = await fetch(`${API_BASE}/${id}`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -25,7 +23,6 @@ export async function PUT(
     });
 
     const data = await res.json();
-
     if (!res.ok) {
       return NextResponse.json(
         { error: data.message || "Erro ao atualizar operação" },
@@ -40,18 +37,17 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+// DELETE: excluir operação
+export async function DELETE(request: NextRequest, context: any) {
   const token = request.cookies.get("accessToken")?.value;
-
   if (!token) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
   }
 
+  const { id } = await context.params;
+
   try {
-    const res = await fetch(`${API_BASE}/${params.id}`, {
+    const res = await fetch(`${API_BASE}/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

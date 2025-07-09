@@ -1,4 +1,5 @@
 // src/app/api/pjesdist/route.ts
+// src/app/api/pjesdist/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -8,8 +9,21 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
   }
 
+  const { searchParams } = new URL(request.url);
+  const ano = searchParams.get("ano");
+  const mes = searchParams.get("mes");
+
+  // Constrói a URL com query string, se ano e mes forem válidos
+  const queryParams = new URLSearchParams();
+  if (ano) queryParams.append("ano", ano);
+  if (mes) queryParams.append("mes", mes); // já deve vir como número (ex: 7)
+
+  const url = `http://localhost:8081/pjesdist${
+    queryParams.toString() ? `?${queryParams.toString()}` : ""
+  }`;
+
   try {
-    const res = await fetch("http://localhost:8081/pjesdist", {
+    const res = await fetch(url, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,

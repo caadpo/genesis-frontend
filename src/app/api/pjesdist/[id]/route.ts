@@ -3,16 +3,17 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   const token = request.cookies.get("accessToken")?.value;
+  const { id } = await context.params; // ✅ await necessário
 
   if (!token) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
   }
 
   try {
-    const res = await fetch(`http://localhost:8081/pjesdist/${params.id}`, {
+    const res = await fetch(`http://localhost:8081/pjesdist/${id}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -38,9 +39,10 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   const token = request.cookies.get("accessToken")?.value;
+  const { id } = await context.params; // ✅ await necessário
   const body = await request.json();
 
   if (!token) {
@@ -48,7 +50,7 @@ export async function PUT(
   }
 
   try {
-    const res = await fetch(`http://localhost:8081/pjesdist/${params.id}`, {
+    const res = await fetch(`http://localhost:8081/pjesdist/${id}`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -75,16 +77,17 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   const token = request.cookies.get("accessToken")?.value;
+  const { id } = await context.params; // ✅ await necessário
 
   if (!token) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
   }
 
   try {
-    const res = await fetch(`http://localhost:8081/pjesdist/${params.id}`, {
+    const res = await fetch(`http://localhost:8081/pjesdist/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

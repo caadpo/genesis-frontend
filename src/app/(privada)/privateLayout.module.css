@@ -12,7 +12,7 @@
   left: 0;
   right: 0;
   height: 40px;
-  background-color: #eeecec; 
+  background-color: #ecebeb; 
   display: flex;
   align-items: center;
   padding: 0 10px;
@@ -51,8 +51,8 @@
   top: 40px; /* logo abaixo do header */
   left: 0;
   height: calc(100vh - 42px); /* ocupa a altura da tela menos o header */
-  background-color: #eeecec;
-  color: rgb(1, 168, 9);
+  background-color: #ecebeb;
+  color: rgb(1, 68, 168);
   transition: width 0.3s ease;
   overflow: hidden;
   display: flex;
@@ -73,7 +73,7 @@
 .menuButton {
   background: none;
   border: none;
-  color: #1c600f;
+  color: #0f2b60;
   font-size: 20px;
   margin-left: 1rem;
   margin-bottom: 1.5rem;
@@ -98,7 +98,7 @@
 }
 
 .menuItems li:hover {
-  background-color: #cbd0dd;
+  background-color: #84a4f3;
 }
 
 /* Ícones sempre visíveis */
@@ -106,6 +106,13 @@
   font-size: 1rem;
   margin-right: 8px;
   min-width: 18px;
+}
+/* Ícones sempre visíveis */
+.iconUser {
+  font-size: 1rem;
+  margin-right: 8px;
+  min-width: 25px;
+  border-radius:50%;
 }
 
 /* Texto do item (aparece só quando aberto) */
@@ -115,8 +122,8 @@
 
 /* Destaque do item ativo */
 .active {
-  background-color: #1c600f;
-  border-left: 4px solid #0fb500;
+  background-color: #2e53b1;
+  border-left: 4px solid #009ab5;
   color: #ffffff;
 }
 
@@ -215,7 +222,7 @@
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
   position: relative;
   z-index: 3001;
-  animation: slideUp 0.5s ease-out;
+  animation: slideUp 0.2s ease-out;
   overflow: hidden;
 }
 
@@ -245,7 +252,7 @@
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
   position: relative;
   z-index: 3001;
-  animation: slideUp 0.5s ease-out;
+  animation: slideUp 0.2s ease-out;
   overflow: hidden;
 }
 
@@ -274,7 +281,7 @@
   border-bottom: 3px solid #000000;
   position: relative;
   z-index: 3001;
-  animation: slideInFromLeft 0.4s ease-out;
+  animation: slideInFromLeft 0.2s ease-out;
   overflow: hidden;
 }
 
@@ -362,6 +369,34 @@
 
 
 
+/*inicio modal novo dos meses */
+.botaoVerde {
+  background-color: #dddddd; /* verde */
+  color: white;
+  padding: 5px 5px;
+  border-radius: 6px;
+  margin-bottom: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.2s ease;
+}
+
+.botaoVerde:hover {
+  background-color: #2734ae; /* verde mais escuro no hover */
+}
+
+.activeBotaoVerde {
+  background-color: #2e53b1; /* ativo já escuro */
+  font-weight: bold;
+}
+
+
+/*fim modal novo dos meses */
+
+
+
+
 .closeModal {
   margin-top: 1rem;
   background-color: #0f3460;
@@ -378,41 +413,6 @@
 }
 
 
-.modalOverlayMeses {
-  position: fixed;
-  top: 25px;
-  left: 45px;
-  right: 0;
-  bottom: 0;
-  z-index: 3000;
-  background-color: rgba(0, 0, 0, 0); /* fundo invisível */
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  padding-left: 10px;
-  padding-top: 20px;
-  padding-bottom: 5px;
-}
-
-.mesesModal {
-  background-color: #181928;
-  color: #000;
-  display: flex;
-  flex-direction: row;
-  width: 200px;
-  height: 545px;
-  border: 1px solid #288b00;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-  position: relative;
-  z-index: 3001;
-  animation: slideInFromLeft 0.3s ease-out forwards;
-  overflow: hidden;
-}
-
-.modalRightMeses {
-  flex: 1;
-  overflow-y: auto;
-}
 
 .tabela-zebra tbody tr:nth-child(odd) {
   background-color: #ffffff;
@@ -420,6 +420,13 @@
 
 .tabela-zebra tbody tr:nth-child(even) {
   background-color: #ebebeb;
+}
+
+
+.linha-selecionada {
+  background-color: #468d8d !important;
+  color: #ebebeb;
+  font-weight: bold;
 }
 
 .inputGroup {
@@ -561,7 +568,7 @@
 /* INICIO OPERAÇOES */
 
 .operacaoPrincipal {
-  width: 55%;
+  width: 60%;
   padding: 5px;
   background: #faf8f8;
   border-right: 1px solid #cfcfcf;
@@ -724,11 +731,116 @@
 
 /* FIM OPERAÇOES */
 
+/* INICIO TABELA DE CONSUMO E EXECUÇÃO DAS DIRETORIAS POR OME */
 
- 
+/* TITULO DIRETORIA */
 
+.larguraDiretoria{
+  width:20%;
+  padding: 5px;
+  border-right:2px solid #000000;
+}
 
+.tituloDiretoria{
+  display:flex;
+  justify-content: space-between;
+  padding: 10px;
+  height: 40px;
+  color: white;
+  font-size: 12px;
+  align-items: center;
+  background: #015050;
+}
 
+.tituloOme{
+  display:flex;
+  justify-content:space-between;
+  align-items: center;
+  height: 30px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.h3TituloOme{
+  font-size:15px;
+  color:#015050;
+}
+
+.tituloOfePrc{
+  display: flex;
+  align-items:center;
+  gap: 5px;
+  color: #9a9c9c;
+  font-size: 15px;
+}
+
+.tabela-zebra-ome {
+  width: 100%;
+  margin-top: 8px;
+  font-size: 11px;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+.tabela-zebra-ome thead tr {
+  background-color: #009e9e;
+  color: white;
+}
+
+.tabela-zebra-ome th {
+  padding: 4px;
+}
+
+.tabela-zebra-ome td {
+  padding: 4px;
+}
+
+.tabela-zebra-ome tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.tabela-zebra-ome tbody tr:nth-child(even) {
+  background-color: #ebebeb;
+}
+
+.resumoPrincipalOme{
+  padding-left:20px;
+  padding-right:20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  height:30px;
+}
+
+.h3ResumoOme{
+  font-size:12px; padding-top:10px; color:#015050;
+}
+
+.spanResumoOme{
+  font-size:12px; color:#9a9c9c;
+}
+
+.hrResumoOme{
+  padding-left:20px;
+  padding-right:20px;
+  border-top:1px solid #cecbcb;
+}
+
+.executadoResumoOme{
+  padding-left:20px;
+  padding-right:20px;
+  border-top:1px solid #cecbcb;
+}
+
+.resumoSaldoOme{
+  padding-left:20px;
+  padding-right:20px;
+  display:flex;
+  margin-bottom:50px;
+  justify-content:space-between;
+  align-items:flex-end;
+  height:30px;
+}
 
 
 /* Opcional: animação de entrada */
@@ -803,10 +915,19 @@
   }
 
   .menuItems li {
+    display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     padding: 5px;
     text-align: center;
+    width: 50px;
   }
+
+  .icon {
+  margin: 0 auto;
+}
+  
 
   .itemText {
     display: none;
@@ -830,7 +951,7 @@
     width: 100%;
     height: 80%;
     border-radius: 12px 12px 0 0;
-    animation: slideUp 0.5s ease-out;
+    animation: slideUp 0.2s ease-out;
   }
 
   .conteudoPagina {
@@ -842,8 +963,9 @@
 
   .active {
     border-left: none;
-    border-top: 3px solid #00adb5;
-    background-color: transparent;
+    background-color: #006bb3;
+    width: 50px;
+    border-radius: 25%;
   }
 }
 

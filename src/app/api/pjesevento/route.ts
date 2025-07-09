@@ -11,8 +11,20 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
   }
 
+  const { searchParams } = new URL(request.url);
+  const ano = searchParams.get("ano");
+  const mes = searchParams.get("mes");
+
+  const queryParams = new URLSearchParams();
+  if (ano) queryParams.append("ano", ano);
+  if (mes) queryParams.append("mes", mes);
+
+  const url = `http://localhost:8081/pjesevento${
+    queryParams.toString() ? `?${queryParams.toString()}` : ""
+  }`;
+
   try {
-    const res = await fetch(API_BASE, {
+    const res = await fetch(url, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,

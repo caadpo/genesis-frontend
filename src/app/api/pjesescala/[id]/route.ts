@@ -1,20 +1,44 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// PUT: atualizar um escala
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+// GET: buscar uma escala
+export async function GET(request: NextRequest, context: any) {
   const token = request.cookies.get("accessToken")?.value;
-
   if (!token) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
   }
 
+  const { id } = await context.params;
+
+  try {
+    const res = await fetch(`http://localhost:8081/pjesescala/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      return NextResponse.json({ error: data.message }, { status: res.status });
+    }
+
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error("Erro ao buscar escala:", error);
+    return NextResponse.json({ error: "Erro interno" }, { status: 500 });
+  }
+}
+
+export async function PUT(request: NextRequest, context: any) {
+  const token = request.cookies.get("accessToken")?.value;
+  if (!token) {
+    return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
+  }
+
+  const { id } = await context.params;
   const body = await request.json();
 
   try {
-    const res = await fetch(`http://localhost:8081/pjesescala/${params.id}`, {
+    const res = await fetch(`http://localhost:8081/pjesescala/${id}`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -24,37 +48,27 @@ export async function PUT(
     });
 
     const data = await res.json();
-
     if (!res.ok) {
-      return NextResponse.json(
-        { error: data.message || "Erro ao atualizar escala" },
-        { status: res.status }
-      );
+      return NextResponse.json({ error: data.message }, { status: res.status });
     }
 
     return NextResponse.json(data);
   } catch (error) {
     console.error("Erro ao atualizar escala:", error);
-    return NextResponse.json(
-      { error: "Erro interno ao atualizar escala" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Erro interno" }, { status: 500 });
   }
 }
 
-// DELETE: excluir um escala
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, context: any) {
   const token = request.cookies.get("accessToken")?.value;
-
   if (!token) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
   }
 
+  const { id } = await context.params;
+
   try {
-    const res = await fetch(`http://localhost:8081/pjesescala/${params.id}`, {
+    const res = await fetch(`http://localhost:8081/pjesescala/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -69,12 +83,9 @@ export async function DELETE(
       );
     }
 
-    return NextResponse.json({ message: "escala excluído com sucesso" });
+    return NextResponse.json({ message: "Escala excluída com sucesso" });
   } catch (error) {
     console.error("Erro ao excluir escala:", error);
-    return NextResponse.json(
-      { error: "Erro interno ao excluir escala" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Erro interno" }, { status: 500 });
   }
 }

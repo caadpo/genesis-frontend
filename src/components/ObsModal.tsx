@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import styles from "@/app/(privada)/privateLayout.module.css";
+import { FaUser } from "react-icons/fa";
 
 type Props = {
   isOpen: boolean;
@@ -59,31 +60,33 @@ export default function ObsModal({
             <strong>Observação da Escala</strong>
           </h3>
 
-          {/* Aqui mostra o autor e data/hora da última observação */}
-          {initialData?.updatedObsAt && (
-            <p
-              style={{ fontSize: "13px", marginBottom: "10px", color: "#555" }}
-            >
-              Última edição por{" "}
-              <strong>
-                {initialData?.userObs?.pg} {initialData?.userObs?.nomeGuerra}
-              </strong>{" "}
-              {initialData?.userObs?.ome?.nomeOMe && (
-                <> - {initialData?.userObs?.ome?.nomeOMe}</>
-              )}{" "}
-              em{" "}
-              {new Date(initialData.updatedObsAt).toLocaleString("pt-BR", {
-                dateStyle: "short",
-                timeStyle: "short",
-              })}
-            </p>
-          )}
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div style={{ padding: "12px" }}>
+              <FaUser style={{ width: "30px", height: "30px" }} />
+            </div>
+
+            <div style={{ textAlign: "left", fontSize: "13px" }}>
+              <span style={{ fontWeight: "bold" }}>
+                {initialData?.userObs?.pg} {initialData?.userObs?.nomeGuerra}{" "}
+                {initialData?.userObs?.ome?.nomeOme ?? "(OME não informada)"}
+              </span>
+
+              <br />
+              <span style={{ color: "#838282" }}>
+                Última atualização:{" "}
+                {new Date(initialData.updatedObsAt).toLocaleString("pt-BR", {
+                  dateStyle: "short",
+                  timeStyle: "short",
+                })}
+              </span>
+            </div>
+          </div>
 
           <div className={styles.inputGroup}>
             <textarea
               name="observacao"
               className={styles.input}
-              rows={3}
+              rows={2}
               placeholder="Digite a observação..."
               value={form.observacao}
               onChange={handleChange}

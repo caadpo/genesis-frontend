@@ -9,13 +9,24 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const res = await fetch("http://localhost:8081/pjesteto", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const { searchParams } = new URL(request.url);
+    const ano = searchParams.get("ano");
+    const mes = searchParams.get("mes");
+
+    const query = new URLSearchParams();
+    if (ano) query.append("ano", ano);
+    if (mes) query.append("mes", mes);
+
+    const res = await fetch(
+      `http://localhost:8081/pjesteto?${query.toString()}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     const data = await res.json();
 
