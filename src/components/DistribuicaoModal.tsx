@@ -70,6 +70,14 @@ export default function DistribuicaoModal({
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleLetrasMaiusculas = (e) => {
+    const { name, value } = e.target;
+    setForm({
+      ...form,
+      [name]: value.toUpperCase(),
+    });
+  };
+
   const handleSubmit = () => {
     if (!selectedTetoId) {
       alert("Selecione um teto antes de salvar.");
@@ -120,13 +128,19 @@ export default function DistribuicaoModal({
                 ))}
               </select>
 
-              <input
-                className={styles.input}
-                name="nomeDist"
-                placeholder="Defina um nome. (Ex: Decreto) "
-                onChange={handleChange}
-                value={form.nomeDist}
-              />
+              <div>
+                <input
+                  className={styles.input}
+                  name="nomeDist"
+                  placeholder="Defina um nome. (Ex: Decreto)"
+                  onChange={handleLetrasMaiusculas}
+                  value={form.nomeDist}
+                  maxLength={30}
+                />
+                <div style={{ fontSize: "0.8rem", color: "#666" }}>
+                  {form.nomeDist.length}/20 caracteres
+                </div>
+              </div>
 
               <div
                 style={{

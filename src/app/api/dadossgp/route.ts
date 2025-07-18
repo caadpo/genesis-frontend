@@ -1,40 +1,42 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
-  // 1️⃣ Buscar token do cookie
   let token = request.cookies.get("accessToken")?.value;
 
-  // 2️⃣ Se não achar, tentar buscar do header Authorization
   if (!token) {
     const authHeader = request.headers.get("Authorization");
-    if (authHeader && authHeader.startsWith("Bearer ")) {
+    if (authHeader?.startsWith("Bearer ")) {
       token = authHeader.replace("Bearer ", "");
     }
   }
 
-  // 3️⃣ Se ainda assim não houver token, retornar erro
   if (!token) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
   }
 
   const url = new URL(request.url);
   const matricula = url.searchParams.get("matricula");
+  const mes = url.searchParams.get("mes");
+  const ano = url.searchParams.get("ano");
 
-  if (!matricula) {
+  if (!matricula || !mes || !ano) {
     return NextResponse.json(
-      { error: "Matrícula não fornecida" },
+      { error: "Parâmetros obrigatórios faltando: matrícula, mês ou ano" },
       { status: 400 }
     );
   }
 
   try {
-    const res = await fetch(`http://localhost:8081/dados-sgp/${matricula}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const res = await fetch(
+      `http://localhost:8081/dados-sgp/${matricula}/${mes}/${ano}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     const data = await res.json();
 

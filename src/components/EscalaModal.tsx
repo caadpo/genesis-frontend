@@ -67,7 +67,10 @@ export default function EscalaModal({
   // 🔍 BUSCAR DADOS DO SGP PELA MATRÍCULA
   const fetchDadosSgp = async (matricula: string) => {
     try {
-      const res = await fetch(`/api/dadossgp?matricula=${matricula}`);
+      const res = await fetch(
+        `/api/dadossgp?matricula=${matricula}&mes=${mes}&ano=${ano}`
+      );
+
       if (!res.ok) {
         console.warn("Erro ao buscar dados do SGP");
         return;

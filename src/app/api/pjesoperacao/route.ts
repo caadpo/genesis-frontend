@@ -11,7 +11,17 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const res = await fetch(API_BASE, {
+    // Pega os parâmetros da URL original
+    const { searchParams } = new URL(request.url);
+    const ano = searchParams.get("ano");
+    const mes = searchParams.get("mes");
+
+    // Monta a URL para o backend com query params, se existirem
+    const url = new URL(API_BASE);
+    if (ano) url.searchParams.append("ano", ano);
+    if (mes) url.searchParams.append("mes", mes);
+
+    const res = await fetch(url.toString(), {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,

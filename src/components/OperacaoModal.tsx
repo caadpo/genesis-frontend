@@ -70,6 +70,14 @@ export default function OperacaoModal({
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleLetrasMaiusculas = (e) => {
+    const { name, value } = e.target;
+    setForm({
+      ...form,
+      [name]: value.toUpperCase(),
+    });
+  };
+
   const handleSubmit = async () => {
     if (!initialData?.id && !selectedEventoId) {
       alert("Selecione uma evento antes de salvar.");
@@ -125,13 +133,19 @@ export default function OperacaoModal({
                   "Unidade não encontrada"}
               </div>
 
-              <input
-                className={styles.input}
-                name="nomeOperacao"
-                placeholder="Nome da Operacao"
-                onChange={handleChange}
-                value={form.nomeOperacao}
-              />
+              <div>
+                <input
+                  className={styles.input}
+                  name="nomeOperacao"
+                  placeholder="Nome do Operacao"
+                  onChange={handleLetrasMaiusculas}
+                  value={form.nomeOperacao}
+                  maxLength={30}
+                />
+                <div style={{ fontSize: "0.8rem", color: "#666" }}>
+                  {form.nomeOperacao.length}/45 caracteres
+                </div>
+              </div>
 
               <div
                 style={{

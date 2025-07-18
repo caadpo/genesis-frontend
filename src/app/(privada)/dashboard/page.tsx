@@ -1,6 +1,7 @@
 "use client";
 
 import { useUser } from "../../context/UserContext";
+import "react-calendar/dist/Calendar.css";
 
 export default function Dashboard() {
   const user = useUser();

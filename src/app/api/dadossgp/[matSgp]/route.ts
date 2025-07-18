@@ -1,18 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
-  _req: NextRequest,
-  { params }: { params: { matSgp: string } }
-) {
-  const token = _req.cookies.get("accessToken")?.value;
+export async function GET(req: NextRequest) {
+  const token = req.cookies.get("accessToken")?.value;
 
   if (!token) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
   }
 
+  const url = new URL(req.url);
+  const pathnameParts = url.pathname.split("/");
+  const matSgp = pathnameParts[pathnameParts.length - 1];
+
   try {
     const res = await fetch(
-      `http://localhost:8081/dados-sgp/${params.matSgp}`,
+      `http://localhost:8081/dados-sgp/${matSgp}/mais-recente`,
       {
         method: "GET",
         headers: {

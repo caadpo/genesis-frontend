@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import styles from "@/app/(privada)/privateLayout.module.css";
+import { useUser } from "@/app/context/UserContext";
 
 type Ome = {
   id: number;
@@ -16,6 +17,7 @@ type Props = {
   mes: number;
   ano: number;
   userId: number;
+  typeUser: number;
   initialData?: any;
 };
 
@@ -31,12 +33,15 @@ export default function EventoModal({
   initialData,
 }: Props) {
   const [ome, setOme] = useState<Ome[]>([]);
+  const user = useUser();
+  const typeUser = user?.typeUser;
 
   const [form, setForm] = useState({
     nomeEvento: "",
     omeId: "",
     ttCtOfEvento: "",
     ttCtPrcEvento: "",
+    regularOuAtrasado: "",
   });
 
   // Buscar Omes
@@ -57,7 +62,13 @@ export default function EventoModal({
         omeId: String(initialData.omeId || ""),
         ttCtOfEvento: String(initialData.ttCtOfEvento || ""),
         ttCtPrcEvento: String(initialData.ttCtPrcEvento || ""),
+        regularOuAtrasado: String(initialData.regularOuAtrasado || "REGULAR"),
       });
+    } else {
+      setForm((prev) => ({
+        ...prev,
+        regularOuAtrasado: "REGULAR",
+      }));
     }
   }, [initialData]);
 
@@ -68,6 +79,14 @@ export default function EventoModal({
   ) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleLetrasMaiusculas = (e) => {
+    const { name, value } = e.target;
+    setForm({
+      ...form,
+      [name]: value.toUpperCase(),
+    });
   };
 
   const handleSubmit = async () => {
@@ -82,6 +101,7 @@ export default function EventoModal({
       omeId: Number(form.omeId),
       ttCtOfEvento: Number(form.ttCtOfEvento),
       ttCtPrcEvento: Number(form.ttCtPrcEvento),
+      regularOuAtrasado: form.regularOuAtrasado,
       statusEvento: initialData?.statusEvento || "AUTORIZADA",
       mes,
       ano,
@@ -123,13 +143,19 @@ export default function EventoModal({
                 ))}
               </select>
 
-              <input
-                className={styles.input}
-                name="nomeEvento"
-                placeholder="Nome do Evento"
-                onChange={handleChange}
-                value={form.nomeEvento}
-              />
+              <div>
+                <input
+                  className={styles.input}
+                  name="nomeEvento"
+                  placeholder="Nome do Evento"
+                  onChange={handleLetrasMaiusculas}
+                  value={form.nomeEvento}
+                  maxLength={30}
+                />
+                <div style={{ fontSize: "0.8rem", color: "#666" }}>
+                  {form.nomeEvento.length}/30 caracteres
+                </div>
+              </div>
 
               <div
                 style={{
@@ -154,6 +180,54 @@ export default function EventoModal({
                   onChange={handleChange}
                   value={form.ttCtPrcEvento}
                 />
+              </div>
+
+              <div
+                style={{ display: "flex", gap: "20px", alignItems: "center" }}
+              >
+                <label
+                  style={{ display: "flex", alignItems: "center", gap: "5px" }}
+                >
+                  <input
+                    type="radio"
+                    name="regularOuAtrasado"
+                    value="REGULAR"
+                    checked={form.regularOuAtrasado === "REGULAR"}
+                    onChange={handleChange}
+                    disabled={typeUser !== 5 && typeUser !== 10}
+                  />
+                  <span
+                    style={{
+                      color:
+                        typeUser !== 5 && typeUser !== 10 ? "#888" : "#000",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    REGULAR
+                  </span>
+                </label>
+
+                <label
+                  style={{ display: "flex", alignItems: "center", gap: "5px" }}
+                >
+                  <input
+                    type="radio"
+                    name="regularOuAtrasado"
+                    value="ATRASADO"
+                    checked={form.regularOuAtrasado === "ATRASADO"}
+                    onChange={handleChange}
+                    disabled={typeUser !== 5 && typeUser !== 10}
+                  />
+                  <span
+                    style={{
+                      color:
+                        typeUser !== 5 && typeUser !== 10 ? "#888" : "#000",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    ATRASADO
+                  </span>
+                </label>
               </div>
             </div>
 

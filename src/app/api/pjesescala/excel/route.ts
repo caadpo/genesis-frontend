@@ -7,13 +7,16 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const ano = searchParams.get("ano");
   const mes = searchParams.get("mes");
+  const regularOuAtrasado = searchParams.get("regularOuAtrasado");
 
   if (!token) {
     return new Response("Não autenticado", { status: 401 });
   }
 
   // src/app/api/pjesescala/excel/route.ts
-  const backendUrl = `http://localhost:8081/prestarconta/excel?mes=${mes}&ano=${ano}`;
+  //const backendUrl = `http://localhost:8081/prestarconta/excel?mes=${mes}&ano=${ano}`;
+
+  const backendUrl = `http://localhost:8081/prestarconta/excel?mes=${mes}&ano=${ano}&regularOuAtrasado=${regularOuAtrasado}`;
 
   const res = await fetch(backendUrl, {
     method: "GET",

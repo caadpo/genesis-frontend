@@ -75,7 +75,7 @@
   border: none;
   color: #0f2b60;
   font-size: 20px;
-  margin-left: 1rem;
+  margin-left: 0.6rem;
   margin-bottom: 1.5rem;
   cursor: pointer;
   align-self: flex-start;
@@ -194,7 +194,6 @@
   background-color: #cbd0dd;
 }
 
-
 .modalOverlay {
   position: fixed;
   top: 0;
@@ -226,6 +225,39 @@
   overflow: hidden;
 }
 
+
+.modalOverlayMeses {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3000;
+  background-color: rgba(0, 0, 0, 0); /* fundo invisível */
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding-left: 10px;
+  padding-top: 20px;
+  padding-bottom: 5px;
+}
+
+.mesesModal {
+  background-color: #fff;
+  color: #000;
+  display: flex;
+  flex-direction: row;
+  border-radius: 8px;
+  width: 515px;
+  height: 545px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 3001;
+  animation: slideUp 0.2s ease-out;
+  overflow: hidden;
+}
+
+
 .modalOverlayDist {
   position: fixed;
   top: 0;
@@ -241,6 +273,279 @@
   padding-top: 240px;
 }
 
+.geralSenhaPjes {
+
+  font-size:10px;
+  text-align:left;
+  margin-left:1px;
+
+}
+
+.imgUserModal {
+  width:100px;
+  height: 100px;
+  border-radius: 50%;
+  color: #dad7d7;
+  object-fit: cover;
+  border:1px solid #ccc;
+}
+
+.imgUserModalAlteracao {
+  width:25px;
+  height: 23px;
+  border-radius: 50%;
+  color: #dad7d7;
+}
+
+.identificacaoUser {
+  margin-bottom:1rem;
+  font-size: 15px;
+  text-align:left;
+}
+
+.seiFuncaoTelEmail {
+  text-align:left;
+  display:flex;
+  flex-direction:column;
+  gap:0.5rem;
+}
+
+.divSeiFuncaoTelEmail {
+  display:flex; align-items:center;
+}
+
+.faSeiFuncaoTelEmail {
+  margin-right:8px;
+}
+
+.hrSeiFuncaoTelEmail {
+  border:none;
+  border-top:1px solid #ccc;
+  margin-top:2rem;
+}
+
+.divDesconectar {
+
+}
+
+.imgSenhaModal {
+  width:100px;
+  height: 100px;
+  color: #dad7d7;
+  object-fit: cover;
+}
+
+
+
+/*INICIO PJES*/
+.divReturn {
+  display: flex;
+  flex-direction: column;
+  font-size:12px;
+  min-height:100vh;
+  position:relative;
+}
+
+.divTetoPrincipal {
+  width: 100%;
+  z-index: 5;
+}
+
+.divTetoSecundaria {
+  fontSize: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.ulTeto {
+  display:flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  width: 100%;
+}
+
+.liTeto {
+  cursor: pointer;
+  border-radius: 15px;
+  border: 1px solid #d4d3d3;
+  padding: 8px;
+  list-style: none;
+  text-align: center;
+  flex: 1 1 150px;
+  min-width: 150px;
+}
+
+/* Quando o item estiver selecionado */
+.selected {
+  font-weight: bold;
+  background: #468d8d;
+  color: #fff;
+}
+
+/* Quando o item NÃO estiver selecionado */
+.notSelected {
+  font-weight: normal;
+  background: transparent;
+  color: #8d8888;
+}
+
+.imageTeto {
+  display: block;
+  margin: 0 auto;
+  border-radius: 50%;
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* Quando o item estiver selecionado */
+.imageSelecionada {
+  opacity: 1;
+  width: 60px;
+  height: 60px;
+}
+
+/* Quando o item NÃO estiver selecionado */
+.imageNaoSelecionada {
+  opacity: 0.5;
+  width: 45px;
+  height: 45px;
+}
+.divNomeVerba {
+  font-size: 11px;
+}
+.divDistribuicaoCotas {
+  font-size:10px;
+  display:flex;
+  justify-content:space-between;
+}
+
+.spanDistribuicaoCotas {
+  display:flex;
+  align-items:center;
+  gap: 4px;
+}
+
+.divDistPrincipal {
+  width:100%;
+  display: flex;
+  padding: 8px;
+  color: #000000;
+  z-index: 5;
+}
+
+.divBtnCadastrarDist {
+  display:flex;
+  justify-content: right;
+  align-items: right;
+  font-size: 15px;
+  margin-right: 10px;
+  cursor:pointer;
+}
+
+.tableDist {
+  width:100%;
+  font-size: 12px;
+  border-collapse: collapse;
+  border-bottom: 2px solid #288b00;
+  text-align: center;
+}
+
+.theadPrincipal {
+  background: #050505;
+  color: white;
+}
+
+.thPadrao {
+  border: 1px solid #ebe6e6;
+  padding: 4px;
+}
+
+.tdPadrao {
+  border: 1px solid #ebe6e6;
+  padding: 4px;
+}
+
+.tdComBordaExtra {
+  border-bottom: 1px solid #ebe6e6;
+  border-right: 3px solid #000000;
+  padding: 4px;
+}
+
+.tdImagem {
+  border-bottom: 1px solid #ebe6e6;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imagemTabela {
+  border-radius: 50%;
+}
+
+.acoesContainer {
+  display: flex;
+  padding: 5px;
+  align-items: center;
+  justify-content: center;
+}
+
+.acaoItem {
+  padding: 2px;
+}
+
+.iconeAcao {
+  cursor: pointer;
+}
+
+.containerInsides {
+  width: 10%;
+  padding-left: 10px;
+}
+
+.boxResumo {
+  border: 1px solid #a0a0a0;
+  padding: 8px;
+  border-radius: 8px;
+  height: 205px;
+  display: flex;
+  flex-direction: column;
+}
+
+.blocoResumo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.blocoComSeparador {
+  padding-bottom: 12px;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 15px;
+}
+
+.valorResumo {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.containerGrafico {
+  width: 30%;
+  padding-left: 10px;
+}
+
+.boxGrafico {
+  height: 205px;
+  width: 100%;
+  position: relative; /* necessário para maintainAspectRatio: false */
+  padding: 8px;
+  border: 1px solid #a0a0a0;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+
 .distModal {
   background-color: #fff;
   color: #000;
@@ -248,7 +553,7 @@
   flex-direction: row;
   border-radius: 8px;
   width: 400px;
-  height: 300px;
+  height: 350px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
   position: relative;
   z-index: 3001;
@@ -285,11 +590,17 @@
   overflow: hidden;
 }
 
-
-
 /* Menu lateral esquerdo */
 .modalLeft {
-  width: 36%;
+  width: 10%;
+  background-color: #f1f1f1;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalLeftMeses {
+  width: 30%;
   background-color: #f1f1f1;
   border-right: 1px solid #ddd;
   display: flex;
@@ -322,13 +633,13 @@
 
 /* Ícone dos itens */
 .menuIcon {
-  margin-right: 10px;
+  margin-right: 5px;
 }
 
 /* Conteúdo à direita */
 .modalRight {
   flex: 1;
-  padding: 1.5rem;
+  padding: 10px;
   overflow-y: auto;
 }
 
@@ -361,18 +672,97 @@
   cursor: pointer;
   transition: background-color 0.2s;
   border-radius: 4px;
+  background-color:#2e53b1;
+  color:#ffffff;
 }
 
 .profileFooterItem:hover {
   background-color: #ddd;
 }
 
+.mesesFooterItem {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border-radius: 4px;
+}
+
+.mesesFooterItem:hover {
+  background-color: #ddd;
+}
+
+/* INICIO DA DIV PJES */
+.customCalendar {
+  border: none !important;
+  width: 100% !important;
+  background: #f7f4f4 !important;
+  padding: 5px;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+/* Aplique estilo global à classe do calendário ativo */
+:global(.react-calendar__tile--active) {
+  background: #cbd3cc !important;
+  color: rgb(7, 12, 255) !important;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.escalaInfo {
+  font-family: sans-serif;
+}
+
+.escalaLinha {
+  display: flex;
+  align-items: flex-start;
+  padding: 5px 4px;
+  border-radius: 6px;
+}
+
+.dataColuna {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 40px;
+}
+
+.dia {
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.mes {
+  font-size: 0.9rem;
+  color: #888;
+  line-height: 1.2;
+}
+
+.nome {
+  font-weight: 600;
+  font-size: 0.8rem;
+  margin-top: 2px;
+  margin-left: 10px;
+}
+
+.detalhesItemCalendar {
+  display:flex;
+  align-content: center;
+  margin-left: 10px;
+  align-items: center;
+}
+
+
+/* FIM DA DIV PJES */
 
 
 /*inicio modal novo dos meses */
 .botaoVerde {
   background-color: #dddddd; /* verde */
-  color: white;
+  color: rgb(0, 0, 0);
   padding: 5px 5px;
   border-radius: 6px;
   margin-bottom: 2px;
@@ -383,19 +773,16 @@
 }
 
 .botaoVerde:hover {
-  background-color: #2734ae; /* verde mais escuro no hover */
+  background-color: #bbbcbd; /* verde mais escuro no hover */
 }
 
 .activeBotaoVerde {
-  background-color: #2e53b1; /* ativo já escuro */
+  background-color: #8eaeff; /* ativo já escuro */
   font-weight: bold;
 }
 
 
 /*fim modal novo dos meses */
-
-
-
 
 .closeModal {
   margin-top: 1rem;
@@ -411,8 +798,6 @@
 .closeModal:hover {
   background-color: #16213e;
 }
-
-
 
 .tabela-zebra tbody tr:nth-child(odd) {
   background-color: #ffffff;
@@ -448,6 +833,255 @@
   border-radius: 5px;
   font-size: 16px;
 }
+
+.inputPesquisar {
+  width: 100%;
+  padding: 10px;
+  height: 42px; /* ADICIONE ISSO */
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  font-size: 16px;
+}
+
+
+/* INICIO TELA DO USUARIO */
+
+.divPrincipal {
+  height:100%; 
+  display:flex;
+  padding: 20px;
+  flex-direction:column;
+}
+
+.divSecundaria {
+  flex: 1;
+  display:flex;
+}
+
+.divTituloUsuario {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  width:100%;
+}
+
+.divEsquerdaTelaUsuario {
+  width:25%;
+  box-sizing: border-box;
+  overflow-y: auto;
+  margin-right:2px;
+}
+
+.inputPesquisarUsuario {
+  width: 25%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  font-size: 16px;
+}
+
+.divDireitaTelaUsuario {
+  width:75%;
+  box-sizing: border-box;
+  margin-left: 10px;
+  overflow-y:auto;
+}
+
+.usuarioCard {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  position:relative;
+  cursor:pointer;
+  border-bottom: 1px solid #ccc7c7;
+  margin-top: 0.5rem;
+}
+
+.usuarioImagem {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.usuarioSemImagem {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+  padding: 3px;
+  color: #757575;
+  margin-right: 10px;
+  border: 1px solid #757575;
+}
+
+
+.usuarioInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.usuarioNome {
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+
+.usuarioFuncao {
+  font-size: 0.8rem;
+  padding-right: 10px;
+  justify-content: center;
+  align-items: center;
+  color: #666;
+}
+
+.iconUsuarioList {
+  padding-right: 5px;
+  font-size: 15px;
+  color: #666;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.selectedCard {
+  background-color: #f0f0f0;
+  border-left: 4px solid #0070f3;
+}
+
+/* Detalhes do usuário à direita para desktop */
+.usuarioDetalhes {
+  display: block;
+}
+
+.usuarioDetalhesMobile {
+  display: none;
+}
+
+  .liusuarioDetalhes {
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #ccc;
+    padding: 8px 0;
+  }
+
+  .divusuarioDetalhes {
+    display:flex;
+    align-items:center;
+    gap: 8px;
+  }
+
+
+  .modalOverlayCadUsuario {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3000;
+  background-color: rgba(75, 30, 30, 0);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding-left: 515px;
+  padding-top: 86px;
+}
+
+.cadUsuarioModal {
+  background-color: #fff;
+  color: #000;
+  display: flex;
+  flex-direction: row;
+  border-radius: 4px;
+  width: 400px;
+  height: 400px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 3001;
+  animation: slideDown  0.3s ease-out;
+  overflow: hidden;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modalRightCadUsuario {
+  flex: 1;
+  padding: 1.5rem;
+  background-color: #fff;
+  overflow-y: auto;
+}
+
+.imgCadUsuario {
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  padding: 3px;
+  color: #757575;
+  margin-right: 10px;
+  border: 1px solid #757575;
+}
+
+.inputCadUsuario {
+  width: 100%;
+  border-bottom: 1px solid #ccc;
+  font-size: 14px;
+  outline: none;
+  margin: 5px;
+}
+
+.inputCadUsuarioApenasinput {
+  width: 100%;
+  border-bottom: 1px solid #ccc;
+  font-size: 14px;
+  outline: none;
+  margin: 5px;
+  padding-left: 4px;
+}
+
+.botaoFooterCadUsuario {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border-radius: 4px;
+  background-color:#3c8114;
+  color:#ffffff;
+}
+
+.botaoFooterCadUsuario:hover {
+  background-color: #619c3f;
+}
+
+
+.usuarioEditarExcluirIcon {
+  position:absolute;
+  top:5;
+  right:5;
+  display:flex;
+  font-size: 12px;
+  gap:8px;
+}
+
+
+
+
+
+
+
+/* FIM TELA DO USUARIO */
+
 
 .error {
     color: red;
@@ -561,7 +1195,145 @@
   font-size:11px;
   font-weight:bold;
   color: #000000;
+  height: 30px;
+  border-radius: 5px;
 }
+
+.eventoTextoMinhaEscala {
+  font-size:11px;
+  padding: 5px;
+  color: #000000;
+  height: 150px;
+  background-color:#f5f3f3;
+  border-radius: 5px;
+}
+
+/* components/modal.module.css */
+.modalOverlayPrestarConta {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3000;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;      /* centraliza verticalmente */
+  justify-content: center;  /* centraliza horizontalmente */
+  padding: 0;               /* remove o deslocamento */
+}
+
+
+.prestarContaModal  {
+  background-color: #fff;
+  color: #000;
+  display: flex;
+  flex-direction: row;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 3001;
+  animation: slideUp 0.2s ease-out;
+  overflow: hidden;
+}
+
+.modalRightPrestarConta {
+  padding: 2rem;
+  background-color: #fff;
+}
+
+.checkboxGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: black;
+  cursor: pointer;
+  user-select: none;
+}
+
+.regularSelected {
+  color: green;
+  font-weight: bold;
+}
+
+.atrasadoSelected {
+  color: red;
+  font-weight: bold;
+}
+
+.checkboxWrapper {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  font-size: 16px;
+  align-items: center;
+  width: 100%;
+}
+
+.checkboxItem {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.checkboxDivider {
+  width: 1px;
+  height: 30px;
+  background-color: #000000;
+  margin: 0 50px;
+}
+
+
+.regularSelected {
+  color: green;
+}
+
+.atrasadoSelected {
+  color: red;
+}
+
+.buttonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 30px;
+}
+
+.modalButtonCancelar,
+.modalButtonConfirmar {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modalButtonCancelar {
+  background-color: #888;
+  color: white;
+}
+
+.modalButtonConfirmar {
+  background-color: #118a2f;
+  color: white;
+}
+
+.modalButtonConfirmar:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+
+
+
 
 
 
@@ -843,6 +1615,141 @@
 }
 
 
+/* INICIO TELA DE PESQUISAR */
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.headerPesquisarEscala {
+  font-size: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.pesquisaContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.inputFlex {
+  flex: 1;
+  margin-right: 0.5rem;
+}
+
+.botaoPesquisar {
+  height: 42px;
+  padding: 0 0.75rem;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.botaoAtivo {
+  background-color: #0070f3;
+  cursor: pointer;
+}
+
+.botaoDesativado {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.horarioEscala {
+  width: 20px;
+  color: #939397;
+}
+
+.localApresentacao {
+  margin-left: 5px;
+}
+
+.detalhesContainer {
+  display: flex;
+  margin-bottom: 10px;
+  color: #6e6d6d;
+}
+
+.detalheTexto {
+  margin-left: 5px;
+}
+
+.statusConfirmado {
+  margin-left: 5px;
+  color: green;
+}
+
+.statusPendente {
+  margin-left: 5px;
+  color: #b60b0b;
+}
+
+.usuarioLogInfo {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.statusUsuario {
+  margin-left: 5px;
+}
+
+/* FIM TELA PESQUISAR */
+
+/* INICIO TELA PESQUISAR LISTAGEM DAS OPERAÇÃO */
+
+.nomeOperacaoTelaPesquisar {
+  margin-top: 20px;
+  padding: 10px;
+  display: block;
+  font-size: 12px;
+
+  background-color: #005bb5;
+
+}
+
+.usuarioLinha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.checkboxAlinhado {
+  transform: scale(1.5); /* Aumenta o tamanho do checkbox */
+  cursor: pointer;
+  margin-left: 10px; /* Garante alinhamento à direita, redundante com justify-content */
+}
+
+.commentContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.faComment {
+  transform: scale(1.5); /* Aumenta o tamanho do checkbox */
+  cursor: pointer;
+  padding-left: 2px;
+  margin-left: 10px; /* Garante alinhamento à direita, redundante com justify-content */
+}
+
+
+
+/* FIM TELA PESQUISAR LISTAGEM DAS OPERAÇÃO */
+
+
+
+
+
 /* Opcional: animação de entrada */
 @keyframes fadeIn {
   from {
@@ -925,8 +1832,8 @@
   }
 
   .icon {
-  margin: 0 auto;
-}
+  margin: 0 auto; 
+  }
   
 
   .itemText {
@@ -947,7 +1854,21 @@
     padding-bottom: 0;
   }
 
+  .modalOverlayMeses {
+    justify-content: center;
+    align-items: flex-end;
+    padding-left: 0;
+    padding-bottom: 0;
+  }
+
   .userModal {
+    width: 100%;
+    height: 80%;
+    border-radius: 12px 12px 0 0;
+    animation: slideUp 0.2s ease-out;
+  }
+
+  .mesesModal {
     width: 100%;
     height: 80%;
     border-radius: 12px 12px 0 0;
@@ -967,7 +1888,105 @@
     width: 50px;
     border-radius: 25%;
   }
+
+  /*INICIO CONTEUDO DO USUARIO MOBILE*/
+
+  .divPrincipal {
+    height:100%; 
+    display:flex;
+    padding: 1px;
+    flex-direction:column;
+  }
+
+  .usuarioCard {display: block;}
+
+  .divEsquerdaTelaUsuario {width: 100%; margin-right: 0;}
+
+  .divDireitaTelaUsuario {
+    display: none !important; 
+    width: 0 !important;
+    height: 0;
+    overflow: hidden;
+  }
+
+  .inputPesquisarUsuario {width: 100%;}
+
+  .usuarioImagem {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .usuarioSemImagem {
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  padding: 3px;
+  color: #757575;
+  margin-right: 10px;
+  border: 1px solid #757575;
 }
+
+  .usuarioInfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .usuarioNome {
+    font-weight: bold;
+    font-size: 0.7rem;
+  }
+
+  .usuarioFuncao {
+    font-size: 0.7rem;
+    color: #666;
+  }
+
+  .divSecundaria {
+    flex-direction: column;
+  }
+
+  .divDireitaTelaUsuario {
+    display: none; 
+  }
+
+  .usuarioDetalhesMobile {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    font-size: 0.75rem;
+    padding: 8px;
+    background-color: #f9f9f9;
+    border-radius: 6px;
+  }
+
+  .liusuarioDetalhesMobile {
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #ccc;
+    padding: 8px 0;
+  }
+
+  .divusuarioDetalhesMobile {
+    display:flex;
+    align-items:center;
+    gap: 8px;
+  }
+
+  .modalOverlayCadUsuario {
+    padding-left: 5px;
+  }
+
+  /*FIM DO CONTEUDO DO USUARIO MOBILE*/
+  
+
+
+}
+
+
 
 @keyframes slideUp {
   from {

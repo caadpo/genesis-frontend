@@ -17,9 +17,19 @@ import {
   FaSitemap,
   FaUsers,
   FaCalendar,
+  FaAlignCenter,
+  FaKeycdn,
+  FaUniversity,
+  FaMapMarkerAlt,
+  FaAirbnb,
+  FaCheckSquare,
+  FaSearch,
 } from "react-icons/fa";
 import Image from "next/image";
 import { UserProvider } from "../context/UserContext";
+import "react-calendar/dist/Calendar.css";
+import Calendar from "react-calendar";
+import { FaTriangleExclamation } from "react-icons/fa6";
 
 interface User {
   id: number;
@@ -51,6 +61,34 @@ interface User {
   };
 }
 
+interface Escala {
+  dia: string;
+  nomeOperacao: string;
+  nomeOme: string;
+  localApresentacaoSgp: string;
+  situacaoSgp: string;
+  horaInicio: string;
+  horaFinal: string;
+  funcao: string;
+  statusEscala: string;
+  obs: string;
+  ttCota: number;
+
+  ultimoStatusLog?: {
+    novoStatus: string;
+    dataAlteracao: string;
+    pg: string;
+    imagemUrl: string;
+    nomeGuerra: string;
+    nomeOme: string;
+  };
+}
+
+interface TileProps {
+  date: Date;
+  view: "month" | "year" | "decade" | "century";
+}
+
 export default function TemplateLayout({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -65,11 +103,51 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
     {}
   );
 
-  const [showMesesModal, setShowMesesModal] = useState(false);
   const [showMesesModalNovo, setShowMesesModalNovo] = useState(false);
 
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+
+  const [escalas, setEscalas] = useState<Escala[]>([]);
+  const [date, setDate] = useState<Date>(new Date());
+
+  //FORMATANDO A DATA PARA O TIPO BRASILEIRO
+  const formatDate = (dateStr: string) => {
+    const [ano, mes, dia] = dateStr.split("-");
+    const nomesMeses = [
+      "JAN",
+      "FEV",
+      "MAR",
+      "ABR",
+      "MAI",
+      "JUN",
+      "JUL",
+      "AGO",
+      "SET",
+      "OUT",
+      "NOV",
+      "DEZ",
+    ];
+    const nomeMes = nomesMeses[parseInt(mes, 10) - 1];
+    return { dia, mes, nomeMes };
+  };
+  //FORMATANDO A DATA E HORA TIRAR AUTERAÇÃO
+  const formatarDataHoraBR = (dataIso: string): string => {
+    if (!dataIso) return "";
+
+    const data = new Date(dataIso);
+
+    const dia = String(data.getDate()).padStart(2, "0");
+    const mes = String(data.getMonth() + 1).padStart(2, "0");
+    const ano = data.getFullYear();
+    const hora = String(data.getHours()).padStart(2, "0");
+    const minuto = String(data.getMinutes()).padStart(2, "0");
+
+    return `${dia}/${mes}/${ano} às ${hora}:${minuto}`;
+  };
+
   const headerMenuRef = useRef<HTMLDivElement | null>(null);
-  const mesesModalRef = useRef<HTMLDivElement | null>(null); //fechar a modal ao clicar fora
+  const mesesModalRef = useRef<HTMLDivElement | null>(null);
 
   const [activeTab, setActiveTab] = useState("perfil");
 
@@ -190,6 +268,37 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
     };
   }, [showUserModal, showMesesModalNovo]);
 
+  //INICIO BUSCAR AS ESCALAS PARA RENDERIZER NO CALENDARIO
+  const [loading, setLoading] = useState(true);
+  const [erro, setErro] = useState("");
+  const [ano, setAno] = useState<string | null>(null);
+  const [mes, setMes] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchMinhasEscalas = async () => {
+      console.log("Chamando fetchMinhasEscalas");
+
+      setLoading(true);
+      try {
+        const res = await fetch("/api/pjesescala/minhas-escalas");
+        const data = await res.json();
+
+        if (!res.ok)
+          throw new Error(data.error || "Erro ao buscar minhas escalas");
+
+        setEscalas(data);
+      } catch (err: any) {
+        setErro(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMinhasEscalas();
+  }, []);
+
+  //FIM BUSCAR AS ESCALAS PARA RENDERIZER NO CALENDARIO
+
   //METODO PARA DESLOGAR
   async function handleLogout() {
     try {
@@ -209,6 +318,37 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
       console.error("Erro no logout:", error);
     }
   }
+
+  const handleChangePassword = async () => {
+    try {
+      const res = await fetch("/api/user", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          lastPassword: currentPassword,
+          newPassword: newPassword,
+        }),
+      });
+
+      const data = await res.json();
+
+      console.log("Resposta da API:", res.status, data);
+
+      if (!res.ok) {
+        // Exibe a mensagem que vem do backend, ou erro genérico
+        alert(data.message || data.error || "Erro ao alterar senha");
+      } else {
+        alert("Senha alterada com sucesso!");
+        setCurrentPassword("");
+        setNewPassword("");
+      }
+    } catch (error) {
+      console.error("Erro na requisição:", error);
+      alert("Erro inesperado ao alterar senha.");
+    }
+  };
 
   if (!user) return <div>Você não está autenticado.</div>;
 
@@ -268,7 +408,9 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
               </li>
 
               <li
-                className={pathname === "/configuracoes" ? styles.active : ""}
+                className={pathname === "/usuarios" ? styles.active : ""}
+                onClick={() => router.push("/usuarios")}
+                style={{ cursor: "pointer" }}
               >
                 <FaUsers style={{ fontSize: "30px" }} className={styles.icon} />
                 {sidebarOpen && (
@@ -277,9 +419,25 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
               </li>
 
               <li
+                className={
+                  pathname === "/pesquisar-escalas" ? styles.active : ""
+                }
+                onClick={() => router.push("/pesquisarEscala")}
+                style={{ cursor: "pointer" }}
+              >
+                <FaSearch
+                  style={{ fontSize: "30px" }}
+                  className={styles.icon}
+                />
+                {sidebarOpen && (
+                  <span className={styles.itemText}>Usuarios</span>
+                )}
+              </li>
+
+              <li
                 onClick={() => {
-                  fetchMesesData(); // se necessário
-                  setShowMesesModalNovo(true); // abre a nova modal
+                  fetchMesesData();
+                  setShowMesesModalNovo(true);
                 }}
                 className={pathname === "/pjes" ? styles.active : ""}
               >
@@ -330,16 +488,8 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
                     }
                     onClick={() => setActiveTab("geral")}
                   >
-                    <span className={styles.menuIcon}>📋</span>
-                    <span
-                      style={{
-                        fontSize: "15px",
-                        textAlign: "left",
-                        marginLeft: "1px",
-                      }}
-                    >
-                      GERAL
-                    </span>
+                    <FaAlignCenter className={styles.menuIcon} />
+                    <span className={styles.geralSenhaPjes}></span>
                   </li>
                   <li
                     className={
@@ -348,15 +498,7 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
                     onClick={() => setActiveTab("senha")}
                   >
                     <FaKey className={styles.menuIcon} />
-                    <span
-                      style={{
-                        fontSize: "15px",
-                        textAlign: "left",
-                        marginLeft: "5px",
-                      }}
-                    >
-                      SENHA
-                    </span>
+                    <span className={styles.geralSenhaPjes}></span>
                   </li>
                   <li
                     className={
@@ -365,15 +507,7 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
                     onClick={() => setActiveTab("meuspjes")}
                   >
                     <FaSitemap className={styles.menuIcon} />
-                    <span
-                      style={{
-                        fontSize: "15px",
-                        textAlign: "left",
-                        marginLeft: "5px",
-                      }}
-                    >
-                      PJES
-                    </span>
+                    <span className={styles.geralSenhaPjes}></span>
                   </li>
                 </ul>
                 <div className={styles.modalFooterLeft}>
@@ -381,8 +515,7 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
                     className={styles.profileFooterItem}
                     onClick={() => setShowUserModal(false)}
                   >
-                    <FaUser className={styles.menuIcon} />
-                    <span>Perfil</span>
+                    <FaUser />
                   </div>
                 </div>
               </div>
@@ -396,73 +529,50 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
                         height={50}
                         src={user.imagemUrl || "/assets/images/user_padrao.png"}
                         alt="img_usuario"
-                        style={{
-                          width: "100px",
-                          height: "100px",
-                          borderRadius: "50%",
-                          color: "#dad7d7",
-                          objectFit: "cover",
-                          border: "1px solid #ccc",
-                        }}
+                        className={styles.imgUserModal}
                       />
                     </div>
 
                     {/* Nome, matrícula e função */}
-                    <div
-                      style={{
-                        marginBottom: "1rem",
-                        fontSize: "16px",
-                        textAlign: "left",
-                      }}
-                    >
+                    <div className={styles.identificacaoUser}>
                       <p>
-                        {user.pg} {user.nomeGuerra} {user.ome?.nomeOme} |{" "}
-                        {user.ome?.diretoria?.nomeDiretoria}
+                        {user.pg} {user.nomeGuerra} {user.ome?.nomeOme}
                       </p>
                     </div>
 
                     {/* Restante dos dados */}
-                    <div
-                      style={{
-                        textAlign: "left",
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "0.5rem",
-                      }}
-                    >
-                      <div style={{ display: "flex", alignItems: "center" }}>
+                    <div className={styles.seiFuncaoTelEmail}>
+                      <div className={styles.divSeiFuncaoTelEmail}>
                         <FaUserTag style={{ marginRight: "8px" }} />
                         <span>{user.loginSei}</span>
                       </div>
 
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <FaIdBadge style={{ marginRight: "8px" }} />
+                      <div className={styles.divSeiFuncaoTelEmail}>
+                        <FaIdBadge className={styles.faSeiFuncaoTelEmail} />
                         <span>{user.funcao}</span>
                       </div>
 
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <FaPhone style={{ marginRight: "8px" }} />
+                      <div className={styles.divSeiFuncaoTelEmail}>
+                        <FaUniversity className={styles.faSeiFuncaoTelEmail} />
+                        <span> {user.ome?.diretoria?.nomeDiretoria}</span>
+                      </div>
+
+                      <div className={styles.divSeiFuncaoTelEmail}>
+                        <FaPhone className={styles.faSeiFuncaoTelEmail} />
                         <span>{user.phone}</span>
                       </div>
 
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <FaEnvelope style={{ marginRight: "8px" }} />
+                      <div className={styles.divSeiFuncaoTelEmail}>
+                        <FaEnvelope className={styles.faSeiFuncaoTelEmail} />
                         <span>{user.email}</span>
                       </div>
                     </div>
 
                     {/* Linha divisória */}
-                    <hr
-                      style={{
-                        border: "none",
-                        borderTop: "1px solid #ccc",
-                        marginTop: "2rem",
-                      }}
-                    />
+                    <hr className={styles.hrSeiFuncaoTelEmail} />
 
                     <div className={styles.modalFooterLeft}>
                       <div
-                        style={{ backgroundColor: "#2e53b1", color: "#ffffff" }}
                         className={styles.profileFooterItem}
                         onClick={handleLogout}
                       >
@@ -475,14 +585,256 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
 
                 {activeTab === "senha" && (
                   <>
-                    <h2>Trocar Senha</h2>
-                    <p>Funcionalidade de troca de senha aqui...</p>
+                    <div style={{ marginBottom: "1rem" }}>
+                      <FaKey className={styles.imgSenhaModal} />
+                    </div>
+
+                    {/* Restante dos dados */}
+                    <div className={styles.seiFuncaoTelEmail}>
+                      <div className={styles.divSeiFuncaoTelEmail}>
+                        <FaKeycdn style={{ marginRight: "8px" }} />
+                        <input
+                          type="password"
+                          placeholder="Senha atual"
+                          value={currentPassword}
+                          onChange={(e) => setCurrentPassword(e.target.value)}
+                          className={styles.input}
+                        />
+                      </div>
+
+                      <div className={styles.divSeiFuncaoTelEmail}>
+                        <FaKey className={styles.faSeiFuncaoTelEmail} />
+                        <input
+                          type="password"
+                          placeholder="Nova senha"
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                          className={styles.input}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Linha divisória */}
+                    <hr className={styles.hrSeiFuncaoTelEmail} />
+
+                    <div className={styles.modalFooterLeft}>
+                      <div
+                        className={styles.profileFooterItem}
+                        onClick={handleChangePassword}
+                      >
+                        <FaKey className={styles.menuIcon} />
+                        <span>Atualizar Senha</span>
+                      </div>
+                    </div>
                   </>
                 )}
+
                 {activeTab === "meuspjes" && (
                   <>
-                    <h2>Meus Pjes</h2>
-                    <p>Funcionalidade de pjes aqui...</p>
+                    <Calendar
+                      onChange={(value: Date | Date[]) => {
+                        const selected = Array.isArray(value)
+                          ? value[0]
+                          : value;
+                        setDate(selected);
+                      }}
+                      value={date}
+                      className={styles.customCalendar}
+                      tileContent={({ date, view }: TileProps) => {
+                        if (view === "month") {
+                          const diaStr = date.toISOString().split("T")[0];
+                          const escalaDoDia = escalas.find(
+                            (esc) => esc.dia === diaStr
+                          );
+
+                          if (escalaDoDia) {
+                            return (
+                              <div
+                                style={{ fontSize: "0.5rem", color: "blue" }}
+                              >
+                                {escalaDoDia.nomeOme}
+                              </div>
+                            );
+                          }
+                        }
+                        return null;
+                      }}
+                    />
+
+                    <div style={{ flex: 1, marginTop: "10px" }}>
+                      <div className={styles.eventoTextoMinhaEscala}>
+                        <div className={styles.escalaInfo}>
+                          {(() => {
+                            const diaStr = date.toLocaleDateString("sv-SE");
+                            const escalaDoDia = escalas.find(
+                              (esc) => esc.dia === diaStr
+                            );
+
+                            if (escalaDoDia) {
+                              const { dia, nomeMes } = formatDate(
+                                escalaDoDia.dia
+                              );
+                              return (
+                                <div className={styles.escalaLinha}>
+                                  <div className={styles.dataColuna}>
+                                    <span className={styles.dia}>{dia}</span>
+                                    <span className={styles.mes}>
+                                      {nomeMes}
+                                    </span>
+                                    <span
+                                      style={{
+                                        width: "20px",
+                                        color: "#939397",
+                                      }}
+                                    >
+                                      {escalaDoDia.horaInicio.slice(0, 5)} às{" "}
+                                      {escalaDoDia.horaFinal.slice(0, 5)}
+                                    </span>
+                                  </div>
+
+                                  <div>
+                                    <span className={styles.nome}>
+                                      {escalaDoDia.nomeOperacao} |{" "}
+                                      {escalaDoDia.nomeOme}
+                                    </span>
+                                    <div
+                                      className={styles.detalhesItemCalendar}
+                                    >
+                                      <FaMapMarkerAlt />{" "}
+                                      <span style={{ marginLeft: "5px" }}>
+                                        {escalaDoDia.localApresentacaoSgp}
+                                      </span>
+                                    </div>
+
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        marginBottom: "10px",
+                                        color: "#6e6d6d",
+                                      }}
+                                    >
+                                      <div
+                                        className={styles.detalhesItemCalendar}
+                                      >
+                                        <FaAirbnb />{" "}
+                                        <span style={{ marginLeft: "5px" }}>
+                                          Função: {escalaDoDia.funcao}
+                                        </span>
+                                      </div>
+                                      <div
+                                        className={styles.detalhesItemCalendar}
+                                      >
+                                        <FaUser />
+                                        <span style={{ marginLeft: "5px" }}>
+                                          {escalaDoDia.situacaoSgp}
+                                        </span>
+                                      </div>
+                                    </div>
+
+                                    <h1>Situação da Escala</h1>
+                                    <div
+                                      className={styles.detalhesItemCalendar}
+                                    >
+                                      {escalaDoDia.statusEscala ===
+                                      "HOMOLOGADA" ? (
+                                        <>
+                                          <FaCheckSquare
+                                            style={{ color: "green" }}
+                                          />
+                                          <span
+                                            style={{
+                                              marginLeft: "5px",
+                                              color: "green",
+                                            }}
+                                          >
+                                            CONFIRMADA
+                                          </span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <FaTriangleExclamation
+                                            style={{ color: "#b60b0b" }}
+                                          />
+                                          <span
+                                            style={{
+                                              marginLeft: "5px",
+                                              color: "#b60b0b",
+                                            }}
+                                          >
+                                            {escalaDoDia.statusEscala}
+                                          </span>
+                                        </>
+                                      )}
+                                    </div>
+
+                                    <div
+                                      className={styles.detalhesItemCalendar}
+                                    >
+                                      <div
+                                        style={{
+                                          marginBottom: "1rem",
+                                          alignContent: "center",
+                                          alignItems: "center",
+                                          display: "flex",
+                                        }}
+                                      >
+                                        {escalaDoDia.statusEscala ===
+                                        "AUTORIZADA" ? (
+                                          <p>Aguardando confirmação</p>
+                                        ) : (
+                                          <>
+                                            <Image
+                                              width={10}
+                                              height={10}
+                                              src={
+                                                escalaDoDia.ultimoStatusLog
+                                                  ?.imagemUrl ||
+                                                "/assets/images/user_padrao.png"
+                                              }
+                                              alt="img_usuario"
+                                              className={
+                                                styles.imgUserModalAlteracao
+                                              }
+                                            />
+                                            <span
+                                              style={{
+                                                marginLeft: "5px",
+                                              }}
+                                            >
+                                              <strong>
+                                                {
+                                                  escalaDoDia.ultimoStatusLog
+                                                    ?.pg
+                                                }{" "}
+                                                {
+                                                  escalaDoDia.ultimoStatusLog
+                                                    ?.nomeGuerra
+                                                }
+                                              </strong>{" "}
+                                              {
+                                                escalaDoDia.ultimoStatusLog
+                                                  ?.nomeOme
+                                              }{" "}
+                                              às{" "}
+                                              {formatarDataHoraBR(
+                                                escalaDoDia.ultimoStatusLog
+                                                  ?.dataAlteracao ?? ""
+                                              )}
+                                            </span>
+                                          </>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            } else {
+                              return <p>Não há escala para você neste dia.</p>;
+                            }
+                          })()}
+                        </div>
+                      </div>
+                    </div>
                   </>
                 )}
               </div>
@@ -492,13 +844,13 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
         {/* FIM MODAL PERFIL DO USUARIO */}
 
         {showMesesModalNovo && (
-          <div className={styles.modalOverlay}>
+          <div className={styles.modalOverlayMeses}>
             <div
-              className={styles.userModal}
+              className={styles.mesesModal}
               ref={mesesModalRef}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className={styles.modalLeft}>
+              <div className={styles.modalLeftMeses}>
                 <ul className={styles.modalMenu}>
                   {Object.keys(mesesPorAno)
                     .sort((a, b) => Number(b) - Number(a))
@@ -520,7 +872,7 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
 
                 <div className={styles.modalFooterLeft}>
                   <div
-                    className={styles.profileFooterItem}
+                    className={styles.mesesFooterItem}
                     onClick={() => setShowUserModal(false)}
                   >
                     <FaCalendar className={styles.menuIcon} />
