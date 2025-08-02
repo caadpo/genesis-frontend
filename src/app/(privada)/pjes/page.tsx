@@ -44,10 +44,10 @@ import PrestacaoContasModal from "@/components/ModalPrestacaoContas";
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 interface Resumo {
-  somaTotalCtOfEvento: number;
-  somaGeralCotaOfEscala: number;
-  somaTotalCtPrcEvento: number;
-  somaGeralCotaPrcEscala: number;
+  somattCtOfEvento: number;
+  somattCotaOfEscala: number;
+  somattCtPrcEvento: number;
+  somattCotaPrcEscala: number;
   valorTtPlanejado: number;
   valorTtExecutado: number;
   saldoFinal: number;
@@ -139,25 +139,15 @@ export default function PjesPage() {
     [key: string]: any; // permite outras chaves sem erro
   };
 
-  const {
-    eventos,
-    atualizarOperacao,
-    tetos,
-    dists,
-    resumoPorDiretoria,
-    ome,
-    diretoria,
-    loading,
-    erro,
-  } = useCarregarDadosPjes(ano, mesNum, pjesevento) as {
+  const { eventos, tetos, dists, loading } = useCarregarDadosPjes(
+    ano,
+    mesNum,
+    pjesevento
+  ) as {
     eventos: EventoComOperacoes[];
     tetos: any[];
     dists: any[];
-    resumoPorDiretoria: any[];
-    ome: any[];
-    diretoria: any[];
     loading: boolean;
-    erro: string | null;
   };
 
   const atualizarDados = () => setPjesevento((prev) => prev + 1);
@@ -172,6 +162,7 @@ export default function PjesPage() {
     setPjeseventos(eventos);
   }, [tetos, dists, eventos]);
 
+  //INICIO  DA TABELA RESUMO
   useEffect(() => {
     const carregarResumos = async () => {
       if (!ano || !mesNum) return;
@@ -200,17 +191,138 @@ export default function PjesPage() {
         }
       };
 
-      setResumoDim(await fetchResumo(anoNum, mesFinal, 2, 14));
-      setResumoDiresp(await fetchResumo(anoNum, mesFinal, 15, 28));
-      setResumoDinteri(await fetchResumo(anoNum, mesFinal, 29, 43));
-      setResumoDinterii(await fetchResumo(anoNum, mesFinal, 44, 55));
-      setResumoDpo(await fetchResumo(anoNum, mesFinal, 56, 74));
+      setResumoDim(await fetchResumo(anoNum, mesFinal, 2, 15));
+      setResumoDiresp(await fetchResumo(anoNum, mesFinal, 16, 30));
+      setResumoDinteri(await fetchResumo(anoNum, mesFinal, 31, 46));
+      setResumoDinterii(await fetchResumo(anoNum, mesFinal, 47, 58));
+      setResumoDpo(await fetchResumo(anoNum, mesFinal, 1, 107));
     };
 
     carregarResumos();
   }, [ano, mesNum]);
 
-  //parte 3
+  //VARAIVEL PARA PODER ALTERNAR ENTRE VERBA PMPE E CONVENIOS
+  const [abaAtiva, setAbaAtiva] = useState<"diretorias" | "convenios">(
+    "diretorias"
+  );
+  const eventosVerba247 = pjeseventos.filter((e) => e.codVerba === 247);
+  const eventosVerba255 = pjeseventos.filter((e) => e.codVerba === 255);
+  const eventosVerba263 = pjeseventos.filter((e) => e.codVerba === 263);
+  const eventosVerba250 = pjeseventos.filter((e) => e.codVerba === 250);
+  const eventosVerba252 = pjeseventos.filter((e) => e.codVerba === 252);
+  const eventosVerba253 = pjeseventos.filter((e) => e.codVerba === 253);
+  const eventosVerba260 = pjeseventos.filter((e) => e.codVerba === 260);
+  const eventosVerba257 = pjeseventos.filter((e) => e.codVerba === 257);
+  const eventosVerba251 = pjeseventos.filter((e) => e.codVerba === 251);
+  const eventosVerba266 = pjeseventos.filter((e) => e.codVerba === 266);
+  const gerarResumoFiltrado = (eventosFiltrados: Evento[]): Resumo => {
+    return eventosFiltrados.reduce<Resumo>(
+      (acc, evento) => {
+        acc.somattCtOfEvento += evento.ttCtOfEvento || 0;
+        acc.somattCotaOfEscala += evento.somaCotaOfEscala || 0;
+        acc.somattCtPrcEvento += evento.ttCtPrcEvento || 0;
+        acc.somattCotaPrcEscala += evento.somaCotaPrcEscala || 0;
+        acc.valorTtPlanejado += evento.valorTtPlanejado || 0;
+        acc.valorTtExecutado += evento.valorTtExecutado || 0;
+        acc.saldoFinal += evento.saldoFinal || 0;
+        return acc;
+      },
+      {
+        somattCtOfEvento: 0,
+        somattCotaOfEscala: 0,
+        somattCtPrcEvento: 0,
+        somattCotaPrcEscala: 0,
+        valorTtPlanejado: 0,
+        valorTtExecutado: 0,
+        saldoFinal: 0,
+      }
+    );
+  };
+
+  const eventosDim247 = eventosVerba247
+    .filter((e) => e.omeId >= 2 && e.omeId <= 15)
+    .sort((a, b) => a.omeId - b.omeId);
+  const resumoDim247 = gerarResumoFiltrado(eventosDim247);
+
+  // Eventos da verba 247 na DIRESP
+  const eventosDiresp247 = eventosVerba247
+    .filter((e) => e.omeId >= 16 && e.omeId <= 30)
+    .sort((a, b) => a.omeId - b.omeId);
+  const resumoDiresp247 = gerarResumoFiltrado(eventosDiresp247);
+
+  // Eventos da verba 247 na DINTER I
+  const eventosDinteri247 = eventosVerba247
+    .filter((e) => e.omeId >= 31 && e.omeId <= 46)
+    .sort((a, b) => a.omeId - b.omeId);
+  const resumoDinteri247 = gerarResumoFiltrado(eventosDinteri247);
+
+  // Eventos da verba 247 na DINTER II
+  const eventosDinterii247 = eventosVerba247
+    .filter((e) => e.omeId >= 47 && e.omeId <= 58)
+    .sort((a, b) => a.omeId - b.omeId);
+  const resumoDinterii247 = gerarResumoFiltrado(eventosDinterii247);
+
+  // Eventos da verba 247 na DPO
+  const eventosDpo247 = eventosVerba247
+    .filter((e) => e.omeId >= 59 && e.omeId <= 107)
+    .sort((a, b) => a.omeId - b.omeId);
+  const resumoDpo247 = gerarResumoFiltrado(eventosDpo247);
+
+  // Eventos da verba 255 na TI
+  const eventosDpo255 = eventosVerba255
+    .filter((e) => e.omeId >= 1 && e.omeId <= 74)
+    .sort((a, b) => a.omeId - b.omeId);
+  const resumoDpo255 = gerarResumoFiltrado(eventosDpo255);
+
+  // Eventos da verba 263 na PE
+  const eventosPe263 = eventosVerba263
+    .filter((e) => e.omeId >= 1 && e.omeId <= 107)
+    .sort((a, b) => a.omeId - b.omeId);
+  const resumoPe263 = gerarResumoFiltrado(eventosPe263);
+
+  // Eventos da verba 250 na Federal
+  const eventosFederal250 = eventosVerba250
+    .filter((e) => e.omeId >= 1 && e.omeId <= 107)
+    .sort((a, b) => a.omeId - b.omeId);
+  const resumoFederal250 = gerarResumoFiltrado(eventosFederal250);
+
+  // Eventos da verba 252 na TJPE
+  const eventosTjpe252 = eventosVerba252
+    .filter((e) => e.omeId >= 1 && e.omeId <= 107)
+    .sort((a, b) => a.omeId - b.omeId);
+  const resumoTjpe252 = gerarResumoFiltrado(eventosTjpe252);
+
+  // Eventos da verba 253 na MPPE
+  const eventosMppe253 = eventosVerba253
+    .filter((e) => e.omeId >= 1 && e.omeId <= 107)
+    .sort((a, b) => a.omeId - b.omeId);
+  const resumoMppe253 = gerarResumoFiltrado(eventosMppe253);
+
+  // Eventos da verba 260 na CAMIL
+  const eventosCamil260 = eventosVerba260
+    .filter((e) => e.omeId >= 1 && e.omeId <= 107)
+    .sort((a, b) => a.omeId - b.omeId);
+  const resumoCamil260 = gerarResumoFiltrado(eventosCamil260);
+
+  // Eventos da verba 257 na CPRH
+  const eventosCprh257 = eventosVerba257
+    .filter((e) => e.omeId >= 1 && e.omeId <= 107)
+    .sort((a, b) => a.omeId - b.omeId);
+  const resumoCprh257 = gerarResumoFiltrado(eventosCprh257);
+
+  // Eventos da verba 251 na Alepe
+  const eventosAlepe251 = eventosVerba251
+    .filter((e) => e.omeId >= 1 && e.omeId <= 107)
+    .sort((a, b) => a.omeId - b.omeId);
+  const resumoAlepe251 = gerarResumoFiltrado(eventosAlepe251);
+
+  // Eventos da verba 266 na TCE
+  const eventosTce266 = eventosVerba266
+    .filter((e) => e.omeId >= 1 && e.omeId <= 107)
+    .sort((a, b) => a.omeId - b.omeId);
+  const resumoTce266 = gerarResumoFiltrado(eventosTce266);
+
+  //FIM  DA TABELA RESUMO
 
   const handleTetoClick = (id: number) => {
     setSelectedTetoId(id);
@@ -291,6 +403,7 @@ export default function PjesPage() {
     const termo = busca.toLowerCase();
 
     operacaoSelecionada.forEach((op) => {
+      console.log("OP completa antes do filtro:", op);
       const escalas = op.pjesescalas || [];
 
       resultado[op.id] = escalas
@@ -348,8 +461,6 @@ export default function PjesPage() {
     fontSize: "13px",
     borderBottom: "1px solid #444",
   };
-
-  // parte 5
 
   const handleEditarEvento = (evento: any) => {
     setModalDataEvento(evento);
@@ -553,6 +664,32 @@ export default function PjesPage() {
     }
   }
 
+  async function homologarEventos(mes: number, ano: number) {
+    const confirmar = window.confirm("Deseja Homologar todos Eventos?");
+    if (!confirmar) return;
+
+    try {
+      const res = await fetch(
+        `/api/pjesevento/homologar?mes=${mes}&ano=${ano}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (!res.ok) {
+        const data = await res.json();
+        alert("Erro ao homologar eventos: " + (data.error || res.statusText));
+        return;
+      }
+      atualizarDados();
+      alert("Eventos homologados com sucesso!");
+    } catch (error) {
+      alert("Erro interno ao homologar eventos.");
+      console.error(error);
+    }
+  }
+
   useEffect(() => {
     const buscarCotas = async () => {
       if (!ano || !mes) return;
@@ -678,6 +815,13 @@ export default function PjesPage() {
 
   // FIM CONG DO GRAFICO
 
+  const handleAbrirObs = (escala: any) => {
+    setModalDataObs({
+      ...escala,
+      userObs: user,
+    });
+    setMostrarModalObs(true);
+  };
   // Função para remover acentos e caracteres especiais e trocar espaços por _
   function removerCaracteresEspeciais(str: string): string {
     return str
@@ -687,6 +831,12 @@ export default function PjesPage() {
       .replace(/[^a-zA-Z0-9\s]/g, "") // remove outros símbolos especiais
       .replace(/\s+/g, "_"); // substitui espaços por _
   }
+
+  //Codigo para ocultar botoes quando oevento estiver HOMOLOGADO
+  const isRestrito =
+    eventoSelecionadoObj?.statusEvento === "HOMOLOGADA" &&
+    user?.typeUser !== 5 &&
+    user?.typeUser !== 10;
 
   return (
     <div>
@@ -718,7 +868,7 @@ export default function PjesPage() {
                       }`}
                     >
                       <Image
-                        width={selectedTetoId === teto.id ? 60 : 45} // ainda necessário para o Next/Image
+                        width={selectedTetoId === teto.id ? 60 : 45}
                         height={selectedTetoId === teto.id ? 60 : 45}
                         src={teto.imagemUrl || "/assets/images/logo.png"}
                         alt="logo"
@@ -772,7 +922,7 @@ export default function PjesPage() {
             {/*{mostrarDist && user?.typeUser !== 1 && (*/}
             {mostrarDist && user?.typeUser !== 1 && user?.typeUser !== 2 && (
               <div className={styles.divDistPrincipal}>
-                {/* INICIO DIV DA ESQUERDA*/}
+                {/* INICIO DIV DISTRIBUIÇÃO*/}
                 <div style={{ width: "60%" }}>
                   <div
                     style={{
@@ -796,133 +946,149 @@ export default function PjesPage() {
                       </div>
                     )}
                   </div>
-                  <table className={styles.tableDist}>
-                    <thead>
-                      <tr className={styles.theadPrincipal}>
-                        <th colSpan={2} className={styles.thPadrao}>
-                          Diretoria
-                        </th>
-                        <th className={styles.thPadrao}>Distribuição</th>
-                        <th className={styles.thPadrao}>
-                          Oficiais (Distribuídas)
-                        </th>
-                        <th className={styles.thPadrao}>
-                          Oficiais (Executadas)
-                        </th>
-                        <th className={styles.thPadrao}>Oficiais (Saldo)</th>
-                        <th className={styles.thPadrao}>
-                          Praças (Distribuídas)
-                        </th>
-                        <th className={styles.thPadrao}>Praças (Executadas)</th>
-                        <th className={styles.thPadrao}>Praças (Saldo)</th>
-                        {cadastrarDist(user?.typeUser) && (
-                          <th className={styles.thPadrao}>#</th>
-                        )}
-                      </tr>
-                    </thead>
-
-                    <tbody>
-                      {distSelecionado.map((dist) => (
-                        <tr
-                          key={dist.id}
-                          onClick={() => handleDistClick(dist.id)}
-                          className={`${styles["zebra-row"]} ${
-                            selectedDistId === dist.id
-                              ? styles["linha-selecionada"]
-                              : ""
-                          }`}
-                        >
-                          <td className={styles.tdImagem}>
-                            <Image
-                              src={getImagemPorCodVerba(dist.codVerba)}
-                              alt="logo"
-                              width={25}
-                              height={25}
-                              className={styles.imagemTabela}
-                            />
-                          </td>
-
-                          <td className={styles.tdPadrao}>
-                            {dist.nomeDiretoria}
-                          </td>
-                          <td className={styles.tdPadrao}>{dist.nomeDist}</td>
-                          <td className={styles.tdPadrao}>{dist.ttCtOfDist}</td>
-                          <td className={styles.tdPadrao}>
-                            {dist.ttCotaOfEscala}
-                          </td>
-                          <td className={styles.tdComBordaExtra}>
-                            {dist.ttCotaOfSaldo}
-                          </td>
-                          <td className={styles.tdPadrao}>
-                            {dist.ttCtPrcDist}
-                          </td>
-                          <td className={styles.tdPadrao}>
-                            {dist.ttCotaPrcEscala}
-                          </td>
-                          <td className={styles.tdPadrao}>
-                            {dist.ttCotaPrcSaldo}
-                          </td>
-
+                  <div className={styles.tabelaWrapper}>
+                    <table className={styles.tableDist}>
+                      <thead>
+                        <tr className={styles.theadPrincipal}>
+                          <th colSpan={2} className={styles.thPadrao}>
+                            Diretoria
+                          </th>
+                          <th className={styles.thPadrao}>Distribuição</th>
+                          <th className={styles.thPadrao}>Oficiais</th>
+                          <th className={styles.thPadrao}>Praças</th>
                           {cadastrarDist(user?.typeUser) && (
-                            <td className={styles.tdPadrao}>
-                              <div className={styles.acoesContainer}>
-                                <div className={styles.acaoItem}>
-                                  <FaEdit
-                                    className={styles.iconeAcao}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setModalData(dist);
-                                      setMostrarModal(true);
-                                    }}
-                                  />
-                                </div>
-                                <div className={styles.acaoItem}>
-                                  <FaTrash
-                                    className={styles.iconeAcao}
-                                    onClick={async (e) => {
-                                      e.stopPropagation();
-                                      if (
-                                        confirm(
-                                          "Deseja realmente excluir esta distribuição?"
-                                        )
-                                      ) {
-                                        try {
-                                          await fetch(
-                                            `/api/pjesdist/${dist.id}`,
-                                            {
-                                              method: "DELETE",
-                                            }
-                                          );
-                                          setPjesdists((prev) =>
-                                            prev.filter((d) => d.id !== dist.id)
-                                          );
-                                          alert(
-                                            "Distribuição excluída com sucesso!"
-                                          );
-                                        } catch (error) {
-                                          console.error(
-                                            "Erro ao excluir:",
-                                            error
-                                          );
-                                          alert(
-                                            "Erro ao excluir distribuição."
-                                          );
-                                        }
-                                      }
-                                    }}
-                                  />
-                                </div>
-                              </div>
-                            </td>
+                            <th className={styles.thPadrao}>#</th>
                           )}
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                {/* FIM DIV DA ESQUERDA*/}
+                      </thead>
 
-                {/* INICIO DIV DO MEIO */}
+                      <tbody>
+                        {distSelecionado.map((dist) => (
+                          <tr
+                            key={dist.id}
+                            onClick={() => handleDistClick(dist.id)}
+                            className={`${styles["zebra-row"]} ${
+                              selectedDistId === dist.id
+                                ? styles["linha-selecionada"]
+                                : ""
+                            }`}
+                          >
+                            <td className={styles.tdImagem}>
+                              <Image
+                                src={getImagemPorCodVerba(dist.codVerba)}
+                                alt="logo"
+                                width={25}
+                                height={25}
+                                className={styles.imagemTabela}
+                              />
+                            </td>
+
+                            <td className={styles.tdPadrao}>
+                              {dist.nomeDiretoria}
+                            </td>
+                            <td className={styles.tdPadrao}>{dist.nomeDist}</td>
+                            <td className={styles.tdPadrao}>
+                              {dist.ttCtOfDist} | {dist.ttCotaOfEscala} ------
+                              Saldo: {dist.ttCotaOfSaldo}
+                            </td>
+                            <td className={styles.tdPadrao}>
+                              {dist.ttCtPrcDist} | {dist.ttCotaPrcEscala} ------
+                              Saldo: {dist.ttCotaPrcSaldo}
+                            </td>
+
+                            {cadastrarDist(user?.typeUser) && (
+                              <td className={styles.tdPadrao}>
+                                <div className={styles.acoesContainer}>
+                                  <div className={styles.acaoItem}>
+                                    <FaEdit
+                                      className={styles.iconeAcao}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setModalData(dist);
+                                        setMostrarModal(true);
+                                      }}
+                                    />
+                                  </div>
+                                  <div className={styles.acaoItem}>
+                                    <FaTrash
+                                      className={styles.iconeAcao}
+                                      onClick={async (e) => {
+                                        e.stopPropagation();
+                                        if (
+                                          confirm(
+                                            "Deseja realmente excluir esta distribuição?"
+                                          )
+                                        ) {
+                                          try {
+                                            await fetch(
+                                              `/api/pjesdist/${dist.id}`,
+                                              {
+                                                method: "DELETE",
+                                              }
+                                            );
+                                            setPjesdists((prev) =>
+                                              prev.filter(
+                                                (d) => d.id !== dist.id
+                                              )
+                                            );
+                                            alert(
+                                              "Distribuição excluída com sucesso!"
+                                            );
+                                          } catch (error) {
+                                            console.error(
+                                              "Erro ao excluir:",
+                                              error
+                                            );
+                                            alert(
+                                              "Erro ao excluir distribuição."
+                                            );
+                                          }
+                                        }
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                              </td>
+                            )}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                {/* FIM DIV DISTRIBUIÇÃO*/}
+
+                {/* INICIO DIV INSIDES */}
+                <div className={styles.containerInsides}>
+                  <h3>
+                    <strong>BANCO DE COTAS</strong>
+                  </h3>
+
+                  <div className={styles.boxResumo}>
+                    {/* BLOCO 1 */}
+                    <div
+                      className={`${styles.blocoResumo} ${styles.blocoComSeparador}`}
+                    >
+                      <FaStar size={28} color="#008cff" />
+                      <div className={styles.valorResumo}>
+                        {selectedDist?.ttOfDistMenosEvento ?? "--"}
+                      </div>
+                      <div>Oficiais</div>
+                    </div>
+
+                    {/* BLOCO 2 */}
+                    <div className={styles.blocoResumo}>
+                      <FaAngleDoubleUp size={28} color="#6ab90f" />
+                      <div className={styles.valorResumo}>
+                        {selectedDist?.ttPrcDistMenosEvento ?? "--"}
+                      </div>
+                      <div>Praças</div>
+                    </div>
+                  </div>
+                </div>
+                {/* FIM DIV INSIDES */}
+
+                {/* INICIO DIV INSIDES */}
                 <div className={styles.containerInsides}>
                   <h3>
                     <strong>INSIDES</strong>
@@ -950,10 +1116,9 @@ export default function PjesPage() {
                     </div>
                   </div>
                 </div>
+                {/* FIM DIV INSIDES */}
 
-                {/* FIM DIV DO MEIO */}
-
-                {/* INICIO DIV DA DIREITA */}
+                {/* INICIO DIV GRAFICO */}
                 <div className={styles.containerGrafico}>
                   <h3>
                     <strong>GRÁFICO</strong>
@@ -962,7 +1127,7 @@ export default function PjesPage() {
                     <Bar data={chartData} options={chartOptions} />
                   </div>
                 </div>
-                {/* FIM DIV DA DIREITA */}
+                {/* FIM DIV GRAFICO */}
               </div>
             )}
           </div>
@@ -970,61 +1135,296 @@ export default function PjesPage() {
           <div style={{ display: "flex", flex: 1 }}>
             {/* INICIO TABELA DE CONSUMO E EXECUÇÃO DAS DIRETORIAS POR OME */}
             <div className={styles.larguraDiretoria}>
-              <div className={styles.tituloDiretoria}>
-                <h3>DIRETORIAS</h3>
+              <div className={styles.abasContainer}>
+                <button
+                  className={
+                    abaAtiva === "diretorias" ? styles.abaAtiva : styles.aba
+                  }
+                  onClick={() => setAbaAtiva("diretorias")}
+                >
+                  DIRETORIAS
+                </button>
+                <button
+                  className={
+                    abaAtiva === "convenios" ? styles.abaAtiva : styles.aba
+                  }
+                  onClick={() => setAbaAtiva("convenios")}
+                >
+                  CONVÊNIOS PMPE
+                </button>
               </div>
+              {/* Conteúdo da aba "DIRETORIAS" */}
+              {abaAtiva === "diretorias" && (
+                <>
+                  <div className={styles.tituloDiretoria}>
+                    <h3>DIRETORIAS</h3>
+                  </div>
 
-              {resumoDpo && (
-                <TabelaResumoPorDiretoria
-                  titulo="DPO"
-                  resumo={resumoDpo}
-                  omeMin={56}
-                  omeMax={74}
-                  eventos={pjeseventos}
-                />
+                  {/* VERBA 247 - DPO */}
+                  <Image
+                    width={25}
+                    height={25}
+                    src={"/assets/images/dpo_logo.png"}
+                    alt="img_verba"
+                    className={styles.imgResumoDiretorias}
+                  />
+                  {resumoDpo && (
+                    <TabelaResumoPorDiretoria
+                      titulo="DPO"
+                      resumo={resumoDpo247}
+                      omeMin={61}
+                      omeMax={104}
+                      eventos={eventosDpo247}
+                    />
+                  )}
+
+                  {/* VERBA 247 - DIM */}
+                  <Image
+                    width={25}
+                    height={25}
+                    src={"/assets/images/dpo_logo.png"}
+                    alt="img_verba"
+                    className={styles.imgResumoDiretorias}
+                  />
+                  {resumoDim && (
+                    <TabelaResumoPorDiretoria
+                      titulo="DIM"
+                      resumo={resumoDim247}
+                      omeMin={2}
+                      omeMax={15}
+                      eventos={eventosDim247}
+                    />
+                  )}
+
+                  {/* VERBA 247 - DIRESP */}
+                  <Image
+                    width={25}
+                    height={25}
+                    src={"/assets/images/dpo_logo.png"}
+                    alt="img_verba"
+                    className={styles.imgResumoDiretorias}
+                  />
+                  {resumoDiresp && (
+                    <TabelaResumoPorDiretoria
+                      titulo="DIRESP"
+                      resumo={resumoDiresp247}
+                      omeMin={16}
+                      omeMax={32}
+                      eventos={eventosDiresp247}
+                    />
+                  )}
+
+                  {/* VERBA 247 - DINTER I */}
+                  <Image
+                    width={25}
+                    height={25}
+                    src={"/assets/images/dpo_logo.png"}
+                    alt="img_verba"
+                    className={styles.imgResumoDiretorias}
+                  />
+                  {resumoDinteri && (
+                    <TabelaResumoPorDiretoria
+                      titulo="DINTER I"
+                      resumo={resumoDinteri247}
+                      omeMin={33}
+                      omeMax={48}
+                      eventos={eventosDinteri247}
+                    />
+                  )}
+
+                  {/* VERBA 247 - DINTER II */}
+                  <Image
+                    width={25}
+                    height={25}
+                    src={"/assets/images/dpo_logo.png"}
+                    alt="img_verba"
+                    className={styles.imgResumoDiretorias}
+                  />
+                  {resumoDinterii && (
+                    <TabelaResumoPorDiretoria
+                      titulo="DINTER II"
+                      resumo={resumoDinterii247}
+                      omeMin={49}
+                      omeMax={60}
+                      eventos={eventosDinterii247}
+                    />
+                  )}
+                </>
               )}
 
-              {resumoDim && (
-                <TabelaResumoPorDiretoria
-                  titulo="DIM"
-                  resumo={resumoDim}
-                  omeMin={2}
-                  omeMax={14}
-                  eventos={pjeseventos}
-                />
-              )}
+              {/* Conteúdo da aba "CONVÊNIOS" */}
+              {abaAtiva === "convenios" && (
+                <>
+                  <div className={styles.tituloDiretoria}>
+                    <h3>CONVENIOS</h3>
+                  </div>
 
-              {resumoDiresp && (
-                <TabelaResumoPorDiretoria
-                  titulo="DIRESP"
-                  resumo={resumoDiresp}
-                  omeMin={15}
-                  omeMax={28}
-                  eventos={pjeseventos}
-                />
-              )}
+                  {/* VERBA 255 - TI */}
+                  <Image
+                    width={25}
+                    height={25}
+                    src={"/assets/images/mobi_logo.png"}
+                    alt="img_verba"
+                    className={styles.imgResumoDiretorias}
+                  />
+                  {resumoDpo && (
+                    <TabelaResumoPorDiretoria
+                      titulo="MOBI-PE"
+                      resumo={resumoDpo255}
+                      omeMin={2}
+                      omeMax={104}
+                      eventos={eventosDpo255}
+                    />
+                  )}
 
-              {resumoDinteri && (
-                <TabelaResumoPorDiretoria
-                  titulo="DINTER I"
-                  resumo={resumoDinteri}
-                  omeMin={29}
-                  omeMax={43}
-                  eventos={pjeseventos}
-                />
-              )}
+                  {/* VERBA 263 - PE */}
 
-              {resumoDinterii && (
-                <TabelaResumoPorDiretoria
-                  titulo="DINTER II"
-                  resumo={resumoDinterii}
-                  omeMin={44}
-                  omeMax={55}
-                  eventos={pjeseventos}
-                />
+                  <Image
+                    width={25}
+                    height={25}
+                    src={"/assets/images/pe_logo.png"}
+                    alt="img_verba"
+                    className={styles.imgResumoDiretorias}
+                  />
+                  {resumoPe263 && (
+                    <TabelaResumoPorDiretoria
+                      titulo="PATRULHA ESCOLAR"
+                      resumo={resumoPe263}
+                      omeMin={2}
+                      omeMax={109}
+                      eventos={eventosPe263}
+                    />
+                  )}
+
+                  {/* VERBA 250 - FEDERAL */}
+                  <Image
+                    width={25}
+                    height={25}
+                    src={"/assets/images/brasil_logo.png"}
+                    alt="img_verba"
+                    className={styles.imgResumoDiretorias}
+                  />
+                  {resumoFederal250 && (
+                    <TabelaResumoPorDiretoria
+                      titulo="FEDERAL"
+                      resumo={resumoFederal250}
+                      omeMin={2}
+                      omeMax={109}
+                      eventos={eventosFederal250}
+                    />
+                  )}
+
+                  {/* VERBA 252 - TJPE */}
+                  <Image
+                    width={25}
+                    height={25}
+                    src={"/assets/images/tjpe_logo.png"}
+                    alt="img_verba"
+                    className={styles.imgResumoDiretorias}
+                  />
+                  {resumoTjpe252 && (
+                    <TabelaResumoPorDiretoria
+                      titulo="TJPE"
+                      resumo={resumoTjpe252}
+                      omeMin={2}
+                      omeMax={109}
+                      eventos={eventosTjpe252}
+                    />
+                  )}
+
+                  {/* VERBA 253 - MPPE */}
+                  <Image
+                    width={25}
+                    height={25}
+                    src={"/assets/images/mppe_logo.jpg"}
+                    alt="img_verba"
+                    className={styles.imgResumoDiretorias}
+                  />
+                  {resumoMppe253 && (
+                    <TabelaResumoPorDiretoria
+                      titulo="MPPE"
+                      resumo={resumoMppe253}
+                      omeMin={2}
+                      omeMax={109}
+                      eventos={eventosMppe253}
+                    />
+                  )}
+
+                  {/* VERBA 260 - CAMIL */}
+                  <Image
+                    width={25}
+                    height={25}
+                    src={"/assets/images/camil_logo.jpg"}
+                    alt="img_verba"
+                    className={styles.imgResumoDiretorias}
+                  />
+                  {resumoCamil260 && (
+                    <TabelaResumoPorDiretoria
+                      titulo="CAMIL"
+                      resumo={resumoCamil260}
+                      omeMin={2}
+                      omeMax={109}
+                      eventos={eventosCamil260}
+                    />
+                  )}
+
+                  {/* VERBA 257 - CPRH */}
+                  <Image
+                    width={25}
+                    height={25}
+                    src={"/assets/images/cprh_logo.jpg"}
+                    alt="img_verba"
+                    className={styles.imgResumoDiretorias}
+                  />
+                  {resumoCprh257 && (
+                    <TabelaResumoPorDiretoria
+                      titulo="CPRH"
+                      resumo={resumoCprh257}
+                      omeMin={2}
+                      omeMax={109}
+                      eventos={eventosCprh257}
+                    />
+                  )}
+
+                  {/* VERBA 251 - ALEPE */}
+                  <Image
+                    width={25}
+                    height={25}
+                    src={"/assets/images/alepe_logo.png"}
+                    alt="img_verba"
+                    className={styles.imgResumoDiretorias}
+                  />
+                  {resumoAlepe251 && (
+                    <TabelaResumoPorDiretoria
+                      titulo="ALEPE"
+                      resumo={resumoAlepe251}
+                      omeMin={2}
+                      omeMax={109}
+                      eventos={eventosAlepe251}
+                    />
+                  )}
+
+                  {/* VERBA 266 - TCE */}
+                  <Image
+                    width={25}
+                    height={25}
+                    src={"/assets/images/tce_logo.png"}
+                    alt="img_verba"
+                    className={styles.imgResumoDiretorias}
+                  />
+                  {resumoTce266 && (
+                    <TabelaResumoPorDiretoria
+                      titulo="TCE"
+                      resumo={resumoTce266}
+                      omeMin={2}
+                      omeMax={109}
+                      eventos={eventosTce266}
+                    />
+                  )}
+                </>
               )}
             </div>
-            {/* FIM TABELA DE CONSUMO E EXECUÇÃO DAS DIRETORIAS PO OME */}
+            {/* FIM TABELA DE CONSUMO E EXECUÇÃO DAS DIRETORIAS POR OME */}
 
             {mostrarEvento && (
               <div className={styles.eventoPrincipal}>
@@ -1033,6 +1433,7 @@ export default function PjesPage() {
                 </div>
 
                 <div className={styles.eventoNomePrincipal}>
+                  {/* inicio input de buscar eventos*/}
                   <input
                     type="text"
                     placeholder="Buscar..."
@@ -1040,27 +1441,47 @@ export default function PjesPage() {
                     onChange={(e) => setBuscaEventos(e.target.value)}
                     className={styles.eventoInputBuscar}
                   />
+                  {/* fim input de buscar eventos*/}
 
-                  <div
-                    className={styles.eventoCadastrar}
-                    onClick={() => {
-                      if (!selectedDistId) {
-                        alert("Selecione uma distribuição primeiro.");
-                        return;
-                      }
+                  {!isRestrito && (
+                    <>
+                      {/* inicio botao add eventos*/}
+                      <div
+                        className={styles.eventoCadastrar}
+                        onClick={() => {
+                          if (!selectedDistId) {
+                            alert("Selecione uma distribuição primeiro.");
+                            return;
+                          }
 
-                      setModalDataEvento({
-                        pjesDistId: selectedDistId,
-                        mes: mesNum,
-                        ano: Number(ano),
-                        userId: userId,
-                        statusEvento: "AUTORIZADA",
-                      });
-                      setMostrarModalEvento(true);
-                    }}
-                  >
-                    <FaPlus color="#ff8800" />
-                  </div>
+                          setModalDataEvento({
+                            pjesDistId: selectedDistId,
+                            mes: mesNum,
+                            ano: Number(ano),
+                            userId: userId,
+                            statusEvento: "AUTORIZADA",
+                          });
+                          setMostrarModalEvento(true);
+                        }}
+                      >
+                        <FaPlus color="#ff8800" />
+                      </div>
+                      {/* fim botao add eventos*/}
+
+                      {/* inicio botao homologar todos eventos*/}
+                      <div
+                        className={styles.operacaoCadastrar}
+                        onClick={() => homologarEventos(mesNum, Number(ano))}
+                        title="Homologar todos eventos"
+                        style={{ cursor: "pointer" }}
+                      >
+                        <FaLock color="#f40606" />
+                      </div>
+                      {/* fim botao homologar todos eventos*/}
+                    </>
+                  )}
+
+                  {/* inicio botao prestar conta*/}
                   <div
                     className={styles.operacaoCadastrar}
                     onClick={() => setMostrarModalPrestacaoContas(true)}
@@ -1068,6 +1489,7 @@ export default function PjesPage() {
                   >
                     <FaDownload color="#1f9c00" />
                   </div>
+                  {/* fim botao prestar conta*/}
                 </div>
 
                 {eventoSelecionado.length === 0 ? (
@@ -1231,115 +1653,154 @@ export default function PjesPage() {
                     className={styles.operacaoInputBuscar}
                   />
 
-                  <div
-                    className={styles.operacaoCadastrar}
-                    onClick={() => {
-                      if (!selectedEventoId) {
-                        alert("Selecione um Evento primeiro.");
-                        return;
-                      }
+                  {/* INICIO BOTAO DE ADIOCNAR OPERAÇÃO*/}
+                  {!isRestrito && (
+                    <>
+                      <div
+                        className={styles.operacaoCadastrar}
+                        onClick={() => {
+                          if (!selectedEventoId) {
+                            alert("Selecione um Evento primeiro.");
+                            return;
+                          }
 
-                      setModalDataOperacao({
-                        pjesEventoId: selectedEventoId,
-                        omeId: eventoSelecionadoObj?.omeId ?? "",
-                        mes: mesNum,
-                        ano: Number(ano),
-                        userId: userId,
-                        statusOperacao: "AUTORIZADA", // ou outro default
-                      });
-                      setMostrarModalOperacao(true);
-                    }}
-                  >
-                    <div>
-                      <FaPlus color="#4400ff" />
-                    </div>
-                  </div>
+                          setModalDataOperacao({
+                            pjesEventoId: selectedEventoId,
+                            omeId: eventoSelecionadoObj?.omeId ?? "",
+                            mes: mesNum,
+                            ano: Number(ano),
+                            userId: userId,
+                            statusOperacao: "AUTORIZADA", // ou outro default
+                          });
+                          setMostrarModalOperacao(true);
+                        }}
+                      >
+                        <div>
+                          <FaPlus color="#4400ff" />
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {/* FIM BOTAO DE ADIOCNAR OPERAÇÃO*/}
                 </div>
                 <ul>
                   {operacaoSelecionada.map((op) => {
                     const eventoPai = eventos.find(
                       (e) => e.id === selectedEventoId
                     );
-                    console.log("Dados da Operação mapeada:", op);
                     const escalaDaOperacao = op.pjesescalas ?? [];
                     const isAberto = selectedOperacaoId === op.id;
 
                     return (
                       <li key={op.id} className={styles.operacaoImagemLi}>
                         <div className={styles.operacaoImagem}>
-                          <Image
-                            src={getImagemPorCodVerba(op.codVerba)}
-                            alt="logo"
-                            width={30}
-                            height={30}
-                            className={styles.operacaoImagemReal}
-                          />
+                          <div
+                            style={{
+                              display: "flex",
+                              alignContent: "center",
+                              alignItems: "center",
+                              fontSize: "14px",
+                            }}
+                          >
+                            <Image
+                              src={getImagemPorCodVerba(op.codVerba)}
+                              alt="logo"
+                              width={30}
+                              height={30}
+                              className={styles.operacaoImagemReal}
+                            />
+
+                            <span style={{ marginLeft: "15px" }}>
+                              {" "}
+                              <span style={{ color: "#777474" }}>
+                                CODIGO DA OPERAÇÃO:
+                              </span>
+                              <strong> {op.codOp}</strong>{" "}
+                            </span>
+                          </div>
 
                           <div className={styles.operacaoBotaoAddPms}>
-                            <button
-                              disabled={!isAberto}
-                              onClick={() => {
-                                setModalDataEscala({
-                                  pjesOperacaoId: op.id,
-                                  mes: mesNum,
-                                  ano: Number(ano),
-                                  userId: userId,
-                                  statusEscala: "AUTORIZADA",
-                                });
-                                setMostrarModalEscala(true);
-                              }}
-                              className={styles.operacaoBotaoAddPmsReal}
-                              style={{
-                                cursor: isAberto ? "pointer" : "not-allowed",
-                                opacity: isAberto ? 1 : 0.3,
-                              }}
-                            >
-                              ADICIONAR POLICIAIS
-                            </button>
-                            {/* Editar operação */}
-                            <button
-                              disabled={!isAberto}
-                              onClick={() => {
-                                setModalDataOperacao(op); // 👉 Abre o modal com os dados da operação
-                                setMostrarModalOperacao(true);
-                              }}
-                              className={styles.operacaoBotaoEditarPmsReal}
-                              style={{
-                                cursor: isAberto ? "pointer" : "not-allowed",
-                                opacity: isAberto ? 1 : 0.3,
-                                paddingLeft: "10px",
-                                paddingRight: "10px",
-                              }}
-                            >
-                              <FaEdit />
-                            </button>
+                            {!isRestrito && (
+                              <>
+                                {/* botao add policiais */}
+                                <button
+                                  disabled={!isAberto}
+                                  onClick={() => {
+                                    setModalDataEscala({
+                                      pjesOperacaoId: op.id,
+                                      mes: mesNum,
+                                      ano: Number(ano),
+                                      userId: userId,
+                                      statusEscala: "AUTORIZADA",
+                                    });
+                                    setMostrarModalEscala(true);
+                                  }}
+                                  className={styles.operacaoBotaoAddPmsReal}
+                                  style={{
+                                    cursor: isAberto
+                                      ? "pointer"
+                                      : "not-allowed",
+                                    opacity: isAberto ? 1 : 0.3,
+                                  }}
+                                >
+                                  ADICIONAR POLICIAIS
+                                </button>
 
-                            {/* Excluir operação */}
-                            <button
-                              disabled={!isAberto}
-                              onClick={() => handleExcluirOperacao(op.id)}
-                              className={styles.operacaoBotaoExcluirPmsReal}
-                              style={{
-                                cursor: isAberto ? "pointer" : "not-allowed",
-                                opacity: isAberto ? 1 : 0.3,
-                                paddingLeft: "10px",
-                                paddingRight: "10px",
-                              }}
-                            >
-                              <FaTrash />
-                            </button>
+                                {/* botao editar operação */}
+                                <button
+                                  disabled={!isAberto}
+                                  onClick={() => {
+                                    setModalDataOperacao(op);
+                                    setMostrarModalOperacao(true);
+                                  }}
+                                  className={styles.operacaoBotaoEditarPmsReal}
+                                  style={{
+                                    cursor: isAberto
+                                      ? "pointer"
+                                      : "not-allowed",
+                                    opacity: isAberto ? 1 : 0.3,
+                                    paddingLeft: "10px",
+                                    paddingRight: "10px",
+                                  }}
+                                >
+                                  <FaEdit />
+                                </button>
 
+                                {/* botao excluir operação */}
+                                <button
+                                  disabled={!isAberto}
+                                  onClick={() => handleExcluirOperacao(op.id)}
+                                  className={styles.operacaoBotaoExcluirPmsReal}
+                                  style={{
+                                    cursor: isAberto
+                                      ? "pointer"
+                                      : "not-allowed",
+                                    opacity: isAberto ? 1 : 0.3,
+                                    paddingLeft: "10px",
+                                    paddingRight: "10px",
+                                  }}
+                                >
+                                  <FaTrash />
+                                </button>
+                              </>
+                            )}
+
+                            {/* inicio botao gerar pdf */}
                             <button
                               disabled={!isAberto}
                               onClick={() => {
-                                setModalDataEscala({
-                                  pjesOperacaoId: op.id,
-                                  mes: mesNum,
-                                  ano: Number(ano),
-                                  userId: userId,
-                                  statusEscala: "AUTORIZADA",
-                                });
-                                setMostrarModalEscala(true);
+                                // codOp que pode conter "/", separar em segmentos para a rota catch-all
+                                const codOpPath = op.codOp
+                                  .split("/")
+                                  .map(encodeURIComponent)
+                                  .join("/");
+
+                                // abre a rota do Next.js que vai chamar sua API e baixar o PDF
+                                window.open(
+                                  `/api/pjesoperacao/pdf-codop/${codOpPath}?mes=${mesNum}&ano=${ano}`,
+                                  "_blank"
+                                );
                               }}
                               className={styles.operacaoBotaoPdfPmsReal}
                               style={{
@@ -1351,28 +1812,7 @@ export default function PjesPage() {
                             >
                               <FaFilePdf />
                             </button>
-                            <button
-                              disabled={!isAberto}
-                              onClick={() => {
-                                setModalDataEscala({
-                                  pjesOperacaoId: op.id,
-                                  mes: mesNum,
-                                  ano: Number(ano),
-                                  userId: userId,
-                                  statusEscala: "AUTORIZADA",
-                                });
-                                setMostrarModalEscala(true);
-                              }}
-                              className={styles.operacaoBotaoBaixarPmsReal}
-                              style={{
-                                cursor: isAberto ? "pointer" : "not-allowed",
-                                opacity: isAberto ? 1 : 0.3,
-                                paddingLeft: "10px",
-                                paddingRight: "10px",
-                              }}
-                            >
-                              <FaDownload />
-                            </button>
+                            {/* fim botao gerar pdf */}
                           </div>
                         </div>
 
@@ -1459,6 +1899,9 @@ export default function PjesPage() {
                                         Situação
                                       </th>
                                       <th className={styles.operacaoTableTh}>
+                                        Anotações( Ex: Vtr, O.S)
+                                      </th>
+                                      <th className={styles.operacaoTableTh}>
                                         <FaCheckSquare />
                                       </th>
                                       <th className={styles.operacaoTableTh}>
@@ -1469,6 +1912,8 @@ export default function PjesPage() {
 
                                   <tbody>
                                     {escalasPaginadas.map((escala: any) => {
+                                      console.log("Escala completa:", escala);
+
                                       const mat = escala.matSgp?.toString();
 
                                       return (
@@ -1517,6 +1962,15 @@ export default function PjesPage() {
                                             {" "}
                                             {escala.situacaoSgp}
                                           </td>
+                                          <td
+                                            style={{
+                                              textAlign: "center",
+                                            }}
+                                          >
+                                            {" "}
+                                            {escala.anotacaoEscala}
+                                          </td>
+
                                           <td style={{ textAlign: "center" }}>
                                             <div
                                               style={{
@@ -1577,7 +2031,9 @@ export default function PjesPage() {
                                               >
                                                 <FaComment
                                                   color={
-                                                    escala.obs
+                                                    escala.comentarios &&
+                                                    escala.comentarios.length >
+                                                      0
                                                       ? "#007bff"
                                                       : "#888"
                                                   }
@@ -1824,10 +2280,9 @@ export default function PjesPage() {
             onClose={() => {
               setMostrarModalEscala(false);
               setModalDataEscala(null);
-              atualizarDados(); // ainda útil para refetch se quiser
+              atualizarDados();
             }}
             onSuccess={async () => {
-              // ❌ NÃO precisa de setPjesoperacoes aqui
               setMostrarModalEscala(false);
               setModalDataEscala(null);
             }}
@@ -1837,7 +2292,8 @@ export default function PjesPage() {
             userId={userId}
             initialData={modalDataEscala}
             operacoes={
-              eventos.find((ev) => ev.id === selectedEventoId)?.operacoes ?? []
+              eventos.find((ev) => ev.id === selectedEventoId)?.pjesoperacoes ??
+              []
             }
             selectedOperacaoId={selectedOperacaoId}
             omeId={eventoSelecionadoObj?.omeId ?? 0}
@@ -1855,8 +2311,8 @@ export default function PjesPage() {
               try {
                 const id = dados.id || dados.escalaId;
 
-                const res = await fetch(`/api/pjesescala/${id}/obs`, {
-                  method: "PATCH",
+                const res = await fetch(`/api/pjesescala/${id}/comentario`, {
+                  method: "POST",
                   headers: {
                     "Content-Type": "application/json",
                   },

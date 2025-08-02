@@ -70,7 +70,8 @@ export default function EditarUsuarioModal({
 
   const [omes, setOmes] = useState([]);
   const user = useUser();
-  const mostrarSelectOme = user?.typeUser === 5 || user?.typeUser === 10;
+  const mostrarSelectOme =
+    user?.typeUser === 1 || user?.typeUser === 5 || user?.typeUser === 10;
 
   // Preenche o formulário com os dados iniciais quando modal abre ou initialData muda
   useEffect(() => {
@@ -92,7 +93,11 @@ export default function EditarUsuarioModal({
   // Buscar OMEs caso usuário possa escolher
   useEffect(() => {
     const fetchOmes = async () => {
-      if (user?.typeUser === 5 || user?.typeUser === 10) {
+      if (
+        user?.typeUser === 1 ||
+        user?.typeUser === 5 ||
+        user?.typeUser === 10
+      ) {
         try {
           const res = await fetch("/api/ome");
           const data = await res.json();
@@ -260,6 +265,14 @@ export default function EditarUsuarioModal({
                     ))}
                   </select>
                 )}
+
+                {form.omeId &&
+                  initialData?.omeId &&
+                  String(form.omeId) !== String(initialData.omeId) && (
+                    <label style={{ fontSize: "12px", color: "blue" }}>
+                      Atenção: Você está transferindo um policial de Unidade
+                    </label>
+                  )}
               </div>
             </div>
 

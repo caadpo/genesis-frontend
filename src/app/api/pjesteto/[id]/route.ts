@@ -1,0 +1,76 @@
+import { NextRequest, NextResponse } from "next/server";
+
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const token = request.cookies.get("accessToken")?.value;
+  const id = params.id;
+
+  if (!token) {
+    return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
+  }
+
+  try {
+    const body = await request.json();
+
+    const res = await fetch(`http://localhost:8081/pjesteto/${id}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return NextResponse.json(
+        { error: data.message || "Erro ao atualizar" },
+        { status: res.status }
+      );
+    }
+
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error("Erro ao atualizar PJES Teto:", error);
+    return NextResponse.json({ error: "Erro interno" }, { status: 500 });
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const token = request.cookies.get("accessToken")?.value;
+
+  if (!token) {
+    return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
+  }
+
+  const { id } = params;
+
+  try {
+    const res = await fetch(`http://localhost:8081/pjesteto/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      return NextResponse.json(
+        { error: data.message || "Erro ao excluir teto" },
+        { status: res.status }
+      );
+    }
+
+    return NextResponse.json({ message: "Teto removido com sucesso" });
+  } catch (error) {
+    console.error("Erro ao deletar PJES Teto:", error);
+    return NextResponse.json({ error: "Erro interno" }, { status: 500 });
+  }
+}

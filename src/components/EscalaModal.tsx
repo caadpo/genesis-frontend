@@ -61,6 +61,7 @@ export default function EscalaModal({
     phone: "",
     localApresentacaoSgp: "",
     funcao: "",
+    anotacaoEscala: "",
     statusEscala: "AUTORIZADA",
   });
 
@@ -95,13 +96,6 @@ export default function EscalaModal({
   };
   const [funcaoSelecionada, setFuncaoSelecionada] = useState("");
 
-  // 🎯 Efeito: buscar dados do SGP automaticamente quando matSgp tem 6+ dígitos
-  useEffect(() => {
-    if (form.matSgp.length >= 6) {
-      fetchDadosSgp(form.matSgp);
-    }
-  }, [form.matSgp]);
-
   // 🔁 DEMAIS HOOKS E FUNÇÕES (SEM ALTERAÇÃO)
   useEffect(() => {
     const fetchOme = async () => {
@@ -132,6 +126,7 @@ export default function EscalaModal({
         phone: String(initialData.phone || ""),
         localApresentacaoSgp: String(initialData.localApresentacaoSgp || ""),
         funcao: prev.funcao || String(initialData.funcao || ""),
+        anotacaoEscala: String(initialData.anotacaoEscala || ""),
         statusEscala: initialData.statusEscala || "AUTORIZADA",
       }));
 
@@ -146,6 +141,36 @@ export default function EscalaModal({
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
+
+    if (name === "matSgp") {
+      const somenteNumeros = value.replace(/\D/g, "").slice(0, 7);
+
+      setForm((prev) => ({
+        ...prev,
+        matSgp: somenteNumeros,
+      }));
+
+      if (somenteNumeros.length === 7) {
+        fetchDadosSgp(somenteNumeros);
+      } else {
+        // Limpar explicitamente os campos com novo setForm FORA do anterior
+        setForm((prev) => ({
+          ...prev,
+          pgSgp: "",
+          nomeGuerraSgp: "",
+          nomeCompletoSgp: "",
+          omeSgp: "",
+          tipoSgp: "",
+          nunfuncSgp: "",
+          nunvincSgp: "",
+          localApresentacaoSgp: "",
+          situacaoSgp: "",
+        }));
+      }
+
+      return;
+    }
+
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -194,13 +219,13 @@ export default function EscalaModal({
 
       phone: form.phone,
       localApresentacaoSgp: form.localApresentacaoSgp,
+      anotacaoEscala: form.anotacaoEscala,
       statusEscala: form.statusEscala,
 
       userId,
     };
 
     const sucesso = await onSubmit(dados);
-
     if (sucesso) {
       if (onSuccess) {
         onSuccess();
@@ -262,6 +287,7 @@ export default function EscalaModal({
         horaFinal: prev.horaFinal,
         statusEscala: "AUTORIZADA",
         funcao: prev.funcao, // este não é usado diretamente, mas mantemos para consistência
+        anotacaoEscala: "",
       }));
       // MANTER a função selecionada
       setFuncaoSelecionada((prev) => prev);
@@ -309,11 +335,14 @@ export default function EscalaModal({
                   <label>Matrícula</label>
                   <input
                     className={styles.input}
-                    type="number"
+                    type="text"
                     name="matSgp"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     value={form.matSgp}
                     onChange={handleChange}
                     style={{ width: "100%" }}
+                    maxLength={7}
                   />
                 </div>
 
@@ -446,8 +475,17 @@ export default function EscalaModal({
                               {cotas.map((cota, index) => (
                                 <tr key={index}>
                                   <td>
-                                    DIA: {formatarDataISOParaDiaMes(cota.dia)} |{" "}
-                                    {cota.nomeOme}
+                                    {formatarDataISOParaDiaMes(cota.dia)} |{" "}
+                                    {cota.nomeOme}{" "}
+                                    {cota.ttCota === 2 && (
+                                      <span
+                                        style={{
+                                          color: "blue",
+                                        }}
+                                      >
+                                        (24h)
+                                      </span>
+                                    )}
                                   </td>
                                 </tr>
                               ))}
@@ -555,8 +593,12 @@ export default function EscalaModal({
                   name="localApresentacaoSgp"
                   value={form.localApresentacaoSgp}
                   onChange={handleChange}
+                  maxLength={50}
                   style={{ width: "100%" }}
                 />
+                <div style={{ fontSize: "0.8rem", color: "#666" }}>
+                  {form.localApresentacaoSgp.length}/50 caracteres
+                </div>
               </div>
 
               {/* FIM LOCAL DE APRESENTAÇÃO*/}
@@ -621,6 +663,26 @@ export default function EscalaModal({
                 </ul>
               </div>
               {/* FIM FUNÇÃO */}
+
+              {/* ANOTAÇÃO DA ESCALA*/}
+
+              <div style={{ marginTop: "10px", marginBottom: "10px" }}>
+                <label>Anotação da Escala</label>
+                <input
+                  className={styles.input}
+                  type="text"
+                  name="anotacaoEscala"
+                  value={form.anotacaoEscala}
+                  onChange={handleChange}
+                  maxLength={30}
+                  style={{ width: "100%" }}
+                />
+                <div style={{ fontSize: "0.8rem", color: "#666" }}>
+                  {form.anotacaoEscala.length}/30 caracteres
+                </div>
+              </div>
+
+              {/* ANOTAÇÃO DA ESCALA*/}
 
               <div
                 style={{

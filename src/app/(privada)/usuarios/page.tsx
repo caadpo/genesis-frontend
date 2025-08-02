@@ -51,11 +51,15 @@ export default function UsuariosPage() {
     fetchUsers();
   }, []);
 
-  const podeAdicionarUsuario = [1, 5, 10].includes(userLogado?.typeUser);
+  const podeAdicionarUsuario =
+    typeof userLogado?.typeUser === "number" &&
+    [1, 5, 10].includes(userLogado.typeUser);
 
   const podeEditarOuExcluir = (usuario: any): boolean => {
-    if ([5, 10].includes(userLogado?.typeUser)) return true;
-    if (userLogado?.typeUser === 1) return usuario.omeId === userLogado.omeId;
+    if (typeof userLogado?.typeUser === "number") {
+      if ([5, 10].includes(userLogado.typeUser)) return true;
+      if (userLogado.typeUser === 1) return usuario.omeId === userLogado.omeId;
+    }
     return false;
   };
 

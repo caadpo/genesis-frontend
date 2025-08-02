@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const API_URL = "http://localhost:8081/pjesevento/resumo-por-diretoria";
-
 export async function GET(request: NextRequest) {
   const token = request.cookies.get("accessToken")?.value;
 
@@ -10,23 +8,24 @@ export async function GET(request: NextRequest) {
   }
 
   const { searchParams } = new URL(request.url);
+
   const ano = searchParams.get("ano");
   const mes = searchParams.get("mes");
-  const omeMin = searchParams.get("omeMin");
-  const omeMax = searchParams.get("omeMax");
-  const codVerba = searchParams.get("codVerba");
+  const diretoria = searchParams.get("diretoria");
 
-  const queryParams = new URLSearchParams();
-  if (ano) queryParams.append("ano", ano);
-  if (mes) queryParams.append("mes", mes);
-  if (omeMin) queryParams.append("omeMin", omeMin);
-  if (omeMax) queryParams.append("omeMax", omeMax);
-  if (codVerba) queryParams.append("codVerba", codVerba);
+  let backendUrl = "http://localhost:8081/pjesteto";
 
-  const url = `${API_URL}?${queryParams.toString()}`;
+  const queryParams: string[] = [];
+  if (ano) queryParams.push(`ano=${ano}`);
+  if (mes) queryParams.push(`mes=${mes}`);
+  if (diretoria) queryParams.push(`diretoria=${encodeURIComponent(diretoria)}`);
+
+  if (queryParams.length > 0) {
+    backendUrl += `?${queryParams.join("&")}`;
+  }
 
   try {
-    const res = await fetch(url, {
+    const res = await fetch(backendUrl, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -45,10 +44,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(data);
   } catch (error) {
-    console.error("Erro ao buscar resumo por diretoria:", error);
-    return NextResponse.json(
-      { error: "Erro interno no servidor" },
-      { status: 500 }
-    );
+    console.error("Erro ao buscar PJES:", error);
+    return NextResponse.json({ error: "Erro interno" }, { status: 500 });
   }
 }

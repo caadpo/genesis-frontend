@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "chart.js": "^4.5.0",
+    "chartjs-plugin-datalabels": "^2.2.0",
     "jose": "^6.0.11",
     "next": "15.3.3",
     "react": "^19.0.0",

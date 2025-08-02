@@ -24,6 +24,8 @@ import {
   FaAirbnb,
   FaCheckSquare,
   FaSearch,
+  FaInfo,
+  FaCheck,
 } from "react-icons/fa";
 import Image from "next/image";
 import { UserProvider } from "../context/UserContext";
@@ -71,8 +73,15 @@ interface Escala {
   horaFinal: string;
   funcao: string;
   statusEscala: string;
+  anotacaoEscala: string;
   obs: string;
   ttCota: number;
+  codOp: string;
+
+  tetoStatusTeto?: string;
+  tetoCreatedAtStatusTeto?: string | null;
+  tetoStatusPg?: string;
+  tetoCreatedAtStatusPg?: string | null;
 
   ultimoStatusLog?: {
     novoStatus: string;
@@ -276,8 +285,6 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const fetchMinhasEscalas = async () => {
-      console.log("Chamando fetchMinhasEscalas");
-
       setLoading(true);
       try {
         const res = await fetch("/api/pjesescala/minhas-escalas");
@@ -419,9 +426,7 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
               </li>
 
               <li
-                className={
-                  pathname === "/pesquisar-escalas" ? styles.active : ""
-                }
+                className={pathname === "/pesquisarEscala" ? styles.active : ""}
                 onClick={() => router.push("/pesquisarEscala")}
                 style={{ cursor: "pointer" }}
               >
@@ -434,19 +439,22 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
                 )}
               </li>
 
-              <li
-                onClick={() => {
-                  fetchMesesData();
-                  setShowMesesModalNovo(true);
-                }}
-                className={pathname === "/pjes" ? styles.active : ""}
-              >
-                <FaCalendar
-                  style={{ fontSize: "25px" }}
-                  className={styles.icon}
-                />
-                {sidebarOpen && <span className={styles.itemText}>PJES</span>}
-              </li>
+              {[1, 3, 5, 10].includes(user?.typeUser) && (
+                <li
+                  onClick={() => {
+                    fetchMesesData();
+                    setShowMesesModalNovo(true);
+                  }}
+                  className={pathname === "/pjes" ? styles.active : ""}
+                  style={{ cursor: "pointer" }}
+                >
+                  <FaCalendar
+                    style={{ fontSize: "25px" }}
+                    className={styles.icon}
+                  />
+                  {sidebarOpen && <span className={styles.itemText}>PJES</span>}
+                </li>
+              )}
             </ul>
 
             <div className={styles.sidebarFooter}>
@@ -675,152 +683,236 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
                                 escalaDoDia.dia
                               );
                               return (
-                                <div className={styles.escalaLinha}>
-                                  <div className={styles.dataColuna}>
-                                    <span className={styles.dia}>{dia}</span>
-                                    <span className={styles.mes}>
-                                      {nomeMes}
-                                    </span>
-                                    <span
-                                      style={{
-                                        width: "20px",
-                                        color: "#939397",
-                                      }}
-                                    >
-                                      {escalaDoDia.horaInicio.slice(0, 5)} às{" "}
-                                      {escalaDoDia.horaFinal.slice(0, 5)}
-                                    </span>
+                                <div>
+                                  <div
+                                    style={{
+                                      textAlign: "right",
+                                      fontSize: "12px",
+                                    }}
+                                  >
+                                    COP: <strong>{escalaDoDia.codOp}</strong>
                                   </div>
-
-                                  <div>
-                                    <span className={styles.nome}>
-                                      {escalaDoDia.nomeOperacao} |{" "}
-                                      {escalaDoDia.nomeOme}
-                                    </span>
-                                    <div
-                                      className={styles.detalhesItemCalendar}
-                                    >
-                                      <FaMapMarkerAlt />{" "}
-                                      <span style={{ marginLeft: "5px" }}>
-                                        {escalaDoDia.localApresentacaoSgp}
+                                  <div className={styles.escalaLinha}>
+                                    <div className={styles.dataColuna}>
+                                      <span className={styles.dia}>{dia}</span>
+                                      <span className={styles.mes}>
+                                        {nomeMes}
+                                      </span>
+                                      <span className={styles.horarioEscala}>
+                                        {escalaDoDia.horaInicio.slice(0, 5)} às{" "}
+                                        {escalaDoDia.horaFinal.slice(0, 5)}
                                       </span>
                                     </div>
 
-                                    <div
-                                      style={{
-                                        display: "flex",
-                                        marginBottom: "10px",
-                                        color: "#6e6d6d",
-                                      }}
-                                    >
+                                    <div style={{ width: "60%" }}>
+                                      <span className={styles.nome}>
+                                        {escalaDoDia.nomeOperacao} |{" "}
+                                        {escalaDoDia.nomeOme}
+                                      </span>
                                       <div
                                         className={styles.detalhesItemCalendar}
                                       >
-                                        <FaAirbnb />{" "}
-                                        <span style={{ marginLeft: "5px" }}>
-                                          Função: {escalaDoDia.funcao}
+                                        <FaMapMarkerAlt />
+                                        <span
+                                          className={styles.localApresentacao}
+                                        >
+                                          {escalaDoDia.localApresentacaoSgp}
                                         </span>
                                       </div>
+                                      <div className={styles.detalhesContainer}>
+                                        <div
+                                          className={
+                                            styles.detalhesItemCalendar
+                                          }
+                                        >
+                                          <FaAirbnb />
+                                          <span className={styles.detalheTexto}>
+                                            Função: {escalaDoDia.funcao}
+                                          </span>
+                                        </div>
+                                        <div
+                                          className={
+                                            styles.detalhesItemCalendar
+                                          }
+                                        >
+                                          <FaUser />
+                                          <span className={styles.detalheTexto}>
+                                            {escalaDoDia.situacaoSgp}
+                                          </span>
+                                        </div>
+                                      </div>
+
+                                      <div
+                                        className={
+                                          styles.detalhesAnotacaoEscala
+                                        }
+                                      >
+                                        <div
+                                          className={
+                                            styles.detalhesItemCalendar
+                                          }
+                                        >
+                                          <FaInfo />
+                                          <span className={styles.detalheTexto}>
+                                            Anotações:{" "}
+                                          </span>
+                                          <strong>
+                                            {escalaDoDia.anotacaoEscala}
+                                          </strong>
+                                        </div>
+                                      </div>
+                                      <h1>Situação da Escala</h1>
                                       <div
                                         className={styles.detalhesItemCalendar}
-                                      >
-                                        <FaUser />
-                                        <span style={{ marginLeft: "5px" }}>
-                                          {escalaDoDia.situacaoSgp}
-                                        </span>
-                                      </div>
-                                    </div>
-
-                                    <h1>Situação da Escala</h1>
-                                    <div
-                                      className={styles.detalhesItemCalendar}
-                                    >
-                                      {escalaDoDia.statusEscala ===
-                                      "HOMOLOGADA" ? (
-                                        <>
-                                          <FaCheckSquare
-                                            style={{ color: "green" }}
-                                          />
-                                          <span
-                                            style={{
-                                              marginLeft: "5px",
-                                              color: "green",
-                                            }}
-                                          >
-                                            CONFIRMADA
-                                          </span>
-                                        </>
-                                      ) : (
-                                        <>
-                                          <FaTriangleExclamation
-                                            style={{ color: "#b60b0b" }}
-                                          />
-                                          <span
-                                            style={{
-                                              marginLeft: "5px",
-                                              color: "#b60b0b",
-                                            }}
-                                          >
-                                            {escalaDoDia.statusEscala}
-                                          </span>
-                                        </>
-                                      )}
-                                    </div>
-
-                                    <div
-                                      className={styles.detalhesItemCalendar}
-                                    >
-                                      <div
-                                        style={{
-                                          marginBottom: "1rem",
-                                          alignContent: "center",
-                                          alignItems: "center",
-                                          display: "flex",
-                                        }}
                                       >
                                         {escalaDoDia.statusEscala ===
-                                        "AUTORIZADA" ? (
-                                          <p>Aguardando confirmação</p>
-                                        ) : (
+                                        "HOMOLOGADA" ? (
                                           <>
-                                            <Image
-                                              width={10}
-                                              height={10}
-                                              src={
-                                                escalaDoDia.ultimoStatusLog
-                                                  ?.imagemUrl ||
-                                                "/assets/images/user_padrao.png"
-                                              }
-                                              alt="img_usuario"
-                                              className={
-                                                styles.imgUserModalAlteracao
-                                              }
+                                            <FaCheckSquare
+                                              style={{ color: "green" }}
                                             />
                                             <span
-                                              style={{
-                                                marginLeft: "5px",
-                                              }}
+                                              className={
+                                                styles.statusConfirmado
+                                              }
                                             >
-                                              <strong>
-                                                {
-                                                  escalaDoDia.ultimoStatusLog
-                                                    ?.pg
-                                                }{" "}
-                                                {
-                                                  escalaDoDia.ultimoStatusLog
-                                                    ?.nomeGuerra
-                                                }
-                                              </strong>{" "}
-                                              {
-                                                escalaDoDia.ultimoStatusLog
-                                                  ?.nomeOme
-                                              }{" "}
-                                              às{" "}
-                                              {formatarDataHoraBR(
-                                                escalaDoDia.ultimoStatusLog
-                                                  ?.dataAlteracao ?? ""
-                                              )}
+                                              CONFIRMADA
                                             </span>
+                                          </>
+                                        ) : (
+                                          <>
+                                            <FaTriangleExclamation
+                                              style={{ color: "#b60b0b" }}
+                                            />
+                                            <span
+                                              className={styles.statusPendente}
+                                            >
+                                              {escalaDoDia.statusEscala}
+                                            </span>
+                                          </>
+                                        )}
+                                      </div>
+                                      <div
+                                        className={styles.detalhesItemCalendar}
+                                      >
+                                        <div className={styles.usuarioLogInfo}>
+                                          {escalaDoDia.statusEscala ===
+                                          "AUTORIZADA" ? (
+                                            <p>Aguardando confirmação</p>
+                                          ) : (
+                                            <>
+                                              <Image
+                                                width={10}
+                                                height={10}
+                                                src={
+                                                  escalaDoDia.ultimoStatusLog
+                                                    ?.imagemUrl ||
+                                                  "/assets/images/user_padrao.png"
+                                                }
+                                                alt="img_usuario"
+                                                className={
+                                                  styles.imgUserModalAlteracao
+                                                }
+                                              />
+                                              <span
+                                                className={styles.statusUsuario}
+                                              >
+                                                <strong>
+                                                  {
+                                                    escalaDoDia.ultimoStatusLog
+                                                      ?.pg
+                                                  }{" "}
+                                                  {
+                                                    escalaDoDia.ultimoStatusLog
+                                                      ?.nomeGuerra
+                                                  }
+                                                </strong>{" "}
+                                                {
+                                                  escalaDoDia.ultimoStatusLog
+                                                    ?.nomeOme
+                                                }{" "}
+                                                às{" "}
+                                                {formatarDataHoraBR(
+                                                  escalaDoDia.ultimoStatusLog
+                                                    ?.dataAlteracao ?? ""
+                                                )}
+                                              </span>
+                                            </>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <div
+                                      className={
+                                        styles.divPendenteProfilePrincipal
+                                      }
+                                    >
+                                      {/* Status Teto */}
+                                      <div
+                                        className={
+                                          styles.divPendenteProfileSecundaria
+                                        }
+                                      >
+                                        {escalaDoDia.tetoStatusTeto ===
+                                        "ENVIADO" ? (
+                                          <>
+                                            <FaCheck color="green" />
+                                            <div
+                                              className={
+                                                styles.divPendenteProfileTerciaria
+                                              }
+                                            >
+                                              Enviado para pagamento em{" "}
+                                              {formatarDataHoraBR(
+                                                escalaDoDia.tetoCreatedAtStatusTeto
+                                              )}
+                                            </div>
+                                          </>
+                                        ) : (
+                                          <>
+                                            <FaTriangleExclamation color="orange" />
+                                            <div
+                                              className={
+                                                styles.divPendenteProfileTerciaria
+                                              }
+                                            >
+                                              Não Enviado
+                                            </div>
+                                          </>
+                                        )}
+                                      </div>
+
+                                      {/* Status Pg */}
+                                      <div
+                                        className={
+                                          styles.divPagamentoProfileSecundaria
+                                        }
+                                      >
+                                        {escalaDoDia.tetoStatusPg === "PAGO" ? (
+                                          <>
+                                            <FaCheck color="green" />
+                                            <div
+                                              className={
+                                                styles.divPagamentoProfileTerciaria
+                                              }
+                                            >
+                                              Pagamento realizado em{" "}
+                                              {formatarDataHoraBR(
+                                                escalaDoDia.tetoCreatedAtStatusPg
+                                              )}
+                                            </div>
+                                          </>
+                                        ) : (
+                                          <>
+                                            <FaTriangleExclamation color="orange" />
+                                            <div
+                                              className={
+                                                styles.divPagamentoProfileTerciaria
+                                              }
+                                            >
+                                              Pendente
+                                            </div>
                                           </>
                                         )}
                                       </div>

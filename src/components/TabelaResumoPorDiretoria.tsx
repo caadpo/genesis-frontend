@@ -7,14 +7,12 @@ import styles from "@/app/(privada)/privateLayout.module.css";
 interface Evento {
   omeId: number;
   nomeOme: string;
+  codVerba: number;
   ttCtOfEvento?: number;
   somaCotaOfEscala?: number;
   ttCtPrcEvento?: number;
   somaCotaPrcEscala?: number;
-}
-
-interface Dist {
-  eventos: Evento[];
+  valorTtPlanejado?: number;
 }
 
 interface Resumo {
@@ -22,8 +20,6 @@ interface Resumo {
   somattCotaOfEscala: number;
   somattCtPrcEvento: number;
   somattCotaPrcEscala: number;
-
-  //Parte de bauxo do resumo
   valorTtPlanejado: number;
   valorTtExecutado: number;
   saldoFinal: number;
@@ -44,29 +40,40 @@ const TabelaResumoPorDiretoria: React.FC<Props> = ({
   omeMax,
   eventos,
 }) => {
-  // Agrupar eventos por omeId
+  // (Opcional) Mapeamento dos nomes das verbas
+  const nomeVerbas: Record<number, string> = {
+    247: "DPO",
+    255: "TI",
+    // Adicione mais conforme necessário
+  };
+
   const eventosFiltrados = eventos.filter(
     (evento) => evento.omeId >= omeMin && evento.omeId <= omeMax
   );
 
-  const agrupados: Record<number, Evento> = {};
+  const agrupados: Record<string, Evento> = {};
 
   eventosFiltrados.forEach((evento) => {
-    if (!agrupados[evento.omeId]) {
-      agrupados[evento.omeId] = {
+    const chave = `${evento.omeId}-${evento.codVerba}`;
+
+    if (!agrupados[chave]) {
+      agrupados[chave] = {
         omeId: evento.omeId,
         nomeOme: evento.nomeOme,
+        codVerba: evento.codVerba,
         ttCtOfEvento: 0,
         somaCotaOfEscala: 0,
         ttCtPrcEvento: 0,
         somaCotaPrcEscala: 0,
+        valorTtPlanejado: 0,
       };
     }
 
-    agrupados[evento.omeId].ttCtOfEvento! += evento.ttCtOfEvento || 0;
-    agrupados[evento.omeId].somaCotaOfEscala! += evento.somaCotaOfEscala || 0;
-    agrupados[evento.omeId].ttCtPrcEvento! += evento.ttCtPrcEvento || 0;
-    agrupados[evento.omeId].somaCotaPrcEscala! += evento.somaCotaPrcEscala || 0;
+    agrupados[chave].ttCtOfEvento! += evento.ttCtOfEvento || 0;
+    agrupados[chave].somaCotaOfEscala! += evento.somaCotaOfEscala || 0;
+    agrupados[chave].ttCtPrcEvento! += evento.ttCtPrcEvento || 0;
+    agrupados[chave].somaCotaPrcEscala! += evento.somaCotaPrcEscala || 0;
+    agrupados[chave].valorTtPlanejado! += evento.valorTtPlanejado || 0;
   });
 
   const eventosAgrupados = Object.values(agrupados);
@@ -89,9 +96,10 @@ const TabelaResumoPorDiretoria: React.FC<Props> = ({
       <table className={styles["tabela-zebra-ome"]}>
         <thead>
           <tr>
-            <th>Unidades</th>
-            <th>Cotas Oficiais</th>
-            <th>Cotas Praças</th>
+            <th>Unidade</th>
+            <th>Verba</th>
+            <th>Oficiais</th>
+            <th>Praças</th>
             <th>#</th>
           </tr>
         </thead>
@@ -99,6 +107,7 @@ const TabelaResumoPorDiretoria: React.FC<Props> = ({
           {eventosAgrupados.map((evento, idx) => (
             <tr key={idx}>
               <td>{evento.nomeOme || "—"}</td>
+              <td>{nomeVerbas[evento.codVerba] || evento.codVerba}</td>
               <td>
                 {evento.ttCtOfEvento} | {evento.somaCotaOfEscala}
               </td>

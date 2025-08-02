@@ -217,7 +217,7 @@
   flex-direction: row;
   border-radius: 8px;
   width: 515px;
-  height: 545px;
+  height: 560px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
   position: relative;
   z-index: 3001;
@@ -273,12 +273,39 @@
   padding-top: 240px;
 }
 
-.geralSenhaPjes {
+.modalOverlayObs {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3000;
+  background-color: rgba(75, 30, 30, 0);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding-right: 10px;
+  padding-top: 240px;
+}
 
+  .obsModal {
+  background-color: #fff;
+  color: #000;
+  display: flex;
+  flex-direction: row;
+  border-radius: 8px;
+  width: 450px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 3001;
+  animation: slideUp 0.2s ease-out;
+  overflow: hidden;
+}
+
+.geralSenhaPjes {
   font-size:10px;
   text-align:left;
   margin-left:1px;
-
 }
 
 .imgUserModal {
@@ -335,6 +362,376 @@
   object-fit: cover;
 }
 
+/*INICIO TELA DASHBOARD*/
+
+.logoDashboard {
+  display: flex; /* ou flex, ou o que já estiver aí */
+  width: 20%;
+}
+
+.spanDataBaseDashboard {
+  display:flex;
+  align-items:center;
+  gap:9px;
+}
+
+.divConsumoWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.divFiltro {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end;
+  justify-content: flex-end; /* tudo à direita */
+  width: 80%;
+}
+
+/* privateLayout.module.css */
+.selectInput {
+  padding: 4px 8px;
+  font-size: 20px;
+  width: 200px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.labelInput {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/* força o botão ir para a direita quando houver espaço */
+.divBotaoPesquisar {
+  margin-left: 0;
+}
+
+
+.buttonPesquisarDashboard {
+    border: none;
+    border-radius: 5px;
+    background-color: #44a726;
+    color: white;
+    cursor: pointer;
+    padding: 4px 8px;
+    font-size: 20px;
+    width: 100px;
+    height: 36px;
+    margin-bottom: 9px;
+  }
+  
+  .buttonPesquisarDashboard:hover {
+    background-color: #398023;
+  }
+
+
+.divItem {
+  display: flex;
+  margin-top: 20px;
+  padding-top: 5px;
+  padding-left: 10px;
+  width: 450px;
+  height: 110px;
+  border-radius: 5%;
+  background: #ffffff;
+  border-left: 5px solid #0a756c;
+  border-bottom: 5px solid #0a756c;
+}
+
+.divItensConsumo {
+  width: 80%;
+  display: block;
+}
+
+.divIconeConsumo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20%;
+  font-size:80px;
+  color:#b4e8ce;
+
+}
+
+.labelItensConsumo {
+  padding-right:3px;
+  font-size:14px;
+  color:#000000;
+}
+
+.spamItensConsumo {
+  padding-right:10px;
+  font-size: 14px;
+  color: #1fad12;
+}
+
+.divGraficoWrapper {
+  display: flex;
+  gap: 10px;
+  height: 500px;
+  margin-top: 10px;
+}
+
+.divGraficoEsquerda {
+  flex: 1 1 50%;
+  border-radius: 10px;
+  padding: 10px;
+  background: linear-gradient(to top left, #7ebdad, #113243);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.divGrafico {
+   flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* ← IMPORTANTE para permitir scroll */
+  overflow: hidden;
+}
+
+.graficoContainer {
+  max-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+}
+
+
+.infoContainer {
+  flex: 1;
+  border-radius: 10px;
+  background: #ffffff;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+
+.divGraficoDireita {
+  flex: 1 1 25%;
+  border-radius: 10px;
+  padding: 7px;
+  border: 1px solid #bdb9b9;
+  overflow: auto; /* ← isso é essencial */
+}
+
+
+.tabelaDiretorias {
+  margin-top: 30px;
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.tabela th,
+.tabela td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.tabela th {
+  background-color: #f0f0f0;
+}
+
+.tabelaFixada {
+  max-height: 450px;
+  position: relative;
+}
+
+.scrollTabela {
+  height: 400px; /* de 380 - altura aproximada do thead */
+  overflow-y: auto;
+}
+
+.tabela-zebra-ome {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabela-zebra-ome th,
+.tabela-zebra-ome td {
+  padding: 6px;
+  font-size: 12px;
+}
+
+.tituloPagamento {
+  font-size: 18px;
+  border-bottom: 1px solid #e7dada;
+  display: block;
+}
+
+.cardPagamento {
+  padding: 5px;
+  display: flex;
+  border-bottom: 1px solid #e7dada;
+}
+
+.logoContainer {
+  width: 15%;
+}
+
+.logoImagem {
+  border-radius: 50%;
+}
+
+.tituloH3Dashboard {
+  color:#606370;
+  font-size: 14px;
+  align-content: center;
+}
+
+.infoContainerVerba {
+  display: block;
+  width: 75%;
+}
+
+.prestacao {
+  font-size: 12px;
+  color: #eb0808;
+}
+
+.statusPendenteCodVerba {
+  font-size: 12px;
+  color: #eb0808;
+}
+
+.statusPago {
+  font-size: 12px;
+  color: #24c50f;
+}
+
+.iconeContainer {
+  border-radius: 50%;
+  width: 10%;
+  font-size: 30px;
+  align-content: center;
+}
+
+.modalOverlayDashboard {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  min-width: 300px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+}
+
+.tituloPjes {
+  padding-left: 10px;
+  font-size: 20px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  }
+
+.tituloDiaria {
+  padding-left: 10px;
+  font-size: 20px;
+  margin-top: 20px;
+  }
+
+
+  /* Exemplo em seu arquivo CSS/SCSS */
+.statusDesativado {
+  color: gray;
+}
+
+.statusDesativado {
+  color: gray;
+}
+
+.logoImagemOpaca {
+  opacity: 0.4;
+}
+
+
+
+
+
+
+
+
+/* Responsividade: empilha os elementos em telas menores */
+@media (max-width: 768px) {
+  .logoDashboard {
+    display: none;
+  }
+  .tituloPjes {
+    display: none;
+  }
+
+  .tituloDiaria {
+    display: none;
+  }
+   .divGraficoWrapper {
+    display: block;
+    width: 400px;
+    height: 400px;
+  }
+
+  .labelInput {
+  display: none;
+  
+  }
+
+  .divGraficoEsquerda,
+  .divGraficoDireita {
+    flex: 1 1 100%;
+    margin-bottom: 15px;
+  }
+
+  .divFiltro {
+    flex-direction: column;
+    align-items: stretch; /* faz os filhos ocuparem 100% da largura */
+  }
+
+  .anoMes {
+    margin: 0;
+
+  }
+
+  .divFiltro {
+    width: 100%;
+  }
+
+  .selectInput {
+    width: 100%;
+    margin: 1;
+  }
+
+  .divBotaoPesquisar {
+    width: 100%;
+  }
+
+  .buttonPesquisarDashboard {
+    width: 100%;
+  }
+}
+
+
+/* FIM TELA DASHBOARD*/
+
 
 
 /*INICIO PJES*/
@@ -352,7 +749,7 @@
 }
 
 .divTetoSecundaria {
-  fontSize: 15px;
+  font-size: 15px;
   display: flex;
   justify-content: space-between;
 }
@@ -465,6 +862,42 @@
   padding: 4px;
 }
 
+
+.tabelaWrapper {
+  max-height: 210px; /* limite visível */
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Mantém o layout da tabela intacto */
+.tableDist {
+  width: 100%;
+  font-size: 12px;
+  border-collapse: collapse;
+  border-bottom: 2px solid #288b00;
+  text-align: center;
+  table-layout: fixed; /* <-- ESSENCIAL para alinhamento */
+}
+
+/* Cabeçalho fixo */
+.theadPrincipal th {
+  background: #050505;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* Garante quebra de palavra dentro das células */
+.thPadrao,
+.tdPadrao {
+  border: 1px solid #ebe6e6;
+  padding: 4px;
+  word-break: break-word;
+}
+
+
 .tdComBordaExtra {
   border-bottom: 1px solid #ebe6e6;
   border-right: 3px solid #000000;
@@ -563,12 +996,11 @@
 
 .modalOverlayEscala {
   position: fixed;
-  top: 240;
+  top: 240px;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 3000;
-  background-color: rgba(75, 30, 30, 0);
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
@@ -718,7 +1150,6 @@
 .escalaLinha {
   display: flex;
   align-items: flex-start;
-  padding: 5px 4px;
   border-radius: 6px;
 }
 
@@ -726,8 +1157,40 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  min-width: 40px;
+  width: 10%;
 }
+
+.divPendenteProfilePrincipal {
+  justify-items:center;
+  margin-top: 10px;
+  width: 30%;
+}
+
+.divPendenteProfileSecundaria {
+  font-size:10px;
+  display:block;
+  justify-items:center;
+}
+
+.divPendenteProfileTerciaria {
+  font-size:10px;
+  display:block;
+  border-bottom:1px solid #dad3d3;
+}
+
+
+.divPagamentoProfileSecundaria {
+  font-size:10px;
+  display:block;
+  justify-items:center;
+  margin-top:5px;
+}
+
+.divPagamentoProfileTerciaria {
+  font-size:10px;
+  display:block;
+}
+
 
 .dia {
   font-size: 1.5rem;
@@ -973,6 +1436,7 @@
     gap: 8px;
   }
 
+ 
 
   .modalOverlayCadUsuario {
   position: fixed;
@@ -996,7 +1460,7 @@
   flex-direction: row;
   border-radius: 4px;
   width: 400px;
-  height: 400px;
+  height: 450px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
   position: relative;
   z-index: 3001;
@@ -1103,6 +1567,8 @@
     background-color: #005bb5;
   }
 
+
+
 /* DIVS DO SISTEMA */
 
 /* INICIO EVENTOS */
@@ -1203,7 +1669,7 @@
   font-size:11px;
   padding: 5px;
   color: #000000;
-  height: 150px;
+  height: 160px;
   background-color:#f5f3f3;
   border-radius: 5px;
 }
@@ -1516,12 +1982,23 @@
 .tituloDiretoria{
   display:flex;
   justify-content: space-between;
-  padding: 10px;
-  height: 40px;
-  color: white;
-  font-size: 12px;
+  padding: 1px;
+  margin-bottom: 30px;
+  height: 3px;
+  font-size: 1px;
   align-items: center;
   background: #015050;
+}
+
+.tituloConvenios{
+  display:flex;
+  justify-content: space-between;
+  padding: 10px;
+  margin-bottom: 30px;
+  height: 40px;
+  font-size: 20px;
+  border-bottom:1px solid #b3aeae;
+  align-items: center;
 }
 
 .tituloOme{
@@ -1532,6 +2009,39 @@
   padding-left: 10px;
   padding-right: 10px;
 }
+
+.imgResumoDiretorias{
+  width:30px;
+  height:30px;
+  border-radius: 50%;
+  margin-left:10px;
+}
+.abasContainer {
+  display: flex;
+  width: 100%;
+}
+
+.aba,
+.abaAtiva {
+  flex: 1; /* Ocupa 50% da largura */
+  padding: 5px 0;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease-in-out;
+  background-color: #ffffff;
+  color: #aeabab;
+}
+
+.abaAtiva {
+  background-color: #015050;
+  color: #fff;
+  padding: 8px 0; /* Altura maior para destacar */
+  font-size: 1.05rem;
+}
+
+
 
 .h3TituloOme{
   font-size:15px;
@@ -1674,6 +2184,11 @@
 
 .detalhesContainer {
   display: flex;
+  color: #6e6d6d;
+}
+
+.detalhesAnotacaoEscala {
+  display: flex;
   margin-bottom: 10px;
   color: #6e6d6d;
 }
@@ -1693,7 +2208,6 @@
 }
 
 .usuarioLogInfo {
-  margin-bottom: 1rem;
   display: flex;
   align-items: center;
 }
@@ -1707,11 +2221,11 @@
 /* INICIO TELA PESQUISAR LISTAGEM DAS OPERAÇÃO */
 
 .nomeOperacaoTelaPesquisar {
-  margin-top: 20px;
+  margin-top: 2px;
   padding: 10px;
   display: block;
-  font-size: 12px;
-
+  font-size: 16px;
+  color: #ffffff;
   background-color: #005bb5;
 
 }
@@ -1728,6 +2242,14 @@
   margin-left: 10px; /* Garante alinhamento à direita, redundante com justify-content */
 }
 
+.alinharDireita {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
 .commentContainer {
   display: flex;
   align-items: center;
@@ -1741,6 +2263,42 @@
   padding-left: 2px;
   margin-left: 10px; /* Garante alinhamento à direita, redundante com justify-content */
 }
+
+.usuarioCardTelaPesquisar {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  position:relative;
+  background-color: #ffffff;
+  cursor:pointer;
+  border-bottom: 1px solid #bdb9b9;
+  margin-top: 0.2rem;
+}
+
+ .divSituacaoEscala {
+    display:block;
+    align-items:center;
+    gap: 8px;
+  }
+
+  .divAutorizacaoEscala {
+    display:block;
+    align-items:center;
+    gap: 8px;
+  }
+
+  .usuarioSemImagemTelaPesquisar {
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  margin-right: 10px;
+  padding: 3px;
+  color: #757575;
+  margin-right: 10px;
+  border: 1px solid #757575;
+}
+
+
 
 
 
@@ -1861,6 +2419,13 @@
     padding-bottom: 0;
   }
 
+  .modalOverlayObs {
+    justify-content: center;
+    align-items: flex-end;
+    padding-left: 0;
+    padding-bottom: 0;
+  }
+
   .userModal {
     width: 100%;
     height: 80%;
@@ -1912,16 +2477,26 @@
   .inputPesquisarUsuario {width: 100%;}
 
   .usuarioImagem {
-    width: 30px;
-    height: 30px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     object-fit: cover;
   }
 
   .usuarioSemImagem {
   border-radius: 50%;
-  width: 30px;
-  height: 30px;
+  width: 50px;
+  height: 50px;
+  padding: 3px;
+  color: #757575;
+  margin-right: 10px;
+  border: 1px solid #757575;
+}
+
+.usuarioSemImagemTelaPesquisar {
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
   padding: 3px;
   color: #757575;
   margin-right: 10px;
@@ -1935,6 +2510,11 @@
   }
 
   .usuarioNome {
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+
+  .usuarioNomePesquisarOperacao {
     font-weight: bold;
     font-size: 0.7rem;
   }
