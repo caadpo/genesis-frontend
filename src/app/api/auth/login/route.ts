@@ -8,9 +8,7 @@ export async function POST(request: Request) {
     const password = String(body.password || "").trim();
 
     const baseUrl =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "http://191.252.214.36:8081";
-
-    console.log("🔗 Enviando login para:", baseUrl);
+      process.env.NEXT_PUBLIC_API_BASE_URL || "http://191.252.214.36:8081";
 
     const externalApiResponse = await fetch(`${baseUrl}/api/auth`, {
       method: "POST",
@@ -23,28 +21,33 @@ export async function POST(request: Request) {
     const data = await externalApiResponse.json();
 
     if (!externalApiResponse.ok) {
-      // Aqui repassamos a mensagem original da API externa
+      // Repasse a mensagem original da API externa
       return NextResponse.json(
         { error: data.message || "Erro ao autenticar" },
         { status: externalApiResponse.status }
       );
     }
 
-    const response = NextResponse.json({ message: "Autenticado com sucesso" });
+    // Cria a resposta JSON incluindo token e user para o frontend usar
+    const response = NextResponse.json({
+      message: "Autenticado com sucesso",
+      accessToken: data.accessToken,
+      user: data.user,
+    });
 
-    // Setar token em cookie
+    // Setar token em cookie HTTP-only
     response.cookies.set("accessToken", data.accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       path: "/",
     });
 
-    // 💡 ADICIONE ISSO: salvar userData visível no lado do cliente
+    // Salvar dados do usuário em cookie visível no cliente (não httpOnly)
     response.cookies.set(
       "userData",
       encodeURIComponent(btoa(JSON.stringify(data.user))),
       {
-        httpOnly: false, // importante: visível para o frontend
+        httpOnly: false,
         secure: process.env.NODE_ENV === "production",
         path: "/",
       }

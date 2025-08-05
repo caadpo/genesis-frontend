@@ -15,22 +15,23 @@ export default function Login() {
     e.preventDefault();
     setIsSubmitting(true);
     setErrorMessage("");
-  
+
     try {
       const response = await fetch(`/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ loginSei, password }),
       });
-  
+
       const result = await response.json();
-  
+
       if (!response.ok) {
         setErrorMessage(result.error || "Erro no login ou na senha");
         return;
       }
-  
-      localStorage.setItem("accessToken", result.accessToken);
+
+      // O token está no cookie HTTP-only, não precisa salvar no localStorage
+      // Só redireciona para dashboard
       window.location.href = "/dashboard";
     } catch (err) {
       setErrorMessage("Erro de rede ou servidor indisponível.");
@@ -38,7 +39,6 @@ export default function Login() {
       setIsSubmitting(false);
     }
   };
-  
 
   return (
     <div className={styles.container}>
