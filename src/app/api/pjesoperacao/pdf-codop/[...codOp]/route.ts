@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
+
 export async function GET(
   request: NextRequest,
   context: { params: Promise<{ codOp: string[] }> }
@@ -20,7 +23,7 @@ export async function GET(
   try {
     // Aqui monta a URL pro backend exatamente igual que você usa no Postman
     // Importante: encodeURIComponent para todo o parâmetro que contém "/"
-    const backendUrl = `http://localhost:8081/pjesoperacao/pdf/${encodeURIComponent(
+    const backendUrl = `${API_BASE_URL}/pjesoperacao/pdf/${encodeURIComponent(
       codOp
     )}?mes=${mes}&ano=${ano}`;
 

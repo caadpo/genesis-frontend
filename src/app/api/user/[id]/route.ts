@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
-// 👇 ISSO É ESSENCIAL PARA USAR `cookies()` AQUI
+
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
+
 export const dynamic = "force-dynamic";
 
 export async function PATCH(request: Request) {
@@ -19,10 +22,10 @@ export async function PATCH(request: Request) {
     const userId = url.pathname.split("/").pop(); // ID do usuário na URL
     const body = await request.json();
 
-    console.log("🔧 Editando usuário ID:", userId);
-    console.log("📦 Dados recebidos:", body);
+    console.log("Editando usuário ID:", userId);
+    console.log("Dados recebidos:", body);
 
-    const response = await fetch(`http://localhost:8081/user/${userId}`, {
+    const response = await fetch(`${API_BASE_URL}/user/${userId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -34,7 +37,7 @@ export async function PATCH(request: Request) {
     const data = await response.json();
 
     if (!response.ok) {
-      console.error("❌ Erro ao atualizar no backend:", data);
+      console.error("Erro ao atualizar no backend:", data);
       return NextResponse.json(
         { error: "Erro ao editar", details: data },
         { status: response.status }
@@ -43,7 +46,7 @@ export async function PATCH(request: Request) {
 
     return NextResponse.json(data, { status: 200 });
   } catch (error: any) {
-    console.error("🔥 Erro inesperado:", error);
+    console.error("Erro inesperado:", error);
     return NextResponse.json(
       { error: "Erro ao editar usuário", details: error.message },
       { status: 500 }
@@ -67,7 +70,7 @@ export async function DELETE(request: Request) {
     const url = new URL(request.url);
     const userId = url.pathname.split("/").pop(); // pega o ID da URL
 
-    const response = await fetch(`http://localhost:8081/user/${userId}`, {
+    const response = await fetch(`${API_BASE_URL}/user/${userId}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

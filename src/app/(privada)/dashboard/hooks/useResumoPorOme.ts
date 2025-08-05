@@ -1,5 +1,3 @@
-// src/app/(privada)/dashboard/hooks/useResumoPorOme.ts
-
 import { useState } from "react";
 
 export function useResumoPorOme() {

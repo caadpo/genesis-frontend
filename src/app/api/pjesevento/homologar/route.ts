@@ -1,6 +1,9 @@
+// src/app/api/pjesevento/homologar/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
-const API_BASE = "http://localhost:8081/pjesevento/homologartodoseventodomes";
+// Usa a variável de ambiente com fallback para localhost
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
 
 export async function GET(request: NextRequest) {
   const token = request.cookies.get("accessToken")?.value;
@@ -21,13 +24,17 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const res = await fetch(`${API_BASE}?mes=${mes}&ano=${ano}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
+    // Usa a URL completa com os parâmetros
+    const res = await fetch(
+      `${API_BASE_URL}/pjesevento/homologartodoseventodomes?mes=${mes}&ano=${ano}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     const data = await res.json();
 

@@ -1,5 +1,7 @@
-// src/app/api/user/[id]/reset-password/route.ts
 import { NextResponse } from "next/server";
+
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
 
 export const dynamic = "force-dynamic";
 
@@ -21,15 +23,12 @@ export async function PATCH(
       );
     }
 
-    const response = await fetch(
-      `http://localhost:8081/user/reset-password/${id}`,
-      {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await fetch(`${API_BASE_URL}/user/reset-password/${id}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     const data = await response.json();
 

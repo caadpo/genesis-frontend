@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
+
 export async function POST(request: NextRequest, context: any) {
   const token = request.cookies.get("accessToken")?.value;
   if (!token) {
@@ -10,17 +13,14 @@ export async function POST(request: NextRequest, context: any) {
   const body = await request.json();
 
   try {
-    const res = await fetch(
-      `http://localhost:8081/pjesescala/${id}/comentario`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ comentario: body.obs }), // 👈 ajuste do nome do campo
-      }
-    );
+    const res = await fetch(`${API_BASE_URL}/pjesescala/${id}/comentario`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ comentario: body.obs }),
+    });
 
     if (!res.ok) {
       const data = await res.json();
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest, context: any) {
     }
 
     // Pega novamente os dados da escala
-    const escalaRes = await fetch(`http://localhost:8081/pjesescala/${id}`, {
+    const escalaRes = await fetch(`${API_BASE_URL}/pjesescala/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -51,14 +51,11 @@ export async function GET(request: NextRequest, context: any) {
   const { id } = context.params;
 
   try {
-    const res = await fetch(
-      `http://localhost:8081/pjesescala/${id}/comentario`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const res = await fetch(`${API_BASE_URL}/pjesescala/${id}/comentario`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     const data = await res.json();
 

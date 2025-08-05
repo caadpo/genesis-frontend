@@ -1,9 +1,11 @@
-// src/app/api/pjesevento/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
-const API_BASE = "http://localhost:8081/pjesevento";
+// 🧩 Usando a variável de ambiente para definir a base da API
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
+const API_BASE = `${API_BASE_URL}/pjesevento`;
 
-// GET eventos
+// 🔍 GET eventos
 export async function GET(request: NextRequest) {
   const token = request.cookies.get("accessToken")?.value;
 
@@ -19,7 +21,7 @@ export async function GET(request: NextRequest) {
   if (ano) queryParams.append("ano", ano);
   if (mes) queryParams.append("mes", mes);
 
-  const url = `http://localhost:8081/pjesevento${
+  const url = `${API_BASE}${
     queryParams.toString() ? `?${queryParams.toString()}` : ""
   }`;
 
@@ -48,7 +50,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST novo evento
+// 📝 POST novo evento
 export async function POST(request: NextRequest) {
   const token = request.cookies.get("accessToken")?.value;
 

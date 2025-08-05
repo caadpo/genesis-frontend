@@ -1,4 +1,3 @@
-// src/app/(privada)/dashboard/hooks/useCarregarTeto.ts
 import { useState } from "react";
 
 export function useCarregarTeto() {

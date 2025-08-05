@@ -17,7 +17,10 @@ export default function Login() {
     setErrorMessage("");
 
     try {
-      const response = await fetch("http://localhost:3000/api/auth/login", {
+      const apiUrl =
+        process.env.NEXT_PUBLIC_FRONTEND_API || "http://localhost:3000";
+
+      const response = await fetch(`${apiUrl}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ loginSei, password }),

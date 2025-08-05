@@ -1,6 +1,9 @@
 // src/app/api/cotas/soma/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
+
 export async function GET(request: NextRequest) {
   // 🔒 1. Buscar token JWT do cookie
   let token = request.cookies.get("accessToken")?.value;
@@ -29,9 +32,8 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // ✅ 5. Fazer chamada ao backend com o token
     const res = await fetch(
-      `http://localhost:8081/pjesescala/quantidade?matSgp=${matSgp}&ano=${ano}&mes=${mes}`,
+      `${API_BASE_URL}/pjesescala/quantidade?matSgp=${matSgp}&ano=${ano}&mes=${mes}`,
       {
         method: "GET",
         headers: {

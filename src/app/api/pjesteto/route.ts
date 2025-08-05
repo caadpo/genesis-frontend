@@ -1,5 +1,7 @@
-// src/app/api/pjesteto/route.ts
 import { NextRequest, NextResponse } from "next/server";
+
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
 
 export async function GET(request: NextRequest) {
   const token = request.cookies.get("accessToken")?.value;
@@ -17,16 +19,13 @@ export async function GET(request: NextRequest) {
     if (ano) query.append("ano", ano);
     if (mes) query.append("mes", mes);
 
-    const res = await fetch(
-      `http://localhost:8081/pjesteto?${query.toString()}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const res = await fetch(`${API_BASE_URL}/pjesteto?${query.toString()}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
 
     const data = await res.json();
 
@@ -54,7 +53,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const res = await fetch(API_URL, {
+    const res = await fetch(`${API_BASE_URL}/pjesteto`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,

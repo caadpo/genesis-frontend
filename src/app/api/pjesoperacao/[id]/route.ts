@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const API_BASE = "http://localhost:8081/pjesoperacao";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
 
 // PUT: atualizar operação
 export async function PUT(request: NextRequest, context: any) {
@@ -13,7 +14,7 @@ export async function PUT(request: NextRequest, context: any) {
   const body = await request.json();
 
   try {
-    const res = await fetch(`${API_BASE}/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/pjesoperacao/${id}`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -47,7 +48,7 @@ export async function DELETE(request: NextRequest, context: any) {
   const { id } = await context.params;
 
   try {
-    const res = await fetch(`${API_BASE}/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/pjesoperacao/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

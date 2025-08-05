@@ -8,7 +8,7 @@ const funcaoToTypeUser = {
   Auxiliar: 1,
   Comum: 2,
   Diretor: 3,
-  Gestao: 4,
+  Superintendente: 4,
   Tecnico: 5,
   Master: 10,
 };
@@ -234,13 +234,13 @@ export default function EditarUsuarioModal({
                   value={form.funcao}
                   onChange={handleChange}
                 >
-                  {([1, 2, 3, 4].includes(user?.typeUser)
+                  {([1, 2, 3, 4].includes(user?.typeUser ?? -1)
                     ? ["Comum", "Auxiliar"]
                     : [
                         "Comum",
                         "Auxiliar",
                         "Diretor",
-                        "Gestao",
+                        "Superintendente",
                         "Tecnico",
                         "Master",
                       ]

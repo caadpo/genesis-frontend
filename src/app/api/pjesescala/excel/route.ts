@@ -1,6 +1,9 @@
 // src/app/api/pjesescala/excel/route.ts
 import { NextRequest } from "next/server";
 
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
+
 export async function GET(request: NextRequest) {
   const token = request.cookies.get("accessToken")?.value;
 
@@ -13,10 +16,7 @@ export async function GET(request: NextRequest) {
     return new Response("Não autenticado", { status: 401 });
   }
 
-  // src/app/api/pjesescala/excel/route.ts
-  //const backendUrl = `http://localhost:8081/prestarconta/excel?mes=${mes}&ano=${ano}`;
-
-  const backendUrl = `http://localhost:8081/prestarconta/excel?mes=${mes}&ano=${ano}&regularOuAtrasado=${regularOuAtrasado}`;
+  const backendUrl = `${API_BASE_URL}/prestarconta/excel?mes=${mes}&ano=${ano}&regularOuAtrasado=${regularOuAtrasado}`;
 
   const res = await fetch(backendUrl, {
     method: "GET",

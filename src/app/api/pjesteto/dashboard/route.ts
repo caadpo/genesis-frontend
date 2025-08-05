@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
+
 export async function GET(request: NextRequest) {
   const token = request.cookies.get("accessToken")?.value;
 
@@ -13,7 +16,7 @@ export async function GET(request: NextRequest) {
   const mes = searchParams.get("mes");
   const diretoria = searchParams.get("diretoria");
 
-  let backendUrl = "http://localhost:8081/pjesteto";
+  let backendUrl = `${API_BASE_URL}/pjesteto`;
 
   const queryParams: string[] = [];
   if (ano) queryParams.push(`ano=${ano}`);

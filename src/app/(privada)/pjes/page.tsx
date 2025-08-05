@@ -679,7 +679,10 @@ export default function PjesPage() {
 
       if (!res.ok) {
         const data = await res.json();
-        alert("Erro ao homologar eventos: " + (data.error || res.statusText));
+        alert(
+          "Usuario sem permissão. Apenas Usuario Tecnico ou Auxiliar: " +
+            (data.error || res.statusText)
+        );
         return;
       }
       atualizarDados();

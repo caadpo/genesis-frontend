@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const API_BASE = "http://localhost:8081/pjesoperacao";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
 
 // GET operacao
 export async function GET(request: NextRequest) {
@@ -17,7 +18,7 @@ export async function GET(request: NextRequest) {
     const mes = searchParams.get("mes");
 
     // Monta a URL para o backend com query params, se existirem
-    const url = new URL(API_BASE);
+    const url = new URL(`${API_BASE_URL}/pjesoperacao`);
     if (ano) url.searchParams.append("ano", ano);
     if (mes) url.searchParams.append("mes", mes);
 
@@ -56,7 +57,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
 
   try {
-    const res = await fetch(API_BASE, {
+    const res = await fetch(`${API_BASE_URL}/pjesoperacao`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,

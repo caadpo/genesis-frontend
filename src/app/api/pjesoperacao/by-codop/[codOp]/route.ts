@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { codOp: string } }
@@ -12,7 +15,7 @@ export async function GET(
 
   try {
     const res = await fetch(
-      `http://localhost:8081/pjesoperacao/by-codop/${encodeURIComponent(
+      `${API_BASE_URL}/pjesoperacao/by-codop/${encodeURIComponent(
         params.codOp
       )}`,
       {

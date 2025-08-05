@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
+
 export async function DELETE(
   request: NextRequest,
-  context: { params: { id: string } } // deve ser id, não comentarioId
+  context: { params: { id: string } }
 ) {
   const token = request.cookies.get("accessToken")?.value;
   if (!token) {
@@ -12,15 +15,12 @@ export async function DELETE(
   const { id } = context.params;
 
   try {
-    const res = await fetch(
-      `http://localhost:8081/pjesescala/comentario/${id}`, // aqui backend pode continuar singular
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const res = await fetch(`${API_BASE_URL}/pjesescala/comentario/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     const data = await res.text();
 

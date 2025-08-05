@@ -696,7 +696,7 @@ export default function PesquisarEscala() {
                                           selectedEscala?.ultimoStatusLog
                                             ?.nomeOme
                                         }{" "}
-                                        às{" "}
+                                        em{" "}
                                         {formatarDataHoraBR(
                                           selectedEscala?.ultimoStatusLog
                                             ?.dataAlteracao ?? ""
@@ -834,7 +834,7 @@ export default function PesquisarEscala() {
                                       }
                                     </strong>{" "}
                                     {selectedEscala?.ultimoStatusLog?.nomeOme}{" "}
-                                    às{" "}
+                                    em{" "}
                                     {formatarDataHoraBR(
                                       selectedEscala?.ultimoStatusLog
                                         ?.dataAlteracao ?? ""

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// GET: buscar uma escala
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
+
 export async function GET(request: NextRequest, context: any) {
   const token = request.cookies.get("accessToken")?.value;
   if (!token) {
@@ -10,7 +12,7 @@ export async function GET(request: NextRequest, context: any) {
   const { id } = await context.params;
 
   try {
-    const res = await fetch(`http://localhost:8081/pjesescala/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/pjesescala/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -38,7 +40,7 @@ export async function PUT(request: NextRequest, context: any) {
   const body = await request.json();
 
   try {
-    const res = await fetch(`http://localhost:8081/pjesescala/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/pjesescala/${id}`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -68,7 +70,7 @@ export async function DELETE(request: NextRequest, context: any) {
   const { id } = await context.params;
 
   try {
-    const res = await fetch(`http://localhost:8081/pjesescala/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/pjesescala/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

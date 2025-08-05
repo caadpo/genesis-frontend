@@ -384,7 +384,37 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
               className={styles.headerMenuButton}
               onClick={() => setShowUserModal(true)}
             >
-              <FaEllipsisV />
+              <div
+                style={{
+                  display: "flex",
+                  alignContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Image
+                  width={25}
+                  height={25}
+                  src={user.imagemUrl || "/assets/images/user_padrao.png"}
+                  alt="img_usuario"
+                  className={styles.iconUser}
+                />
+
+                <div
+                  style={{
+                    display: "block",
+                    textAlign: "left",
+                    fontWeight: "bold",
+                    color: "#646060",
+                    fontSize: "10px",
+                  }}
+                >
+                  <div>
+                    {user.pg} {user.nomeGuerra} {user.ome?.nomeOme}
+                  </div>
+
+                  <div>{user.funcao}</div>
+                </div>
+              </div>
             </button>
           </div>
         </header>
@@ -831,7 +861,7 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
                                                   escalaDoDia.ultimoStatusLog
                                                     ?.nomeOme
                                                 }{" "}
-                                                às{" "}
+                                                em{" "}
                                                 {formatarDataHoraBR(
                                                   escalaDoDia.ultimoStatusLog
                                                     ?.dataAlteracao ?? ""

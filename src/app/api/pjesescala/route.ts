@@ -1,6 +1,9 @@
 // src/app/api/pjesescala/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
+
 export async function GET(request: NextRequest) {
   const token = request.cookies.get("accessToken")?.value;
 
@@ -20,7 +23,7 @@ export async function GET(request: NextRequest) {
     if (ano) queryParams.append("ano", ano);
     if (mes) queryParams.append("mes", mes);
 
-    const apiUrl = `http://localhost:8081/pjesescala${
+    const apiUrl = `${API_BASE_URL}/pjesescala${
       queryParams.toString() ? `?${queryParams.toString()}` : ""
     }`;
 
@@ -58,7 +61,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const res = await fetch("http://localhost:8081/pjesescala", {
+    const res = await fetch(`${API_BASE_URL}/pjesescala`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,

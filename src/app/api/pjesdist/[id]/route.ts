@@ -1,6 +1,9 @@
 // src/app/api/pjesdist/[id]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
+
 export async function GET(
   request: NextRequest,
   context: { params: { id: string } }
@@ -13,7 +16,7 @@ export async function GET(
   }
 
   try {
-    const res = await fetch(`http://localhost:8081/pjesdist/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/pjesdist/${id}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -50,7 +53,7 @@ export async function PUT(
   }
 
   try {
-    const res = await fetch(`http://localhost:8081/pjesdist/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/pjesdist/${id}`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -87,7 +90,7 @@ export async function DELETE(
   }
 
   try {
-    const res = await fetch(`http://localhost:8081/pjesdist/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/pjesdist/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

@@ -1,5 +1,7 @@
-// src/app/api/pjesteto/route.ts
 import { NextRequest, NextResponse } from "next/server";
+
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
 
 export async function GET(request: NextRequest) {
   const token = request.cookies.get("accessToken")?.value;
@@ -9,7 +11,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const res = await fetch("http://localhost:8081/diretoria", {
+    const res = await fetch(`${API_BASE_URL}/diretoria`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,

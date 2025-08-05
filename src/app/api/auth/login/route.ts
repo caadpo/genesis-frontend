@@ -7,7 +7,10 @@ export async function POST(request: Request) {
     const loginSei = String(body.loginSei || "").trim();
     const password = String(body.password || "").trim();
 
-    const externalApiResponse = await fetch("http://localhost:8081/api/auth", {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
+
+    const externalApiResponse = await fetch(`${baseUrl}/api/auth`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

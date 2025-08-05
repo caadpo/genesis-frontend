@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
+
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -14,7 +17,7 @@ export async function PUT(
   try {
     const body = await request.json();
 
-    const res = await fetch(`http://localhost:8081/pjesteto/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/pjesteto/${id}`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -52,7 +55,7 @@ export async function DELETE(
   const { id } = params;
 
   try {
-    const res = await fetch(`http://localhost:8081/pjesteto/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/pjesteto/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

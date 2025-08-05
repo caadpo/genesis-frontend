@@ -6,7 +6,11 @@ import styles from "../privateLayout.module.css";
 import { useUser } from "@/app/context/UserContext";
 import { useCarregarTeto } from "./hooks/useCarregarTeto";
 import { useResumoPorOme } from "./hooks/useResumoPorOme";
-import { FaListCheck, FaTriangleExclamation } from "react-icons/fa6";
+import {
+  FaChartSimple,
+  FaListCheck,
+  FaTriangleExclamation,
+} from "react-icons/fa6";
 import { MdAttachMoney } from "react-icons/md";
 import { PiChartLineDownBold, PiChartLineUpBold } from "react-icons/pi";
 import { Bar } from "react-chartjs-2";
@@ -21,7 +25,7 @@ import {
 } from "chart.js";
 
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import { FaCheck, FaLock } from "react-icons/fa";
+import { FaChartBar, FaCheck, FaLock } from "react-icons/fa";
 
 ChartJS.register(
   BarElement,
@@ -309,7 +313,7 @@ export default function Dashboard() {
   return (
     <div className={styles.divReturn}>
       {loading ? (
-        <p>Carregando dados...</p>
+        <p>Carregando dados... </p>
       ) : (
         <div className={styles.divTetoPrincipal}>
           <div className={styles.divTetoSecundaria}>
@@ -368,7 +372,7 @@ export default function Dashboard() {
                   value={anoFiltro}
                   onChange={(e) => setAnoFiltro(e.target.value)}
                 >
-                  {[2025, 2024].map((ano) => (
+                  {[2030, 2029, 2028, 2027, 2026, 2025].map((ano) => (
                     <option key={ano} value={ano}>
                       {ano}
                     </option>
@@ -783,142 +787,164 @@ export default function Dashboard() {
                   </span>
 
                   <div className={styles.graficoContainer}>
-                    <div
-                      style={{
-                        height: `${
-                          resumoFiltrado.flatMap((d) => d.omes).length * 40
-                        }px`, // ← altura dinâmica (40px por barra)
-                        minHeight: "100%", // ← evita que ele fique menor que o container
-                      }}
-                    >
-                      <Bar
-                        options={{
-                          responsive: true,
-                          maintainAspectRatio: false,
-                          indexAxis: "y" as const,
-                          plugins: {
-                            legend: {
-                              display: !isSmallScreen, // <-- só exibe se não for tela pequena
-                              position: "right",
-                              labels: {
-                                color: "#ffffff",
+                    {resumoFiltrado && resumoFiltrado.length > 0 ? (
+                      <div
+                        style={{
+                          height: `${
+                            resumoFiltrado.flatMap((d) => d.omes).length * 40
+                          }px`, // ← altura dinâmica (40px por barra)
+                          minHeight: "100%", // ← evita que ele fique menor que o container
+                        }}
+                      >
+                        <Bar
+                          options={{
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            indexAxis: "y" as const,
+                            plugins: {
+                              legend: {
+                                display: !isSmallScreen, // <-- só exibe se não for tela pequena
+                                position: "right",
+                                labels: {
+                                  color: "#ffffff",
+                                  font: {
+                                    weight: "bold",
+                                  },
+                                  boxWidth: 20,
+                                },
+                              },
+                              tooltip: {
+                                callbacks: {
+                                  label: function (context) {
+                                    const previsto =
+                                      context.chart.data.datasets?.[0]?.data?.[
+                                        context.dataIndex
+                                      ];
+                                    const restante =
+                                      context.chart.data.datasets?.[1]?.data?.[
+                                        context.dataIndex
+                                      ];
+                                    const valor = context.raw;
+
+                                    const executadoNum =
+                                      typeof previsto === "number"
+                                        ? previsto
+                                        : 0;
+                                    const restanteNum =
+                                      typeof restante === "number"
+                                        ? restante
+                                        : 0;
+                                    const total = executadoNum + restanteNum;
+
+                                    if (
+                                      typeof valor === "number" &&
+                                      total > 0
+                                    ) {
+                                      const porcentagem = (
+                                        (valor / total) *
+                                        100
+                                      ).toFixed(1);
+                                      return `${context.dataset.label}: ${valor} (${porcentagem}%)`;
+                                    } else {
+                                      return `${context.dataset.label}: ${valor}`;
+                                    }
+                                  },
+                                },
+                              },
+                              datalabels: {
+                                display: (ctx) => ctx.datasetIndex === 0, // só na barra verde
+                                align: "end",
+                                anchor: "end",
+                                formatter: (value, context) => {
+                                  const total =
+                                    value +
+                                    context.chart.data.datasets[1].data[
+                                      context.dataIndex
+                                    ];
+                                  const percent = (
+                                    (value / total) *
+                                    100
+                                  ).toFixed(0);
+                                  return `${percent}%`;
+                                },
+                                color: "#000000",
                                 font: {
                                   weight: "bold",
                                 },
-                                boxWidth: 20,
                               },
                             },
-                            tooltip: {
-                              callbacks: {
-                                label: function (context) {
-                                  const previsto =
-                                    context.chart.data.datasets?.[0]?.data?.[
-                                      context.dataIndex
-                                    ];
-                                  const restante =
-                                    context.chart.data.datasets?.[1]?.data?.[
-                                      context.dataIndex
-                                    ];
-                                  const valor = context.raw;
+                            scales: {
+                              x: {
+                                stacked: true,
+                                ticks: {
+                                  display: false, // <- ISSO remove os números 1, 2, 3...
+                                },
 
-                                  const executadoNum =
-                                    typeof previsto === "number" ? previsto : 0;
-                                  const restanteNum =
-                                    typeof restante === "number" ? restante : 0;
-                                  const total = executadoNum + restanteNum;
-
-                                  if (typeof valor === "number" && total > 0) {
-                                    const porcentagem = (
-                                      (valor / total) *
-                                      100
-                                    ).toFixed(1);
-                                    return `${context.dataset.label}: ${valor} (${porcentagem}%)`;
-                                  } else {
-                                    return `${context.dataset.label}: ${valor}`;
-                                  }
+                                grid: {
+                                  display: false, // (opcional) remove a grade de fundo também
+                                },
+                              },
+                              y: {
+                                stacked: true,
+                                ticks: {
+                                  color: "#ffffff", // ⬅️ Altere aqui a cor dos nomes das OMEs
+                                  font: {
+                                    size: 14,
+                                    weight: "bold",
+                                  },
                                 },
                               },
                             },
-                            datalabels: {
-                              display: (ctx) => ctx.datasetIndex === 0, // só na barra verde
-                              align: "end",
-                              anchor: "end",
-                              formatter: (value, context) => {
-                                const total =
-                                  value +
-                                  context.chart.data.datasets[1].data[
-                                    context.dataIndex
-                                  ];
-                                const percent = ((value / total) * 100).toFixed(
-                                  0
-                                );
-                                return `${percent}%`;
+                          }}
+                          data={{
+                            labels: resumoFiltrado.flatMap((diretoria) =>
+                              diretoria.omes.map((ome: any) => `${ome.ome}`)
+                            ),
+                            datasets: [
+                              {
+                                label: "Executado",
+                                data: resumoFiltrado.flatMap((d) =>
+                                  d.omes.map(
+                                    (ome: any) =>
+                                      (ome.ttCotaOf || 0) + (ome.ttCotaPrc || 0)
+                                  )
+                                ),
+                                backgroundColor: "rgba(62, 179, 62, 0.9)", // verde
+                                stack: "total",
                               },
-                              color: "#000000",
-                              font: {
-                                weight: "bold",
+                              {
+                                label: "Previsto",
+                                data: resumoFiltrado.flatMap((d) =>
+                                  d.omes.map((ome: any) => {
+                                    const previsto =
+                                      (ome.pjesOfEvento || 0) +
+                                      (ome.pjesPrcEvento || 0);
+                                    const executado =
+                                      (ome.ttCotaOf || 0) +
+                                      (ome.ttCotaPrc || 0);
+                                    const restante = previsto - executado;
+                                    return restante > 0 ? restante : 0;
+                                  })
+                                ),
+                                backgroundColor: "rgb(243, 238, 238)", // cinza
+                                stack: "total",
                               },
-                            },
-                          },
-                          scales: {
-                            x: {
-                              stacked: true,
-                              ticks: {
-                                display: false, // <- ISSO remove os números 1, 2, 3...
-                              },
-
-                              grid: {
-                                display: false, // (opcional) remove a grade de fundo também
-                              },
-                            },
-                            y: {
-                              stacked: true,
-                              ticks: {
-                                color: "#ffffff", // ⬅️ Altere aqui a cor dos nomes das OMEs
-                                font: {
-                                  size: 14,
-                                  weight: "bold",
-                                },
-                              },
-                            },
-                          },
+                            ],
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      <div
+                        style={{
+                          display: "grid",
+                          placeItems: "center", // centraliza nos dois eixos
+                          height: "100%",
+                          minHeight: "350px",
                         }}
-                        data={{
-                          labels: resumoFiltrado.flatMap((diretoria) =>
-                            diretoria.omes.map((ome: any) => `${ome.ome}`)
-                          ),
-                          datasets: [
-                            {
-                              label: "Executado",
-                              data: resumoFiltrado.flatMap((d) =>
-                                d.omes.map(
-                                  (ome: any) =>
-                                    (ome.ttCotaOf || 0) + (ome.ttCotaPrc || 0)
-                                )
-                              ),
-                              backgroundColor: "rgba(62, 179, 62, 0.9)", // verde
-                              stack: "total",
-                            },
-                            {
-                              label: "Previsto",
-                              data: resumoFiltrado.flatMap((d) =>
-                                d.omes.map((ome: any) => {
-                                  const previsto =
-                                    (ome.pjesOfEvento || 0) +
-                                    (ome.pjesPrcEvento || 0);
-                                  const executado =
-                                    (ome.ttCotaOf || 0) + (ome.ttCotaPrc || 0);
-                                  const restante = previsto - executado;
-                                  return restante > 0 ? restante : 0;
-                                })
-                              ),
-                              backgroundColor: "rgb(243, 238, 238)", // cinza
-                              stack: "total",
-                            },
-                          ],
-                        }}
-                      />
-                    </div>
+                      >
+                        <FaChartSimple size={200} color="#adcbc38b" />
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

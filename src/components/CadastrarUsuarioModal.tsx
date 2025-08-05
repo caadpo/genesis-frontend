@@ -8,7 +8,7 @@ const funcaoToTypeUser = {
   Auxiliar: 1,
   Comum: 2,
   Diretor: 3,
-  Gestao: 4,
+  Superintendente: 4,
   Tecnico: 5,
   Master: 10,
 };
@@ -78,11 +78,11 @@ export default function CadastrarUsuarioModal({
 
           setForm((prev) => ({
             ...prev,
-            pg: data.pgSgp || "",
-            nomeGuerra: data.nomeGuerraSgp || "",
+            pg: data.pgSgp ?? "",
+            nomeGuerra: data.nomeGuerraSgp ?? "",
             omeId: [5, 10].includes(user?.typeUser ?? -1)
               ? ""
-              : user?.omeId ?? "",
+              : String(user?.omeId ?? ""),
           }));
         } else {
           alert("Essa matrícula não existe. Contate o Usuário Master.");
@@ -238,13 +238,13 @@ export default function CadastrarUsuarioModal({
                   onChange={handleChange}
                 >
                   <option value="">Selecione a função</option>
-                  {([1, 2, 3, 4].includes(user?.typeUser)
+                  {([1, 2, 3, 4].includes(user?.typeUser ?? -1)
                     ? ["Comum", "Auxiliar"]
                     : [
                         "Comum",
                         "Auxiliar",
                         "Diretor",
-                        "Gestao",
+                        "Superintendente",
                         "Tecnico",
                         "Master",
                       ]
