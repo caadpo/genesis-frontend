@@ -17,6 +17,7 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (dados: any) => void;
+  initialData?: any;
 };
 
 export default function CadastrarUsuarioModal({
