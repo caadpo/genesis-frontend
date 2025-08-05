@@ -118,7 +118,9 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
   const [newPassword, setNewPassword] = useState("");
 
   const [escalas, setEscalas] = useState<Escala[]>([]);
-  const [date, setDate] = useState<Date>(new Date());
+  //const [date, setDate] = useState<Date>(new Date());
+  const [date, setDate] = useState<Date | null>(null);
+
 
   //FORMATANDO A DATA PARA O TIPO BRASILEIRO
   const formatDate = (dateStr: string) => {
@@ -670,12 +672,17 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
                 {activeTab === "meuspjes" && (
                   <>
                     <Calendar
-                      onChange={(value: Date | Date[]) => {
-                        const selected = Array.isArray(value)
-                          ? value[0]
-                          : value;
-                        setDate(selected);
-                      }}
+  onChange={(value) => {
+    if (!value) {
+      setDate(null); // para tratar caso seja null
+      return;
+    }
+    const selected = Array.isArray(value) ? value[0] : value;
+    setDate(selected);
+  }}
+  value={date}
+/>
+
                       value={date}
                       className={styles.customCalendar}
                       tileContent={({ date, view }: TileProps) => {
