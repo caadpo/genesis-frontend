@@ -10,8 +10,8 @@ export function calcularResumoPorOmeRange(
 
   distSelecionado.forEach((dist) => {
     dist.eventos
-      .filter((evento) => evento.omeId >= omeMin && evento.omeId <= omeMax)
-      .forEach((evento) => {
+      .filter((evento: any) => evento.omeId >= omeMin && evento.omeId <= omeMax)
+      .forEach((evento: any) => {
         somaTotalCtOfEvento += evento.ttCtOfEvento || 0;
         somaGeralCotaOfEscala += evento.somaCotaOfEscala || 0;
         somaTotalCtPrcEvento += evento.ttCtPrcEvento || 0;
