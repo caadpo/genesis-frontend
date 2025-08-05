@@ -10,6 +10,8 @@ export async function POST(request: Request) {
     const baseUrl =
     process.env.NEXT_PUBLIC_API_BASE_URL || "http://191.252.214.36:8081";
 
+    console.log("🔗 Enviando login para:", baseUrl);
+
     const externalApiResponse = await fetch(`${baseUrl}/api/auth`, {
       method: "POST",
       headers: {
