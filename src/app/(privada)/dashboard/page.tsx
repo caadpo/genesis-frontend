@@ -296,11 +296,12 @@ export default function Dashboard() {
     let totalEscalas = 0;
     let totalAut = 0;
 
-    resumoFiltrado.forEach((diretoria) => {
-      diretoria.omes.forEach((ome) => {
+    resumoFiltrado.forEach((diretoria: any) => {
+      diretoria.omes.forEach((ome: any) => {
         const aut = ome.autorizadas || 0;
         const hom = ome.homologadas || 0;
         const pend = ome.pendentes || 0;
+    
 
         totalAut += aut;
         totalEscalas += aut + hom + pend;
