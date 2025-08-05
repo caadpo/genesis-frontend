@@ -17,7 +17,6 @@ type Props = {
   mes: number;
   ano: number;
   userId: number;
-  typeUser: number;
   initialData?: any;
 };
 

@@ -23,10 +23,12 @@ import {
 } from "react-icons/fa";
 import { Bar } from "react-chartjs-2";
 import {
+  ChartOptions,
   Chart as ChartJS,
-  BarElement,
   CategoryScale,
   LinearScale,
+  BarElement,
+  Title,
   Tooltip,
   Legend,
 } from "chart.js";
@@ -41,7 +43,7 @@ import { useUser } from "@/app/context/UserContext";
 import { useCarregarDadosPjes } from "./hooks/useCarregarDadosPjes";
 import PrestacaoContasModal from "@/components/ModalPrestacaoContas";
 
-ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 interface Resumo {
   somattCtOfEvento: number;
@@ -100,6 +102,14 @@ interface Escala {
   dataInicio: string | Date;
 }
 
+interface ModalDataObsType {
+  obs: string;
+  updatedObsAt: string;
+  userObs?: {
+    ome?: any;
+  };
+}
+
 
 export default function PjesPage() {
   const searchParams = useSearchParams();
@@ -115,7 +125,7 @@ export default function PjesPage() {
   const [mostrarModalEscala, setMostrarModalEscala] = useState(false);
   const [modalDataEscala, setModalDataEscala] = useState<any | null>(null);
   const [mostrarModalObs, setMostrarModalObs] = useState(false);
-  const [modalDataObs, setModalDataObs] = useState<any | null>(null);
+  const [modalDataObs, setModalDataObs] = useState<ModalDataObsType | null>(null);
 
   const [pjestetos, setPjestetos] = useState<any[]>([]);
   const [pjesdists, setPjesdists] = useState<any[]>([]);
@@ -756,7 +766,7 @@ export default function PjesPage() {
 
       // Deriva todas as escalas dentro de eventos:
       const todasEscalas = eventos.flatMap(
-        (ev) => ev.pjesoperacoes?.flatMap((op) => op.pjesescalas || []) || []
+        (ev) => ev.pjesoperacoes?.flatMap((op: PjesOperacao) => op.pjesescalas || []) || []
       );
 
       const matriculasUnicas = Array.from(
@@ -827,7 +837,7 @@ export default function PjesPage() {
     ],
   };
 
-  const chartOptions = {
+  const chartOptions: ChartOptions<"bar"> = {
     responsive: true,
     maintainAspectRatio: false,
     layout: {
@@ -840,7 +850,7 @@ export default function PjesPage() {
     },
     plugins: {
       legend: {
-        position: "right" as const,
+        position: "right",
         labels: {
           boxWidth: 12,
           padding: 10,
@@ -862,8 +872,8 @@ export default function PjesPage() {
         beginAtZero: true,
         grid: {
           drawBorder: false,
-        },
-      },
+        } as any, // 👈 força a aceitação
+      }
     },
   };
 
@@ -1739,7 +1749,7 @@ export default function PjesPage() {
                   {/* FIM BOTAO DE ADIOCNAR OPERAÇÃO*/}
                 </div>
                 <ul>
-                  {operacaoSelecionada.map((op) => {
+                  {operacaoSelecionada.map((op: PjesOperacao) => {
                     const eventoPai = eventos.find(
                       (e) => e.id === selectedEventoId
                     );
@@ -2152,6 +2162,7 @@ export default function PjesPage() {
             )}
           </div>
 
+          {userId !== undefined && (
           <DistribuicaoModal
             isOpen={mostrarModal}
             onClose={() => {
@@ -2203,6 +2214,10 @@ export default function PjesPage() {
             initialData={modalData}
           />
 
+          )}
+        
+
+         {userId !== undefined && (
           <EventoModal
             isOpen={mostrarModalEvento}
             onClose={() => {
@@ -2257,6 +2272,7 @@ export default function PjesPage() {
                 return false;
               }
             }}
+            
             mes={mesNum}
             ano={Number(ano)}
             userId={userId}
@@ -2264,7 +2280,10 @@ export default function PjesPage() {
             dists={pjesdists}
             selectedDistId={selectedDistId}
           />
+          )}
 
+
+          {userId !== undefined && (
           <OperacaoModal
             isOpen={mostrarModalOperacao}
             onClose={() => {
@@ -2328,7 +2347,10 @@ export default function PjesPage() {
             eventos={eventos}
             selectedEventoId={selectedEventoId}
           />
+          )}
 
+
+          {userId !== undefined && (
           <EscalaModal
             isOpen={mostrarModalEscala}
             onClose={() => {
@@ -2353,7 +2375,9 @@ export default function PjesPage() {
             omeId={eventoSelecionadoObj?.omeId ?? 0}
             pjesEventoId={selectedEventoId ?? 0}
           />
+          )}
 
+          {userId !== undefined && (
           <ObsModal
             isOpen={mostrarModalObs}
             onClose={() => {
@@ -2399,6 +2423,7 @@ export default function PjesPage() {
               }
             }}
           />
+          )}
 
           <PrestacaoContasModal
             isOpen={mostrarModalPrestacaoContas}
@@ -2463,6 +2488,7 @@ export default function PjesPage() {
               }
             }}
           />
+          
         </div>
       )}
     </div>
