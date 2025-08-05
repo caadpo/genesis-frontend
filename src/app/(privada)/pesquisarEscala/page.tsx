@@ -71,7 +71,6 @@ type Comentario = {
   };
 };
 
-
 interface ModalDataObs {
   obs: string;
   updatedObsAt: string;
