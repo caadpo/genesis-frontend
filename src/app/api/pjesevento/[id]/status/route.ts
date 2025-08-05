@@ -3,10 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest, context: any) {
   const token = request.cookies.get("accessToken")?.value;
 
   if (!token) {
@@ -14,9 +11,10 @@ export async function PUT(
   }
 
   const body = await request.json();
+  const { id } = context.params;
 
   try {
-    const res = await fetch(`${API_BASE_URL}/pjesevento/${params.id}/status`, {
+    const res = await fetch(`${API_BASE_URL}/pjesevento/${id}/status`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,

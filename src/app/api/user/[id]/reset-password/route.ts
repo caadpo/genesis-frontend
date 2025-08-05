@@ -5,10 +5,7 @@ const API_BASE_URL =
 
 export const dynamic = "force-dynamic";
 
-export async function PATCH(
-  request: Request,
-  context: { params: { id: string } }
-) {
+export async function PATCH(request: Request, context: any) {
   try {
     const { id } = context.params;
 
