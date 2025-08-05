@@ -286,7 +286,7 @@ export default function Dashboard() {
       return (
         total +
         diretoria.omes.reduce(
-          (somaOme, ome) => somaOme + (ome.autorizadas || 0),
+          (somaOme: number, ome: any) => somaOme + (ome.autorizadas || 0),
           0
         )
       );
