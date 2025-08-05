@@ -10,7 +10,7 @@ type Ome = {
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (dados: any) => void;
+  onSubmit: (dados: any) => Promise<boolean>;
   eventos: any[];
   selectedEventoId: number | null;
   mes: number;
@@ -102,7 +102,7 @@ export default function OperacaoModal({
     const sucesso = await onSubmit(dados);
 
     if (sucesso) {
-      onClose(); // ✅ Apenas fecha o modal — atualização fica com o componente-pai
+      onClose();
     }
   };
 
