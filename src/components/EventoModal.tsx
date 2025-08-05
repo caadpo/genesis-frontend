@@ -80,7 +80,9 @@ export default function EventoModal({
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleLetrasMaiusculas = (e) => {
+  const handleLetrasMaiusculas = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setForm({
       ...form,

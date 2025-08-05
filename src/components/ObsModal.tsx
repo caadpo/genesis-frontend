@@ -14,9 +14,22 @@ type Comentario = {
   comentario: string;
   createdAt: string;
   autor: {
+    id: number; // ✅ Adicionado
     nomeGuerra: string;
     pg: string;
     ome?: { nomeOme: string };
+  };
+};
+
+
+type Usuario = {
+  id: number;
+  nomeGuerra: string;
+  pg: string;
+  tipo: string;
+  omeId: number;
+  ome?: {
+    nomeOme: string;
   };
 };
 
@@ -24,8 +37,13 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (dados: any) => Promise<boolean>;
-  initialData?: any;
+  initialData?: {
+    id?: number;
+    userObs?: Usuario;
+    [key: string]: any;
+  };
 };
+
 
 export default function ObsModal({
   isOpen,
@@ -39,8 +57,8 @@ export default function ObsModal({
 
   // 🔁 Carrega comentários ao abrir a modal
   useEffect(() => {
-    if (!initialData?.id) return;
-
+    if (!initialData?.id) return; // Garante que initialData e id existem
+  
     const carregarComentarios = async () => {
       setLoading(true);
       try {
@@ -57,27 +75,31 @@ export default function ObsModal({
         setLoading(false);
       }
     };
-
+  
     carregarComentarios();
   }, [initialData]);
+  
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async () => {
+    if (!initialData?.id) return; // Garante que initialData.id existe
+  
     const dados = {
-      id: initialData?.id,
-      escalaId: initialData?.id,
+      id: initialData.id,
+      escalaId: initialData.id,
       obs: form.observacao,
     };
-
+  
     const sucesso = await onSubmit(dados);
-
+  
     if (sucesso) {
       setForm({ observacao: "" });
-
-      // 🔁 Recarregar comentários após novo post
+  
+      // Recarrega comentários com segurança
       const res = await fetch(`/api/pjesescala/${initialData.id}/comentario`);
       const data = await res.json();
       if (res.ok) {
@@ -85,6 +107,7 @@ export default function ObsModal({
       }
     }
   };
+  
 
   const formatarDataParaDiaMes = (dataStr: string) => {
     const data = getDataLocal(dataStr); // <- isso evita o erro de fuso
@@ -100,7 +123,7 @@ export default function ObsModal({
     return new Date(parseInt(ano), parseInt(mes) - 1, parseInt(dia));
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !initialData) return null;
 
   return (
     <div className={styles.modalOverlayObs} onClick={onClose}>
