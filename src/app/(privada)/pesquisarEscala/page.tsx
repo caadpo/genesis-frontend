@@ -26,6 +26,7 @@ import Image from "next/image";
 import ObsModal from "@/components/ObsModal";
 
 interface Escala {
+  id: number; 
   dia: string;
   nomeOperacao: string;
   nomeOme: string;
@@ -60,6 +61,7 @@ interface Escala {
     comentario: string;
     createdAt: string;
     autor?: {
+      pg?: string;
       nomeGuerra: string;
       nomeOme: string;
       imagemUrl?: string;
