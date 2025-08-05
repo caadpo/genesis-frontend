@@ -3,12 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
 
-  export async function GET(
-    request: NextRequest,
-    { params }: { params: { id: string } }
-  ) {
-    const token = request.cookies.get("accessToken")?.value;
-    const { id } = params;
+export async function GET(request: NextRequest, context: any) {
+  const token = request.cookies.get("accessToken")?.value;
+  const { id } = context.params;
 
   if (!token) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
@@ -39,12 +36,9 @@ const API_BASE_URL =
   }
 }
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest, context: any) {
   const token = request.cookies.get("accessToken")?.value;
-  const { id } = params;
+  const { id } = context.params;
   const body = await request.json();
 
   if (!token) {
@@ -77,12 +71,9 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, context: any) {
   const token = request.cookies.get("accessToken")?.value;
-  const { id } = params;
+  const { id } = context.params;
 
   if (!token) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
