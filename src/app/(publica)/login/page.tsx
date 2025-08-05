@@ -15,27 +15,21 @@ export default function Login() {
     e.preventDefault();
     setIsSubmitting(true);
     setErrorMessage("");
-
+  
     try {
-      const apiUrl =
-        process.env.NEXT_PUBLIC_API_BASE_URL || "";
-        //process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
-        //process.env.NEXT_PUBLIC_FRONTEND_API || "http://localhost:3001";
-
-      //const response = await fetch(`${apiUrl}/api/auth/login`, {
       const response = await fetch(`/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ loginSei, password }),
       });
-
+  
       const result = await response.json();
-
+  
       if (!response.ok) {
         setErrorMessage(result.error || "Erro no login ou na senha");
         return;
       }
-
+  
       localStorage.setItem("accessToken", result.accessToken);
       window.location.href = "/dashboard";
     } catch (err) {
@@ -44,6 +38,7 @@ export default function Login() {
       setIsSubmitting(false);
     }
   };
+  
 
   return (
     <div className={styles.container}>
