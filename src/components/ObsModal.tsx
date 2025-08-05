@@ -41,7 +41,7 @@ type Props = {
     id?: number;
     userObs?: Usuario;
     [key: string]: any;
-  };
+  } | null;
 };
 
 
