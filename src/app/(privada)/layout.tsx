@@ -672,17 +672,14 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
                 {activeTab === "meuspjes" && (
                   <>
                     <Calendar
-  onChange={(value) => {
-    if (!value) {
-      setDate(null); // para tratar caso seja null
-      return;
-    }
-    const selected = Array.isArray(value) ? value[0] : value;
-    setDate(selected);
-  }}
-  value={date}
-/>
-
+                      onChange={(value) => {
+                        if (!value) {
+                          setDate(null); // para tratar caso seja null
+                          return;
+                        }
+                        const selected = Array.isArray(value) ? value[0] : value;
+                        setDate(selected);
+                      }}
                       value={date}
                       className={styles.customCalendar}
                       tileContent={({ date, view }: TileProps) => {
