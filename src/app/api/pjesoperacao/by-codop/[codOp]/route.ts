@@ -3,10 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { codOp: string } }
-) {
+export async function GET(request: NextRequest, context: any) {
   const token = request.cookies.get("accessToken")?.value;
 
   if (!token) {
@@ -14,10 +11,10 @@ export async function GET(
   }
 
   try {
+    const codOp = context.params.codOp;
+
     const res = await fetch(
-      `${API_BASE_URL}/pjesoperacao/by-codop/${encodeURIComponent(
-        params.codOp
-      )}`,
+      `${API_BASE_URL}/pjesoperacao/by-codop/${encodeURIComponent(codOp)}`,
       {
         method: "GET",
         headers: {

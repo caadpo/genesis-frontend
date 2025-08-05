@@ -3,11 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
 
-export async function GET(
-  request: NextRequest,
-  context: { params: Promise<{ codOp: string[] }> }
-) {
-  const params = await context.params; // espera o params
+export async function GET(request: NextRequest, context: any) {
+  const params = context.params; // já vem resolvido
   const codOpArray = params.codOp; // array com os segmentos
   const codOp = codOpArray.join("/"); // monta o valor original, com "/"
 
@@ -21,8 +18,6 @@ export async function GET(
   }
 
   try {
-    // Aqui monta a URL pro backend exatamente igual que você usa no Postman
-    // Importante: encodeURIComponent para todo o parâmetro que contém "/"
     const backendUrl = `${API_BASE_URL}/pjesoperacao/pdf/${encodeURIComponent(
       codOp
     )}?mes=${mes}&ano=${ano}`;
@@ -42,7 +37,6 @@ export async function GET(
       );
     }
 
-    // O backend retorna um PDF, então pega o arrayBuffer e retorna como resposta
     const pdfBuffer = await res.arrayBuffer();
 
     return new NextResponse(pdfBuffer, {
