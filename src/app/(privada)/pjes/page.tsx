@@ -110,6 +110,19 @@ interface ModalDataObsType {
   };
 }
 
+type UsuarioParcial = {
+  pg?: string;
+  nomeGuerra: string;
+  nomeOme: string;
+  imagemUrl?: string;
+};
+
+type InitialDataObs = {
+  id?: number;
+  userObs?: UsuarioParcial;
+  [key: string]: any;
+};
+
 
 export default function PjesPage() {
   const searchParams = useSearchParams();
@@ -125,7 +138,7 @@ export default function PjesPage() {
   const [mostrarModalEscala, setMostrarModalEscala] = useState(false);
   const [modalDataEscala, setModalDataEscala] = useState<any | null>(null);
   const [mostrarModalObs, setMostrarModalObs] = useState(false);
-  const [modalDataObs, setModalDataObs] = useState<ModalDataObsType | null>(null);
+  const [modalDataObs, setModalDataObs] = useState<InitialDataObs | null>(null);
 
   const [pjestetos, setPjestetos] = useState<any[]>([]);
   const [pjesdists, setPjesdists] = useState<any[]>([]);
