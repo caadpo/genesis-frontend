@@ -53,6 +53,29 @@ interface Resumo {
   saldoFinal: number;
 }
 
+interface Evento {
+  ttCtOfEvento?: number;
+  somaCotaOfEscala?: number;
+  ttCtPrcEvento?: number;
+  somaCotaPrcEscala?: number;
+  valorTtPlanejado?: number;
+  valorTtExecutado?: number;
+  saldoFinal?: number;
+  [key: string]: any;
+}
+
+interface Escala {
+  nomeGuerraSgp?: string;
+  nomeCompletoSgp?: string;
+  pgSgp?: string;
+  matSgp?: string | number;
+  phone?: string | number;
+  localApresentacaoSgp?: string;
+  statusEscala?: string;
+  dataInicio: string | Date;
+}
+
+
 export default function PjesPage() {
   const searchParams = useSearchParams();
   const ano = searchParams.get("ano");
@@ -394,17 +417,15 @@ export default function PjesPage() {
 
   const operacaoSelecionada = useMemo(() => {
     const evento = eventos.find((ev) => ev.id === selectedEventoId);
-    console.log("Evento selecionado para operações:", evento);
     return evento?.pjesoperacoes || [];
   }, [eventos, selectedEventoId]);
 
   const escalasFiltradasPorOperacao = useMemo(() => {
-    const resultado: Record<number, any[]> = {};
+    const resultado: Record<number, Escala[]> = {};
     const termo = busca.toLowerCase();
 
     operacaoSelecionada.forEach((op) => {
-      console.log("OP completa antes do filtro:", op);
-      const escalas = op.pjesescalas || [];
+      const escalas: Escala[] = op.pjesescalas || [];
 
       resultado[op.id] = escalas
         .filter((escala) => {
