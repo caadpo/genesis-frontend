@@ -707,6 +707,8 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
                       <div className={styles.eventoTextoMinhaEscala}>
                         <div className={styles.escalaInfo}>
                           {(() => {
+
+                            if (!date) return null;
                             const diaStr = date.toLocaleDateString("sv-SE");
                             const escalaDoDia = escalas.find(
                               (esc) => esc.dia === diaStr
@@ -877,11 +879,7 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
                                       </div>
                                     </div>
 
-                                    <div
-                                      className={
-                                        styles.divPendenteProfilePrincipal
-                                      }
-                                    >
+                                    <div className={ styles.divPendenteProfilePrincipal}>
                                       {/* Status Teto */}
                                       <div
                                         className={
@@ -898,9 +896,8 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
                                               }
                                             >
                                               Enviado para pagamento em{" "}
-                                              {formatarDataHoraBR(
-                                                escalaDoDia.tetoCreatedAtStatusTeto
-                                              )}
+                                              {formatarDataHoraBR(escalaDoDia.tetoCreatedAtStatusTeto ?? "")}
+
                                             </div>
                                           </>
                                         ) : (
@@ -933,8 +930,7 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
                                             >
                                               Pagamento realizado em{" "}
                                               {formatarDataHoraBR(
-                                                escalaDoDia.tetoCreatedAtStatusPg
-                                              )}
+                                                escalaDoDia.tetoCreatedAtStatusPg ?? "")}
                                             </div>
                                           </>
                                         ) : (
