@@ -187,7 +187,7 @@ export default function PjesPage() {
     [key: string]: any; // permite outras chaves sem erro
   };
 
-  const { eventos, tetos, dists, loading } = useCarregarDadosPjes(
+  const { eventos, tetos, dists, loading, atualizarOperacao } = useCarregarDadosPjes(
     ano,
     mesNum,
     pjesevento
@@ -196,7 +196,12 @@ export default function PjesPage() {
     tetos: any[];
     dists: any[];
     loading: boolean;
+    atualizarOperacao: (
+      operacaoIdAtualizada: number,
+      novosCampos: Partial<PjesOperacao>
+    ) => void;
   };
+  
 
   const atualizarDados = () => setPjesevento((prev) => prev + 1);
 
