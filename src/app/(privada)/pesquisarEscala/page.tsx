@@ -57,17 +57,29 @@ interface Escala {
     nomeOme: string;
   };
 
-  comentarios?: {
-    comentario: string;
-    createdAt: string;
-    autor?: {
-      pg?: string;
-      nomeGuerra: string;
-      nomeOme: string;
-      imagemUrl?: string;
-    };
-  }[];
+  comentarios?: Comentario[];
 }
+
+type Comentario = {
+  comentario: string;
+  createdAt: string;
+  autor?: {
+    pg?: string;
+    nomeGuerra: string;
+    nomeOme: string;
+    imagemUrl?: string;
+  };
+};
+
+
+interface ModalDataObs {
+  obs: string;
+  updatedObsAt: string;
+  userObs?: Comentario["autor"];
+}
+
+
+
 
 interface TileProps {
   date: Date;
@@ -163,7 +175,7 @@ export default function PesquisarEscala() {
   const [selectedEscala, setSelectedEscala] = useState<Escala | null>(null);
 
   const [mostrarModalObs, setMostrarModalObs] = useState(false);
-  const [modalDataObs, setModalDataObs] = useState<any | null>(null);
+  const [modalDataObs, setModalDataObs] = useState<ModalDataObs | null>(null);
 
   const buscarOperacaoPorCodOp = async () => {
     if (!codOp) return;
