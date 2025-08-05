@@ -11,7 +11,7 @@ type Ome = {
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (dados: any) => void;
+  onSubmit: (dados: any) => Promise<boolean>;
   dists: any[];
   selectedDistId: number | null;
   mes: number;
