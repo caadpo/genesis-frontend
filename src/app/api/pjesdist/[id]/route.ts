@@ -1,4 +1,3 @@
-// src/app/api/pjesdist/[id]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
 const API_BASE_URL =
@@ -9,7 +8,7 @@ export async function GET(
   context: { params: { id: string } }
 ) {
   const token = request.cookies.get("accessToken")?.value;
-  const { id } = await context.params; // ✅ await necessário
+  const { id } = context.params; // ❌ Sem await aqui!
 
   if (!token) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
@@ -45,7 +44,7 @@ export async function PUT(
   context: { params: { id: string } }
 ) {
   const token = request.cookies.get("accessToken")?.value;
-  const { id } = await context.params; // ✅ await necessário
+  const { id } = context.params; // ❌ Sem await aqui!
   const body = await request.json();
 
   if (!token) {
@@ -83,7 +82,7 @@ export async function DELETE(
   context: { params: { id: string } }
 ) {
   const token = request.cookies.get("accessToken")?.value;
-  const { id } = await context.params; // ✅ await necessário
+  const { id } = context.params; // ❌ Sem await aqui!
 
   if (!token) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
