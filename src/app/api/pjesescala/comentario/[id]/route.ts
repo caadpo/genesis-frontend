@@ -3,10 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
 
-export async function DELETE(
-  request: NextRequest,
-  context: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, context: any) {
   const token = request.cookies.get("accessToken")?.value;
   if (!token) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
