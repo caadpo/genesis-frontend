@@ -1,5 +1,17 @@
+interface Evento {
+  omeId: number;
+  ttCtOfEvento?: number;
+  ttCtPrcEvento?: number;
+  somaCotaOfEscala?: number;
+  somaCotaPrcEscala?: number;
+}
+
+interface Distribuicao {
+  eventos: Evento[];
+}
+
 export function calcularResumoPorOmeRange(
-  distSelecionado: any[],
+  distSelecionado: Distribuicao[],
   omeMin: number,
   omeMax: number
 ) {
@@ -10,8 +22,8 @@ export function calcularResumoPorOmeRange(
 
   distSelecionado.forEach((dist) => {
     dist.eventos
-      .filter((evento: any) => evento.omeId >= omeMin && evento.omeId <= omeMax)
-      .forEach((evento: any) => {
+      .filter((evento) => evento.omeId >= omeMin && evento.omeId <= omeMax)
+      .forEach((evento) => {
         somaTotalCtOfEvento += evento.ttCtOfEvento || 0;
         somaGeralCotaOfEscala += evento.somaCotaOfEscala || 0;
         somaTotalCtPrcEvento += evento.ttCtPrcEvento || 0;
