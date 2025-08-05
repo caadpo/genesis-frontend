@@ -311,9 +311,12 @@ export default function PesquisarEscala() {
       </div>
 
       <Calendar
-        onChange={(value: Date | Date[]) => {
+        onChange={(value, _event) => {
+          if (!value) return;
           const selected = Array.isArray(value) ? value[0] : value;
-          setDate(selected);
+          if (selected instanceof Date) {
+            setDate(selected);
+          }
         }}
         value={date}
         className={styles.customCalendar}
@@ -627,6 +630,7 @@ export default function PesquisarEscala() {
                         className={styles.usuarioDetalhesMobile}
                         data-mobile-only
                       >
+                       {selectedEscala && (
                         <ul style={{ marginLeft: "1px" }}>
                           <li className={styles.liusuarioDetalhes}>
                             <div className={styles.divusuarioDetalhes}>
@@ -635,6 +639,7 @@ export default function PesquisarEscala() {
                             </div>
                             <FaCheck />
                           </li>
+
                           <li className={styles.liusuarioDetalhes}>
                             <div className={styles.divusuarioDetalhes}>
                               <FaInfo />
@@ -646,21 +651,16 @@ export default function PesquisarEscala() {
                           <h1 style={{ marginTop: "20px" }}>
                             <strong>Situação da Escala</strong>
                           </h1>
+
                           <div className={styles.detalhesItemCalendar}>
                             {selectedEscala.statusEscala === "HOMOLOGADA" ? (
                               <>
-                                <FaCheckSquare
-                                  style={{ color: "green", marginLeft: "5px" }}
-                                />
-                                <span className={styles.statusConfirmado}>
-                                  CONFIRMADA
-                                </span>
+                                <FaCheckSquare style={{ color: "green", marginLeft: "5px" }} />
+                                <span className={styles.statusConfirmado}>CONFIRMADA</span>
                               </>
                             ) : (
                               <>
-                                <FaTriangleExclamation
-                                  style={{ color: "#b60b0b" }}
-                                />
+                                <FaTriangleExclamation style={{ color: "#b60b0b" }} />
                                 <span className={styles.statusPendente}>
                                   {selectedEscala.statusEscala}
                                 </span>
@@ -674,41 +674,28 @@ export default function PesquisarEscala() {
                               selectedEscala.statusLogs?.length === 0 ? (
                                 <p>Aguardando confirmação</p>
                               ) : (
-                                (() => {
-                                  return (
-                                    <>
-                                      <Image
-                                        width={10}
-                                        height={10}
-                                        src={
-                                          selectedEscala?.ultimoStatusLog
-                                            ?.imagemUrl ||
-                                          "/assets/images/user_padrao.png"
-                                        }
-                                        alt="img_usuario"
-                                        className={styles.imgUserModalAlteracao}
-                                      />
-                                      <span className={styles.statusUsuario}>
-                                        <strong>
-                                          {selectedEscala?.ultimoStatusLog?.pg}{" "}
-                                          {
-                                            selectedEscala?.ultimoStatusLog
-                                              ?.nomeGuerra
-                                          }
-                                        </strong>{" "}
-                                        {
-                                          selectedEscala?.ultimoStatusLog
-                                            ?.nomeOme
-                                        }{" "}
-                                        em{" "}
-                                        {formatarDataHoraBR(
-                                          selectedEscala?.ultimoStatusLog
-                                            ?.dataAlteracao ?? ""
-                                        )}
-                                      </span>
-                                    </>
-                                  );
-                                })()
+                                <>
+                                  <Image
+                                    width={10}
+                                    height={10}
+                                    src={
+                                      selectedEscala.ultimoStatusLog?.imagemUrl ||
+                                      "/assets/images/user_padrao.png"
+                                    }
+                                    alt="img_usuario"
+                                    className={styles.imgUserModalAlteracao}
+                                  />
+                                  <span className={styles.statusUsuario}>
+                                    <strong>
+                                      {selectedEscala.ultimoStatusLog?.pg}{" "}
+                                      {selectedEscala.ultimoStatusLog?.nomeGuerra}
+                                    </strong>{" "}
+                                    {selectedEscala.ultimoStatusLog?.nomeOme} em{" "}
+                                    {formatarDataHoraBR(
+                                      selectedEscala.ultimoStatusLog?.dataAlteracao ?? ""
+                                    )}
+                                  </span>
+                                </>
                               )}
                             </div>
                           </div>
@@ -717,40 +704,36 @@ export default function PesquisarEscala() {
                             <strong>Observações:</strong>
                           </h1>
                           {selectedEscala.comentarios?.length ? (
-                            selectedEscala.comentarios.map(
-                              (comentario, idx) => (
-                                <div
-                                  key={idx}
-                                  className={styles.usuarioLogInfo}
-                                >
-                                  <Image
-                                    width={20}
-                                    height={20}
-                                    src={
-                                      comentario.autor?.imagemUrl ||
-                                      "/assets/images/user_padrao.png"
-                                    }
-                                    alt="img_usuario"
-                                    className={styles.imgUserModalAlteracao}
-                                  />
-                                  <span className={styles.statusUsuario}>
-                                    <strong>
-                                      {comentario.autor?.pg}{" "}
-                                      {comentario.autor?.nomeGuerra} -{" "}
-                                      {comentario.autor?.nomeOme}
-                                    </strong>
-                                    <br />"{comentario.comentario}" <br />
-                                    {formatarDataHoraBR(comentario.createdAt)}
-                                  </span>
-                                </div>
-                              )
-                            )
+                            selectedEscala.comentarios.map((comentario, idx) => (
+                              <div key={idx} className={styles.usuarioLogInfo}>
+                                <Image
+                                  width={20}
+                                  height={20}
+                                  src={
+                                    comentario.autor?.imagemUrl ||
+                                    "/assets/images/user_padrao.png"
+                                  }
+                                  alt="img_usuario"
+                                  className={styles.imgUserModalAlteracao}
+                                />
+                                <span className={styles.statusUsuario}>
+                                  <strong>
+                                    {comentario.autor?.pg} {comentario.autor?.nomeGuerra} -{" "}
+                                    {comentario.autor?.nomeOme}
+                                  </strong>
+                                  <br />"{comentario.comentario}" <br />
+                                  {formatarDataHoraBR(comentario.createdAt)}
+                                </span>
+                              </div>
+                            ))
                           ) : (
                             <p style={{ marginTop: "10px" }}>
                               Nenhuma observação até o momento.
                             </p>
                           )}
                         </ul>
+                      )}
+
                       </div>
                     )}
                     {/* FIM DETALHES MOBILE */}
@@ -937,7 +920,7 @@ export default function PesquisarEscala() {
                 autor: {
                   pg: user?.pg,
                   nomeGuerra: user?.nomeGuerra,
-                  nomeOme: user?.nomeOme,
+                  nomeOme: user?.ome?.nomeOme,
                   imagemUrl: user?.imagemUrl,
                 },
               };
