@@ -71,13 +71,26 @@ type Comentario = {
   };
 };
 
+interface Usuario {
+  id: number;
+  tipo: string;
+  omeId: number;
+  pg?: string;
+  nomeGuerra: string;
+  nomeOme: string;
+  imagemUrl?: string;
+}
+
 interface ModalDataObs {
   obs: string;
   updatedObsAt: string;
-  userObs?: Comentario["autor"];
+  userObs?: {
+    pg?: string;
+    nomeGuerra: string;
+    nomeOme: string;
+    imagemUrl?: string;
+  };
 }
-
-
 
 
 interface TileProps {
@@ -275,9 +288,15 @@ export default function PesquisarEscala() {
   };
 
   const handleAbrirObs = (escala: any) => {
+    if (!user) return;
     setModalDataObs({
       ...escala,
-      userObs: user,
+      userObs: {
+        pg: user.pg,
+        nomeGuerra: user.nomeGuerra,
+        nomeOme: user.ome?.nomeOme || "",
+        imagemUrl: user.imagemUrl,
+      },
     });
     setMostrarModalObs(true);
   };

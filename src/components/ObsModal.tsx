@@ -22,26 +22,25 @@ type Comentario = {
 };
 
 
-type Usuario = {
-  id: number;
+type UsuarioParcial = {
+  pg?: string;
   nomeGuerra: string;
-  pg: string;
-  tipo: string;
-  omeId: number;
-  ome?: {
-    nomeOme: string;
-  };
+  nomeOme: string;
+  imagemUrl?: string;
+};
+
+
+type InitialDataObs = {
+  id?: number;
+  userObs?: UsuarioParcial;
+  [key: string]: any;
 };
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (dados: any) => Promise<boolean>;
-  initialData?: {
-    id?: number;
-    userObs?: Usuario;
-    [key: string]: any;
-  } | null;
+  initialData?: InitialDataObs | null;
 };
 
 
@@ -221,9 +220,9 @@ export default function ObsModal({
                       })}
                     </span>
                     {/* Botão excluir (só se for o autor, ou tipo 'O', ou omeId 1) */}
-                    {initialData?.userObs?.id === c.autor.id ||
-                    initialData?.userObs?.tipo === "O" ||
-                    initialData?.userObs?.omeId === 1 ? (
+                    {(initialData?.userObs as any)?.id === c.autor.id ||
+                    (initialData?.userObs as any)?.tipo === "O" ||
+                    (initialData?.userObs as any)?.omeId === 1 ? (
                       <button
                         onClick={async () => {
                           const confirm = window.confirm(
