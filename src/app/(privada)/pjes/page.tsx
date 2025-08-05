@@ -64,6 +64,31 @@ interface Evento {
   [key: string]: any;
 }
 
+export interface PjesOperacao {
+  id: number;
+  nomeOperacao: string;
+  codVerba: number;
+  omeId: number;
+  pjesEventoId: number;
+  ttCtOfOper: number;
+  ttCtPrcOper: number;
+  userId: number;
+  statusOperacao: string;
+  mes: number;
+  ano: number;
+  codOp: string;
+  createdAt: string;
+  updatedAt: string;
+  pjesevento?: {
+    id: number;
+    nomeEvento: string;
+  };
+  pjesescalas?: Escala[];
+  nomeOme?: string;
+  ttCtOfExeOper: number;
+  ttCtPrcExeOper: number;
+}
+
 interface Escala {
   nomeGuerraSgp?: string;
   nomeCompletoSgp?: string;
@@ -424,7 +449,7 @@ export default function PjesPage() {
     const resultado: Record<number, Escala[]> = {};
     const termo = busca.toLowerCase();
 
-    operacaoSelecionada.forEach((op) => {
+    operacaoSelecionada.forEach((op: PjesOperacao) => {
       const escalas: Escala[] = op.pjesescalas || [];
 
       resultado[op.id] = escalas
