@@ -1144,7 +1144,7 @@
 }
 
 /* Aplique estilo global à classe do calendário ativo */
-:global {
+.global {
   .react-calendar__tile--active {
     background: #cbd3cc !important;
     color: rgb(7, 12, 255) !important;

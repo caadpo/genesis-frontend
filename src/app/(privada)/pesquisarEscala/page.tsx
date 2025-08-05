@@ -157,7 +157,9 @@ export default function PesquisarEscala() {
   const [codOp, setCodOp] = useState("");
   const [operacao, setOperacao] = useState<any | null>(null);
   const [erroOperacao, setErroOperacao] = useState("");
-  const [selectedEscala, setSelectedEscala] = useState<any | null>(null);
+  //const [selectedEscala, setSelectedEscala] = useState<any | null>(null);
+  const [selectedEscala, setSelectedEscala] = useState<Escala | null>(null);
+
   const [mostrarModalObs, setMostrarModalObs] = useState(false);
   const [modalDataObs, setModalDataObs] = useState<any | null>(null);
 
@@ -216,7 +218,7 @@ export default function PesquisarEscala() {
                   imagemUrl:
                     user?.imagemUrl || "/assets/images/user_padrao.png",
                   nomeGuerra: user?.nomeGuerra || "",
-                  nomeOme: user?.nomeOme || "",
+                  nomeOme: user?.ome?.nomeOme || "",
                 },
               }
             : e
@@ -233,7 +235,7 @@ export default function PesquisarEscala() {
               pg: user?.pg || "",
               imagemUrl: user?.imagemUrl || "/assets/images/user_padrao.png",
               nomeGuerra: user?.nomeGuerra || "",
-              nomeOme: user?.nomeOme || "",
+              nomeOme: user?.ome?.nomeOme || "",
             },
           }));
         }

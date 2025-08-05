@@ -18,8 +18,8 @@ export default function Login() {
 
     try {
       const apiUrl =
-        process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
-        //process.env.NEXT_PUBLIC_FRONTEND_API || "http://localhost:3000";
+        //process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
+        process.env.NEXT_PUBLIC_FRONTEND_API || "http://localhost:3000";
 
       const response = await fetch(`${apiUrl}/api/auth/login`, {
         method: "POST",
