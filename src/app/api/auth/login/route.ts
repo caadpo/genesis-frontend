@@ -1,4 +1,3 @@
-// src/app/api/auth/login/route.ts
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -21,35 +20,38 @@ export async function POST(request: Request) {
     const data = await externalApiResponse.json();
 
     if (!externalApiResponse.ok) {
-      // Repasse a mensagem original da API externa
       return NextResponse.json(
         { error: data.message || "Erro ao autenticar" },
         { status: externalApiResponse.status }
       );
     }
 
-    // Cria a resposta JSON incluindo token e user para o frontend usar
+    // Aqui você configura o cookie HTTP-only com secure: false (pq não está usando HTTPS)
+    // e sameSite: "lax" para aceitar em requisições da mesma origem
+
     const response = NextResponse.json({
       message: "Autenticado com sucesso",
-      accessToken: data.accessToken,
       user: data.user,
     });
 
-    // Setar token em cookie HTTP-only
     response.cookies.set("accessToken", data.accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: false,       // se estiver em produção com HTTPS, troque para true
       path: "/",
+      sameSite: "lax",     // Lax funciona bem para a maioria dos casos
+      maxAge: 60 * 60 * 24 * 7,  // 7 dias de validade (ajuste conforme quiser)
     });
 
-    // Salvar dados do usuário em cookie visível no cliente (não httpOnly)
+    // Se quiser passar userData para frontend sem ser httpOnly, pode deixar:
     response.cookies.set(
       "userData",
       encodeURIComponent(btoa(JSON.stringify(data.user))),
       {
         httpOnly: false,
-        secure: process.env.NODE_ENV === "production",
+        secure: false,
         path: "/",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 7,
       }
     );
 
