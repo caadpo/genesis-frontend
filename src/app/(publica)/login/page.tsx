@@ -21,9 +21,13 @@ export default function Login() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ loginSei, password }),
+        credentials: 'include', // ← ESSENCIAL para cookies funcionarem
       });
+      
 
       const result = await response.json();
+
+      console.log("A variavel resposse é,", response);
 
       if (!response.ok) {
         setErrorMessage(result.error || "Erro no login ou na senha");
