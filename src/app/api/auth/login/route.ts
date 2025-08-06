@@ -8,7 +8,7 @@ export async function POST(request: Request) {
     const password = String(body.password || "").trim();
 
     const baseUrl =
-      process.env.NEXT_PUBLIC_API_BASE_URL || "http://191.252.214.36:8081";
+      process.env.NEXT_PUBLIC_API_BASE_URL || "http://191.252.214.36:4000";
 
     const externalApiResponse = await fetch(`${baseUrl}/api/auth`, {
       method: "POST",
