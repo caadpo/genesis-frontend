@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
   const mes = searchParams.get("mes");
   const diretoria = searchParams.get("diretoria");
 
-  let backendUrl = `${API_BASE_URL}/api/pjesteto`;
+  let backendUrl = `${API_BASE_URL}/pjesteto`;
 
   const queryParams: string[] = [];
   if (ano) queryParams.push(`ano=${ano}`);
