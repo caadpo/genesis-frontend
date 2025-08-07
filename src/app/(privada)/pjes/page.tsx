@@ -253,13 +253,11 @@ export default function PjesPage() {
         omeMax: number
       ): Promise<Resumo | null> => {
         try {
-          const res = await fetch(
-            `/api/pjesevento/resumo-por-diretoria?ano=${ano}&mes=${mes}&omeMin=${omeMin}&omeMax=${omeMax}`
-          );
+          const res = await fetch(`/pjesevento/resumo-por-diretoria?ano=${ano}&mes=${mes}&omeMin=${omeMin}&omeMax=${omeMax}`);
           const data = await res.json();
 
           if (res.ok) return data.resumo;
-          console.error("Erro ao buscar resumo:", data.error);
+          console.error("Erro ao buscar resumo na tela pjes:", data.error);
           return null;
         } catch (error) {
           console.error("Erro de rede:", error);
