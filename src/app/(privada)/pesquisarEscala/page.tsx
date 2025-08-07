@@ -197,7 +197,7 @@ export default function PesquisarEscala() {
 
     try {
       const res = await fetch(
-        `/api/pjesoperacao/by-codop/${encodeURIComponent(codOp)}`
+        `/pjesoperacao/by-codop/${encodeURIComponent(codOp)}`
       );
       const data = await res.json();
 
