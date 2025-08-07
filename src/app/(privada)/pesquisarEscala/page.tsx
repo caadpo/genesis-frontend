@@ -197,7 +197,7 @@ export default function PesquisarEscala() {
 
     try {
       const res = await fetch(
-        `/api/pjesoperacao/by-codop?codOp=${encodeURIComponent(codOp)}`
+        `/api/pjesoperacao/by-codop/${encodeURIComponent(codOp)}`
       );
       const data = await res.json();
 
@@ -497,13 +497,20 @@ export default function PesquisarEscala() {
 
           {/* Campo de busca */}
           <div className={styles.pesquisaContainer}>
-            <input
-              type="text"
-              value={codOp}
-              onChange={(e) => setCodOp(e.target.value)}
-              placeholder="Código da Operação ex: 12345/072025"
-              className={`${styles.inputPesquisar} ${styles.inputFlex}`}
-            />
+          <input
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            value={codOp}
+            onChange={(e) => {
+              const onlyNumbers = e.target.value.replace(/\D/g, '');
+              setCodOp(onlyNumbers);
+            }}
+            placeholder="Código da Operação ex: 29090062025"
+            maxLength={11}
+            className={styles.inputPesquisar}
+          />
+
 
             <button
               onClick={buscarOperacaoPorCodOp}
