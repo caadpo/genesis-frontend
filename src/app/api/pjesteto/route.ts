@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     if (ano) query.append("ano", ano);
     if (mes) query.append("mes", mes);
 
-    const res = await fetch(`${API_BASE_URL}/pjesteto?${query.toString()}`, {
+    const res = await fetch(`${API_BASE_URL}/api/pjesteto?${query.toString()}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const res = await fetch(`${API_BASE_URL}/pjesteto`, {
+    const res = await fetch(`${API_BASE_URL}/api/pjesteto`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
