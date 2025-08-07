@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://191.252.214.36:4000";
 
 export async function GET(request: NextRequest) {
   const token = request.cookies.get("accessToken")?.value;
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
   if (omeMax) queryParams.append("omeMax", omeMax);
   if (codVerba) queryParams.append("codVerba", codVerba);
 
-  const url = `${API_BASE_URL}/pjesevento/resumo-por-diretoria?${queryParams.toString()}`;
+  const url = `${API_BASE_URL}/api/pjesevento/resumo-por-diretoria?${queryParams.toString()}`;
 
   try {
     const res = await fetch(url, {

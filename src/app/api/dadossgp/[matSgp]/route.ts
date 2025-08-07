@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://191.252.214.36:4000";
 
 export async function GET(req: NextRequest) {
   const token = req.cookies.get("accessToken")?.value;
@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const res = await fetch(
-      `${API_BASE_URL}/dados-sgp/${matSgp}/mais-recente`,
+      `${API_BASE_URL}/api/dados-sgp/${matSgp}/mais-recente`,
       {
         method: "GET",
         headers: {

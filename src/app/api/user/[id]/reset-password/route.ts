@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://191.252.214.36:4000";
 
 export const dynamic = "force-dynamic";
 
@@ -20,7 +20,7 @@ export async function PATCH(request: Request, context: any) {
       );
     }
 
-    const response = await fetch(`${API_BASE_URL}/user/reset-password/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/api/user/reset-password/${id}`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,

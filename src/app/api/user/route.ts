@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://191.252.214.36:4000";
 
 // 👇 ISSO É ESSENCIAL PARA USAR `cookies()` AQUI
 export const dynamic = "force-dynamic";
@@ -20,7 +20,7 @@ export async function GET(request: Request) {
       );
     }
 
-    const response = await fetch(`${API_BASE_URL}/user`, {
+    const response = await fetch(`${API_BASE_URL}/api/user`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -62,7 +62,7 @@ export async function PATCH(request: Request) {
 
     const body = await request.json();
 
-    const response = await fetch(`${API_BASE_URL}/user`, {
+    const response = await fetch(`${API_BASE_URL}/api/user`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -95,7 +95,7 @@ export async function POST(request: Request) {
 
     const body = await request.json();
 
-    const response = await fetch(`${API_BASE_URL}/user`, {
+    const response = await fetch(`${API_BASE_URL}/api/user`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

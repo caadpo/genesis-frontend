@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://191.252.214.36:4000";
 
 export async function GET(request: NextRequest) {
   const token = request.cookies.get("accessToken")?.value;
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
     if (ano) queryParams.append("ano", ano);
     if (mes) queryParams.append("mes", mes);
 
-    const apiUrl = `${API_BASE_URL}/pjesescala/escalas-por-matricula${
+    const apiUrl = `${API_BASE_URL}/api/pjesescala/escalas-por-matricula${
       queryParams.toString() ? `?${queryParams.toString()}` : ""
     }`;
 

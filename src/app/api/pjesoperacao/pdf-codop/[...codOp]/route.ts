@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://191.252.214.36:4000";
 
 export async function GET(request: NextRequest, context: any) {
   const params = context.params; // já vem resolvido
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest, context: any) {
   }
 
   try {
-    const backendUrl = `${API_BASE_URL}/pjesoperacao/pdf/${encodeURIComponent(
+    const backendUrl = `${API_BASE_URL}/api/pjesoperacao/pdf/${encodeURIComponent(
       codOp
     )}?mes=${mes}&ano=${ano}`;
 

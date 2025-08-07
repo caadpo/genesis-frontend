@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://191.252.214.36:4000";
 
 export async function GET(request: NextRequest) {
   const token = request.cookies.get("accessToken")?.value;
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
   if (ano) queryParams.append("ano", ano);
   if (mes) queryParams.append("mes", mes); // já deve vir como número (ex: 7)
 
-  const url = `${API_BASE_URL}/pjesdist${
+  const url = `${API_BASE_URL}/api/pjesdist${
     queryParams.toString() ? `?${queryParams.toString()}` : ""
   }`;
 
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
 
   try {
-    const res = await fetch(`${API_BASE_URL}/pjesdist`, {
+    const res = await fetch(`${API_BASE_URL}/api/pjesdist`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,

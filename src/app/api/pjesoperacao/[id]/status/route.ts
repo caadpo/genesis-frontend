@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://191.252.214.36:4000";
 
 export async function PUT(request: NextRequest, context: any) {
   const token = request.cookies.get("accessToken")?.value;
@@ -14,7 +14,7 @@ export async function PUT(request: NextRequest, context: any) {
   const { id } = context.params;
 
   try {
-    const res = await fetch(`${API_BASE_URL}/${id}/status`, {
+    const res = await fetch(`${API_BASE_URL}/api/${id}/status`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,

@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://191.252.214.36:4000";
 
 export async function GET(request: NextRequest) {
   // 1️⃣ Buscar token do cookie
@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const response = await fetch(
-      `${API_BASE_URL}/pjesescala/cotas?matSgp=${matSgp}&ano=${ano}&mes=${mes}`,
+      `${API_BASE_URL}/api/pjesescala/cotas?matSgp=${matSgp}&ano=${ano}&mes=${mes}`,
       {
         method: "GET",
         headers: {

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://191.252.214.36:4000";
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +25,7 @@ export async function PATCH(request: Request) {
     console.log("Editando usuário ID:", userId);
     console.log("Dados recebidos:", body);
 
-    const response = await fetch(`${API_BASE_URL}/user/${userId}`, {
+    const response = await fetch(`${API_BASE_URL}/api/user/${userId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -70,7 +70,7 @@ export async function DELETE(request: Request) {
     const url = new URL(request.url);
     const userId = url.pathname.split("/").pop(); // pega o ID da URL
 
-    const response = await fetch(`${API_BASE_URL}/user/${userId}`, {
+    const response = await fetch(`${API_BASE_URL}/api/user/${userId}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

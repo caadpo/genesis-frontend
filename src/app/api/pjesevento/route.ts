@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 // 🧩 Usando a variável de ambiente para definir a base da API
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
-const API_BASE = `${API_BASE_URL}/pjesevento`;
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://191.252.214.36:4000";
+const API_BASE = `${API_BASE_URL}/api/pjesevento`;
 
 // 🔍 GET eventos
 export async function GET(request: NextRequest) {
