@@ -17,7 +17,7 @@ export default function Login() {
     setErrorMessage("");
 
     try {
-      const response = await fetch(`auth/login`, {
+      const response = await fetch(`/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ loginSei, password }),
@@ -26,8 +26,6 @@ export default function Login() {
       
 
       const result = await response.json();
-
-      console.log("A variavel resposse é,", response);
 
       if (!response.ok) {
         setErrorMessage(result.error || "Erro no login ou na senha");
