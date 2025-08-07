@@ -9,7 +9,7 @@ export async function POST(request: Request) {
     const baseUrl =
       process.env.NEXT_PUBLIC_API_BASE_URL || "http://191.252.214.36:4000";
 
-    const externalApiResponse = await fetch(`${baseUrl}/auth`, {
+    const externalApiResponse = await fetch(`${baseUrl}/api/auth`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
