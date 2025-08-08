@@ -144,18 +144,20 @@ export default function UsuariosPage() {
               }
             >
               <div style={{ display: "flex" }}>
-                {user.imagemUrl ? (
-                  <Image
-                    width={20}
-                    height={20}
-                    src={user.imagemUrl}
-                    alt={`Foto de ${user.nomeGuerra}`}
-                    className={styles.usuarioImagem}
-                  />
-                ) : (
-                  <FaUser className={styles.usuarioSemImagem} />
-                )}
-
+                <div>
+                  {user.imagemUrl ? (
+                    <Image
+                      width={20}
+                      height={20}
+                      src={user.imagemUrl}
+                      alt={`Foto de ${user.nomeGuerra}`}
+                      className={styles.usuarioImagem}
+                    />
+                  ) : (
+                    <FaUser className={styles.usuarioSemImagem} />
+                  )}
+                </div>
+                
                 <div className={styles.usuarioInfo}>
                   <span className={styles.usuarioNome}>
                     {user.pg} {user.nomeGuerra}{" "}
