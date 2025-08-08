@@ -386,7 +386,7 @@ export default function Dashboard() {
                   className={styles.buttonPesquisarDashboard}
                   onClick={handlePesquisar}
                 >
-                  Filtrar
+                  Buscar...
                 </button>
               </div>
             </div>

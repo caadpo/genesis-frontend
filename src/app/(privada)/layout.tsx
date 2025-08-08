@@ -394,8 +394,8 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
                 }}
               >
                 <Image
-                  width={25}
-                  height={25}
+                  width={258}
+                  height={28}
                   src={user.imagemUrl || "/assets/images/user_padrao.png"}
                   alt="img_usuario"
                   className={styles.iconUser}
