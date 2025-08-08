@@ -692,9 +692,9 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
                           if (escalaDoDia) {
                             return (
                               <div
-                                style={{ fontSize: "0.5rem", color: "blue" }}
+                                style={{ fontSize: "0.6rem", color: "blue" }}
                               >
-                                {escalaDoDia.nomeOme}
+                               <strong>{escalaDoDia.nomeOme}</strong>
                               </div>
                             );
                           }

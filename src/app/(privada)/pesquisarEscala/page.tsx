@@ -357,7 +357,7 @@ export default function PesquisarEscala() {
 
             if (escalaDoDia) {
               return (
-                <div style={{ fontSize: "0.8rem", color: "blue" }}>
+                <div style={{ fontSize: "0.6rem", color: "blue" }}>
                   <strong>{escalaDoDia.nomeOme}</strong>
                 </div>
               );
