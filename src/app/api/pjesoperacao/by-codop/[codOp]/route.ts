@@ -14,7 +14,7 @@ export async function GET(request: NextRequest, context: any) {
     const codOp = context.params.codOp;
 
     const res = await fetch(
-      `${API_BASE_URL}/api/pjesoperacao/by-codop/${encodeURIComponent(codOp)}`,
+      `${API_BASE_URL}/api/pjesoperacao/by-codop?codOp=${encodeURIComponent(codOp)}`,
       {
         method: "GET",
         headers: {
