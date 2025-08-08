@@ -1139,7 +1139,7 @@
 .global {
   .react-calendar__tile--active {
     background: #cbd3cc !important;
-    color: rgb(7, 12, 255) !important;
+    color: rgba(0, 38, 255, 0.514) !important;
   }
 }
 
