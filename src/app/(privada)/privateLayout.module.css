@@ -665,13 +665,6 @@
   opacity: 0.4;
 }
 
-
-
-
-
-
-
-
 /* Responsividade: empilha os elementos em telas menores */
 @media (max-width: 768px) {
   .logoDashboard {
@@ -686,7 +679,6 @@
   }
    .divGraficoWrapper {
     display: block;
-    width: 400px;
     height: 400px;
   }
 

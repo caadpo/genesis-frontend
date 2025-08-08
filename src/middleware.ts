@@ -63,6 +63,8 @@ export async function middleware(request: NextRequest) {
 
       return response;
     } catch (error) {
+      // ✅ Aqui você limpa o accessToken expirado
+      const response = NextResponse.redirect(request.nextUrl.clone());
       const url = request.nextUrl.clone();
       url.pathname = REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE;
       return NextResponse.redirect(url);
