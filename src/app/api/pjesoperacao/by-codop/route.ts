@@ -1,9 +1,10 @@
+// src/app/api/pjesoperacao/by-codop/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://191.252.214.36:4000";
 
-export async function GET(request: NextRequest, context: any) {
+export async function GET(request: NextRequest) {
   const token = request.cookies.get("accessToken")?.value;
 
   if (!token) {
@@ -11,7 +12,12 @@ export async function GET(request: NextRequest, context: any) {
   }
 
   try {
-    const codOp = context.params.codOp;
+    const { searchParams } = new URL(request.url);
+    const codOp = searchParams.get("codOp");
+
+    if (!codOp) {
+      return NextResponse.json({ error: "codOp não fornecido" }, { status: 400 });
+    }
 
     const res = await fetch(
       `${API_BASE_URL}/api/pjesoperacao/by-codop?codOp=${encodeURIComponent(codOp)}`,

@@ -501,7 +501,7 @@ export default function PesquisarEscala() {
               type="text"
               value={codOp}
               onChange={(e) => setCodOp(e.target.value)}
-              placeholder="Código da Operação ex: 12345/072025"
+              placeholder="Código da Operação ex: 12345072025"
               className={`${styles.inputPesquisar} ${styles.inputFlex}`}
             />
 
