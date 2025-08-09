@@ -7,7 +7,8 @@ const publicRoutes = [
 
 const REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE = '/login';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'senhaMuitoGrandeParaNaoPerderAbcdjflkjsagdflsagjk';
+const JWT_SECRET =
+  process.env.JWT_SECRET || 'senhaMuitoGrandeParaNaoPerderAbcdjflkjsagdflsagjk';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -23,7 +24,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const publicRoute = publicRoutes.find(route => route.path === pathname);
+  const publicRoute = publicRoutes.find((route) => route.path === pathname);
   const authToken = request.cookies.get('accessToken');
 
   // ✅ 1. Rota pública sem token → ok
@@ -51,7 +52,10 @@ export async function middleware(request: NextRequest) {
         new TextEncoder().encode(JWT_SECRET)
       );
 
-      const base64Payload = Buffer.from(JSON.stringify(payload)).toString('base64url');
+      const base64Payload = Buffer.from(
+        JSON.stringify(payload)
+      ).toString('base64url');
+
       const response = NextResponse.next();
       const isProduction = process.env.NODE_ENV === 'production';
 
@@ -63,11 +67,20 @@ export async function middleware(request: NextRequest) {
 
       return response;
     } catch (error) {
-      // ✅ Aqui você limpa o accessToken expirado
-      const response = NextResponse.redirect(request.nextUrl.clone());
+      // ❌ Token inválido ou expirado → redireciona, limpa cookies e evita cache
       const url = request.nextUrl.clone();
       url.pathname = REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE;
-      return NextResponse.redirect(url);
+
+      const response = NextResponse.redirect(url);
+
+      // 🔥 Limpa cookies expirados
+      response.cookies.set('accessToken', '', { maxAge: 0, path: '/' });
+      response.cookies.set('userData', '', { maxAge: 0, path: '/' });
+
+      // 🚫 Evita cache da rota redirecionada
+      response.headers.set('x-middleware-cache', 'no-cache');
+
+      return response;
     }
   }
 
@@ -75,5 +88,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next|favicon.ico|robots.txt|_next/static|_next/image|api).*)'],
+  matcher: [
+    '/((?!_next|favicon.ico|robots.txt|_next/static|_next/image|api).*)',
+  ],
 };

@@ -34,7 +34,9 @@ export default function Login() {
 
       // O token está no cookie HTTP-only, não precisa salvar no localStorage
       // Só redireciona para dashboard
-      window.location.href = "/dashboard";
+      //window.location.href = "/dashboard";
+      window.location.replace("/dashboard");
+
     } catch (err) {
       setErrorMessage("Erro de rede ou servidor indisponível.");
     } finally {
