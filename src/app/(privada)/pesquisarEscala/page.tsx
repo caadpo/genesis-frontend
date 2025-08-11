@@ -575,9 +575,7 @@ export default function PesquisarEscala() {
                   </div>
                 </div>
 
-                {ordenarEscalas
-                
-                (
+                {ordenarEscalas(
                   filtroHoje
                   ? operacao.pjesescalas.filter((escala: any) => {
                       const dataEscala = getDataLocal(escala.dataInicio);
