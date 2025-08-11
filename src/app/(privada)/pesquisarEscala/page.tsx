@@ -183,7 +183,6 @@ export default function PesquisarEscala() {
   const [codOp, setCodOp] = useState("");
   const [operacao, setOperacao] = useState<any | null>(null);
   const [erroOperacao, setErroOperacao] = useState("");
-  //const [selectedEscala, setSelectedEscala] = useState<any | null>(null);
   const [selectedEscala, setSelectedEscala] = useState<Escala | null>(null);
 
   const [mostrarModalObs, setMostrarModalObs] = useState(false);
@@ -208,6 +207,24 @@ export default function PesquisarEscala() {
       setErroOperacao(err.message);
     }
   };
+
+  const ordenarEscalas = (escalas: any[]) => {
+    const funcaoOrdem: Record<string, number> = { FISCAL: 1, MOT: 2, PAT: 3 };
+  
+    return escalas.slice().sort((a, b) => {
+      const dataA = new Date(`${a.dataInicio}T${a.horaInicio}`);
+      const dataB = new Date(`${b.dataInicio}T${b.horaInicio}`);
+  
+      const compareDate = dataA.getTime() - dataB.getTime();
+      if (compareDate !== 0) return compareDate;
+  
+      const funcaoA = funcaoOrdem[a.funcao] || 99;
+      const funcaoB = funcaoOrdem[b.funcao] || 99;
+  
+      return funcaoA - funcaoB;
+    });
+  };
+  
 
   const toggleStatusEscala = async (escala: any) => {
     const novoStatus =
@@ -558,7 +575,10 @@ export default function PesquisarEscala() {
                   </div>
                 </div>
 
-                {(filtroHoje
+                {ordenarEscalas
+                
+                (
+                  filtroHoje
                   ? operacao.pjesescalas.filter((escala: any) => {
                       const dataEscala = getDataLocal(escala.dataInicio);
                       const hoje = new Date();
