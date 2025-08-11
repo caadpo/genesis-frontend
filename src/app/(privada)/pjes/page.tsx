@@ -1945,7 +1945,7 @@ export default function PjesPage() {
                                   className={styles["tabela-zebra"]}
                                   style={{
                                     width: "100%",
-                                    fontSize: "12px",
+                                    fontSize: "10px",
                                     borderCollapse: "collapse",
                                     borderBottom: "2px solid black",
                                   }}

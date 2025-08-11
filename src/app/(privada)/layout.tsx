@@ -645,7 +645,7 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
                       <div className={styles.divSeiFuncaoTelEmail}>
                         <FaKey className={styles.faSeiFuncaoTelEmail} />
                         <input
-                          type="password"
+                          type="text"
                           placeholder="Nova senha"
                           value={newPassword}
                           onChange={(e) => setNewPassword(e.target.value)}
