@@ -674,6 +674,12 @@
     display: none;
   }
 
+  .spamItensConsumo {
+  padding-right:10px;
+  font-size: 11px;
+  color: #1fad12;
+}
+
   .tituloDiaria {
     display: none;
   }
