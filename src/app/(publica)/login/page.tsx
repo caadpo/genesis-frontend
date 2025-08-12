@@ -32,9 +32,6 @@ export default function Login() {
         return;
       }
 
-      // O token está no cookie HTTP-only, não precisa salvar no localStorage
-      // Só redireciona para dashboard
-      //window.location.href = "/dashboard";
       window.location.replace("/dashboard");
 
     } catch (err) {
