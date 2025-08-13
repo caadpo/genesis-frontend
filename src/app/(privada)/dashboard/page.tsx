@@ -549,7 +549,7 @@ export default function Dashboard() {
                 <div className={styles.divItem}>
                   <div className={styles.divItensConsumo}>
                     <div style={{ fontSize: "14px", color: "#949090" }}>
-                      Saldo Mes / Anual (Remanescente)
+                      Saldo Mes / Remanescente
                     </div>
                     <div style={{ fontSize: "20px", color: "#484849" }}>
                       <strong>

@@ -1064,14 +1064,24 @@ export default function PjesPage() {
                               {dist.nomeDiretoria}
                             </td>
                             <td className={styles.tdPadrao}>{dist.nomeDist}</td>
-                            <td className={styles.tdPadrao}>
-                              {dist.ttCtOfDist} | {dist.ttCotaOfEscala} ------
-                              Saldo: {dist.ttCotaOfSaldo}
-                            </td>
-                            <td className={styles.tdPadrao}>
-                              {dist.ttCtPrcDist} | {dist.ttCotaPrcEscala} ------
-                              Saldo: {dist.ttCotaPrcSaldo}
-                            </td>
+
+
+
+                              {cadastrarDist(user?.typeUser) && (
+                                <td className={styles.tdPadrao}>
+                                  {dist.ttCtOfDist} | {dist.ttCotaOfEscala} ------
+                                  Não Exe: {dist.ttCotaOfSaldo}
+                                </td>
+                              )}
+                              {cadastrarDist(user?.typeUser) && (
+                                <td className={styles.tdPadrao}>
+                                  {dist.ttCtPrcDist} | {dist.ttCotaPrcEscala} ------
+                                  Não Exe: {dist.ttCotaPrcSaldo}
+                                </td>
+                              )}
+
+                            
+
 
                             {cadastrarDist(user?.typeUser) && (
                               <td className={styles.tdPadrao}>
