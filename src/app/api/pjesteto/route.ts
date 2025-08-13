@@ -6,10 +6,6 @@ const API_BASE_URL =
 export async function GET(request: NextRequest) {
   const token = request.cookies.get("accessToken")?.value;
 
-  console.log("Cookies disponíveis:", request.cookies);
-  console.log("Token recebido:", token);
-
-
   if (!token) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
   }

@@ -1579,149 +1579,150 @@ export default function PjesPage() {
                   {/* fim botao prestar conta*/}
                 </div>
 
-                {eventoSelecionado.length === 0 ? (
-                  <p>Nenhum evento para esta distribuição.</p>
-                ) : (
-                  <ul
-                    style={{ padding: "2px", height: "80px", fontSize: "12px" }}
-                  >
-                    {eventoSelecionado.map((evento: any) => {
-                      let color = "#f7911e";
-                      if (evento.statusEvento === "AUTORIZADA")
-                        color = "#ffffff";
-                      else if (evento.statusEvento === "HOMOLOGADA")
-                        color = "#ff0000";
+                    {eventoSelecionado.length === 0 ? (
+                      <p>Nenhum evento para esta distribuição.</p>
+                    ) : (
+                      
+                    <div style={{height:"2000px", overflow:"auto"}}>
+                      <ul className={styles.eventoUl}>
+                      {eventoSelecionado.map((evento: any) => {
+                        let color = "#f7911e";
+                        if (evento.statusEvento === "AUTORIZADA")
+                          color = "#ffffff";
+                        else if (evento.statusEvento === "HOMOLOGADA")
+                          color = "#ff0000";
 
-                      return (
-                        <li
-                          key={evento.id}
-                          onClick={() => handleEventoClick(evento.id)}
-                          className={styles.eventoImagemLi}
-                          style={{
-                            fontWeight:
-                              selectedEventoId === evento.id
-                                ? "bold"
-                                : "normal",
-                            background:
-                              selectedEventoId === evento.id
-                                ? "#ffdcba"
-                                : "#ffffff",
-                          }}
-                        >
-                          {/* Botão de menu (três pontinhos) */}
-                          <div
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleMenu(evento.id);
+                        return (
+                          <li
+                            key={evento.id}
+                            onClick={() => handleEventoClick(evento.id)}
+                            className={styles.eventoImagemLi}
+                            style={{
+                              fontWeight:
+                                selectedEventoId === evento.id
+                                  ? "bold"
+                                  : "normal",
+                              background:
+                                selectedEventoId === evento.id
+                                  ? "#ffdcba"
+                                  : "#ffffff",
                             }}
-                            className={styles.eventoMenuEditarExcluir}
                           >
-                            ⋮
-                          </div>
-
-                          {/* Submenu */}
-                          {menuAbertoId === evento.id && (
+                            {/* Botão de menu (três pontinhos) */}
                             <div
-                              ref={menuRef}
-                              className={styles.eventoSubMenuEditarExcluir}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleMenu(evento.id);
+                              }}
+                              className={styles.eventoMenuEditarExcluir}
                             >
-                              <div
-                                style={menuItemStyle}
-                                onClick={() => handleToggleStatus(evento)}
-                              >
-                                {evento.statusEvento === "AUTORIZADA"
-                                  ? "Homologar"
-                                  : "Autorizar"}
-                              </div>
+                              ⋮
+                            </div>
 
+                            {/* Submenu */}
+                            {menuAbertoId === evento.id && (
                               <div
-                                style={menuItemStyle}
-                                onClick={() => handleEditarEvento(evento)}
+                                ref={menuRef}
+                                className={styles.eventoSubMenuEditarExcluir}
                               >
-                                Editar
+                                <div
+                                  style={menuItemStyle}
+                                  onClick={() => handleToggleStatus(evento)}
+                                >
+                                  {evento.statusEvento === "AUTORIZADA"
+                                    ? "Homologar"
+                                    : "Autorizar"}
+                                </div>
+
+                                <div
+                                  style={menuItemStyle}
+                                  onClick={() => handleEditarEvento(evento)}
+                                >
+                                  Editar
+                                </div>
+                                <div
+                                  style={{
+                                    ...menuItemStyle,
+                                    borderBottom: "none",
+                                  }}
+                                  onClick={() => handleExcluirEvento(evento.id)}
+                                >
+                                  Excluir
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Imagem na operação*/}
+                            <div className={styles.eventoImagem}>
+                              <Image
+                                src={getImagemPorCodVerba(evento.codVerba)}
+                                alt="logo"
+                                width={30}
+                                height={30}
+                                style={{ borderRadius: "50%" }}
+                              />
+
+                              <span style={{ fontSize: "8px" }}>
+                                {evento?.nomeDiretoria || "Unidade"}
+                              </span>
+                            </div>
+
+                            {/* Texto à direita */}
+                            <div style={{ flex: 1 }}>
+                              <div className={styles.eventoTextoADireita}>
+                                {evento.nomeOme || "Unidade"} <br></br>
+                                {evento.nomeEvento}
                               </div>
                               <div
                                 style={{
-                                  ...menuItemStyle,
-                                  borderBottom: "none",
+                                  display: "flex",
+                                  justifyContent: "left",
+                                  alignItems: "center",
+                                  fontSize: "11px",
+                                  color: "#6e6e6e",
                                 }}
-                                onClick={() => handleExcluirEvento(evento.id)}
                               >
-                                Excluir
+                                <span style={{ paddingRight: "20px" }}>
+                                  Oficiais: {evento.ttCtOfEvento} |{" "}
+                                  {evento.somaCotaOfEscala}
+                                </span>
+                                <span style={{ paddingRight: "20px" }}>
+                                  Praças: {evento.ttCtPrcEvento} |{" "}
+                                  {evento.somaCotaPrcEscala}
+                                </span>
+                                <FaUserSlash
+                                  color="orange"
+                                  style={{ marginRight: "5px" }}
+                                />
+                                {evento.totalImpedidos}
                               </div>
                             </div>
-                          )}
+                            <div style={{ fontSize: "20px", paddingTop: "5px" }}>
+                              <div
+                                style={{
+                                  fontSize: "20px",
+                                  paddingBottom: "5px",
+                                  marginRight: "33px",
+                                }}
+                              >
+                                {evento.statusEvento === "AUTORIZADA" ? (
+                                  <FaLockOpen color="green" />
+                                ) : evento.statusEvento === "HOMOLOGADA" ? (
+                                  <FaLock color="red" />
+                                ) : null}
+                              </div>
 
-                          {/* Imagem na operação*/}
-                          <div className={styles.eventoImagem}>
-                            <Image
-                              src={getImagemPorCodVerba(evento.codVerba)}
-                              alt="logo"
-                              width={30}
-                              height={30}
-                              style={{ borderRadius: "50%" }}
-                            />
-
-                            <span style={{ fontSize: "8px" }}>
-                              {evento?.nomeDiretoria || "Unidade"}
-                            </span>
-                          </div>
-
-                          {/* Texto à direita */}
-                          <div style={{ flex: 1 }}>
-                            <div className={styles.eventoTextoADireita}>
-                              {evento.nomeOme || "Unidade"} <br></br>
-                              {evento.nomeEvento}
+                              <div style={{ fontSize: "18px" }}>
+                                {evento.regularOuAtrasado === "ATRASADO" ? (
+                                  <FaClock color="#e207e2" />
+                                ) : null}
+                              </div>
                             </div>
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "left",
-                                alignItems: "center",
-                                fontSize: "11px",
-                                color: "#6e6e6e",
-                              }}
-                            >
-                              <span style={{ paddingRight: "20px" }}>
-                                Oficiais: {evento.ttCtOfEvento} |{" "}
-                                {evento.somaCotaOfEscala}
-                              </span>
-                              <span style={{ paddingRight: "20px" }}>
-                                Praças: {evento.ttCtPrcEvento} |{" "}
-                                {evento.somaCotaPrcEscala}
-                              </span>
-                              <FaUserSlash
-                                color="orange"
-                                style={{ marginRight: "5px" }}
-                              />
-                              {evento.totalImpedidos}
-                            </div>
-                          </div>
-                          <div style={{ fontSize: "20px", paddingTop: "5px" }}>
-                            <div
-                              style={{
-                                fontSize: "20px",
-                                paddingBottom: "5px",
-                                marginRight: "33px",
-                              }}
-                            >
-                              {evento.statusEvento === "AUTORIZADA" ? (
-                                <FaLockOpen color="green" />
-                              ) : evento.statusEvento === "HOMOLOGADA" ? (
-                                <FaLock color="red" />
-                              ) : null}
-                            </div>
-
-                            <div style={{ fontSize: "18px" }}>
-                              {evento.regularOuAtrasado === "ATRASADO" ? (
-                                <FaClock color="#e207e2" />
-                              ) : null}
-                            </div>
-                          </div>
-                        </li>
-                      );
-                    })}
-                  </ul>
+                          </li>
+                        );
+                      })}
+                      </ul>
+                    </div>
                 )}
               </div>
             )}

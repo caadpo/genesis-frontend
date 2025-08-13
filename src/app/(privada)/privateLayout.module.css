@@ -1680,6 +1680,12 @@
   border-radius: 5px;
 }
 
+.eventoUl{
+  padding:2px;
+  height: 80px;
+  font-size:12px; 
+}
+
 /* components/modal.module.css */
 .modalOverlayPrestarConta {
   position: fixed;
