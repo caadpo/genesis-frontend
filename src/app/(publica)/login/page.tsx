@@ -63,7 +63,7 @@ export default function Login() {
               id="loginSei"
               type="text"
               value={loginSei}
-              onChange={(e) => setLoginSei(e.target.value)}
+              onChange={(e) => setLoginSei(e.target.value.toLowerCase())}
               required
               className={styles.input}
               placeholder="Usuário"
