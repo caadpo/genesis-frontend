@@ -26,9 +26,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // Aqui você configura o cookie HTTP-only com secure: false (pq não está usando HTTPS)
-    // e sameSite: "lax" para aceitar em requisições da mesma origem
+    // Define se está em produção para configurar o cookie secure
+    const isProduction = process.env.NODE_ENV === "production";
 
+    // Resposta com cookie HTTP-only para o accessToken
     const response = NextResponse.json({
       message: "Autenticado com sucesso",
       user: data.user,
@@ -36,21 +37,21 @@ export async function POST(request: Request) {
 
     response.cookies.set("accessToken", data.accessToken, {
       httpOnly: true,
-      secure: false,       // se estiver em produção com HTTPS, troque para true
+      secure: isProduction,      // true em produção, false em dev
       path: "/",
-      sameSite: "lax",     // Lax funciona bem para a maioria dos casos
-      maxAge: 60 * 60 * 24 * 7,  // 7 dias de validade (ajuste conforme quiser)
+      sameSite: isProduction ? "none" : "lax", // 'none' para cross-site em HTTPS
+      maxAge: 60 * 60 * 24 * 7, // 7 dias
     });
 
-    // Se quiser passar userData para frontend sem ser httpOnly, pode deixar:
+    // Cookie userData para frontend ler (não HTTP-only)
     response.cookies.set(
       "userData",
       encodeURIComponent(btoa(JSON.stringify(data.user))),
       {
         httpOnly: false,
-        secure: false,
+        secure: isProduction,
         path: "/",
-        sameSite: "lax",
+        sameSite: isProduction ? "none" : "lax",
         maxAge: 60 * 60 * 24 * 7,
       }
     );

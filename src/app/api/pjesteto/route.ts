@@ -22,9 +22,9 @@ export async function GET(request: NextRequest) {
     const res = await fetch(`${API_BASE_URL}/api/pjesteto?${query.toString()}`, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
+      credentials: "include",  // <<< ESSENCIAL para enviar cookies
     });
 
     const data = await res.json();
