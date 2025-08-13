@@ -23,8 +23,8 @@ export async function GET(request: NextRequest) {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,  // ENVIA O TOKEN NO HEADER
       },
-      credentials: "include",  // <<< ESSENCIAL para enviar cookies
     });
 
     const data = await res.json();
