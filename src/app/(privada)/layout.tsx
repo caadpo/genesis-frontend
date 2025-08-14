@@ -790,7 +790,7 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
                                         >
                                           <FaInfo />
                                           <span className={styles.detalheTexto}>
-                                            Anotações:{" "}
+                                            {" "}
                                           </span>
                                           <strong>
                                             {escalaDoDia.anotacaoEscala}

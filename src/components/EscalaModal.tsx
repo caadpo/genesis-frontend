@@ -287,7 +287,7 @@ export default function EscalaModal({
         horaFinal: prev.horaFinal,
         statusEscala: "AUTORIZADA",
         funcao: prev.funcao, // este não é usado diretamente, mas mantemos para consistência
-        anotacaoEscala: "",
+        anotacaoEscala: prev.anotacaoEscala,
       }));
       // MANTER a função selecionada
       setFuncaoSelecionada((prev) => prev);
@@ -667,7 +667,7 @@ export default function EscalaModal({
               {/* ANOTAÇÃO DA ESCALA*/}
 
               <div style={{ marginTop: "10px", marginBottom: "10px" }}>
-                <label>Anotação da Escala</label>
+                <label>Anotação da Escala (Ex: Vtr, O.S, etc...)</label>
                 <input
                   className={styles.input}
                   type="text"

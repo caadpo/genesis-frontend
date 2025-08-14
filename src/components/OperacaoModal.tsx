@@ -142,10 +142,10 @@ export default function OperacaoModal({
                   placeholder="Nome do Operacao"
                   onChange={handleLetrasMaiusculas}
                   value={form.nomeOperacao}
-                  maxLength={30}
+                  maxLength={15}
                 />
                 <div style={{ fontSize: "0.8rem", color: "#666" }}>
-                  {form.nomeOperacao.length}/45 caracteres
+                  {form.nomeOperacao.length}/15 caracteres
                 </div>
               </div>
 

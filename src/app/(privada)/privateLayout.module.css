@@ -1145,7 +1145,7 @@
 .global {
   .react-calendar__tile--active {
     background: #cbd3cc !important;
-    color: rgba(0, 38, 255, 0.514) !important;
+    color: rgba(108, 126, 231, 0.671) !important;
   }
 }
 
@@ -2187,7 +2187,7 @@
 
 .horarioEscala {
   width: 20px;
-  color: #939397;
+  color: #474747;
 }
 
 .localApresentacao {
