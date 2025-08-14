@@ -97,7 +97,6 @@ const TabelaResumoPorDiretoria: React.FC<Props> = ({
         <thead>
           <tr>
             <th>Unidade</th>
-            <th>Verba</th>
             <th>Oficiais</th>
             <th>Praças</th>
             <th>#</th>
@@ -107,16 +106,9 @@ const TabelaResumoPorDiretoria: React.FC<Props> = ({
           {eventosAgrupados.map((evento, idx) => (
             <tr key={idx}>
               <td>{evento.nomeOme || "—"}</td>
-              <td>{nomeVerbas[evento.codVerba] || evento.codVerba}</td>
-              <td>
-                {evento.ttCtOfEvento} | {evento.somaCotaOfEscala}
-              </td>
-              <td>
-                {evento.ttCtPrcEvento} | {evento.somaCotaPrcEscala}
-              </td>
-              <td>
-                <FaCheck />
-              </td>
+              <td>{evento.ttCtOfEvento} | {evento.somaCotaOfEscala}</td>
+              <td>{evento.ttCtPrcEvento} | {evento.somaCotaPrcEscala}</td>
+              <td><FaCheck /></td>
             </tr>
           ))}
         </tbody>

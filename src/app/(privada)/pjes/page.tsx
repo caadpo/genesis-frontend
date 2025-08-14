@@ -268,9 +268,9 @@ export default function PjesPage() {
       };
 
       setResumoDim(await fetchResumo(anoNum, mesFinal, 2, 15));
-      setResumoDiresp(await fetchResumo(anoNum, mesFinal, 16, 30));
-      setResumoDinteri(await fetchResumo(anoNum, mesFinal, 31, 46));
-      setResumoDinterii(await fetchResumo(anoNum, mesFinal, 47, 58));
+      setResumoDiresp(await fetchResumo(anoNum, mesFinal, 16, 32));
+      setResumoDinteri(await fetchResumo(anoNum, mesFinal, 33, 48));
+      setResumoDinterii(await fetchResumo(anoNum, mesFinal, 49, 60));
       setResumoDpo(await fetchResumo(anoNum, mesFinal, 1, 107));
     };
 
@@ -322,79 +322,79 @@ export default function PjesPage() {
 
   // Eventos da verba 247 na DIRESP
   const eventosDiresp247 = eventosVerba247
-    .filter((e) => e.omeId >= 16 && e.omeId <= 30)
+    .filter((e) => e.omeId >= 16 && e.omeId <= 32)
     .sort((a, b) => a.omeId - b.omeId);
   const resumoDiresp247 = gerarResumoFiltrado(eventosDiresp247);
 
   // Eventos da verba 247 na DINTER I
   const eventosDinteri247 = eventosVerba247
-    .filter((e) => e.omeId >= 31 && e.omeId <= 46)
+    .filter((e) => e.omeId >= 33 && e.omeId <= 48)
     .sort((a, b) => a.omeId - b.omeId);
   const resumoDinteri247 = gerarResumoFiltrado(eventosDinteri247);
 
   // Eventos da verba 247 na DINTER II
   const eventosDinterii247 = eventosVerba247
-    .filter((e) => e.omeId >= 47 && e.omeId <= 58)
+    .filter((e) => e.omeId >= 49 && e.omeId <= 60)
     .sort((a, b) => a.omeId - b.omeId);
   const resumoDinterii247 = gerarResumoFiltrado(eventosDinterii247);
 
   // Eventos da verba 247 na DPO
   const eventosDpo247 = eventosVerba247
-    .filter((e) => e.omeId >= 59 && e.omeId <= 107)
+    .filter((e) => e.omeId >= 61 && e.omeId <= 105)
     .sort((a, b) => a.omeId - b.omeId);
   const resumoDpo247 = gerarResumoFiltrado(eventosDpo247);
 
   // Eventos da verba 255 na TI
   const eventosDpo255 = eventosVerba255
-    .filter((e) => e.omeId >= 1 && e.omeId <= 74)
+    .filter((e) => e.omeId >= 1 && e.omeId <= 105)
     .sort((a, b) => a.omeId - b.omeId);
   const resumoDpo255 = gerarResumoFiltrado(eventosDpo255);
 
   // Eventos da verba 263 na PE
   const eventosPe263 = eventosVerba263
-    .filter((e) => e.omeId >= 1 && e.omeId <= 107)
+    .filter((e) => e.omeId >= 1 && e.omeId <= 105)
     .sort((a, b) => a.omeId - b.omeId);
   const resumoPe263 = gerarResumoFiltrado(eventosPe263);
 
   // Eventos da verba 250 na Federal
   const eventosFederal250 = eventosVerba250
-    .filter((e) => e.omeId >= 1 && e.omeId <= 107)
+    .filter((e) => e.omeId >= 1 && e.omeId <= 105)
     .sort((a, b) => a.omeId - b.omeId);
   const resumoFederal250 = gerarResumoFiltrado(eventosFederal250);
 
   // Eventos da verba 252 na TJPE
   const eventosTjpe252 = eventosVerba252
-    .filter((e) => e.omeId >= 1 && e.omeId <= 107)
+    .filter((e) => e.omeId >= 1 && e.omeId <= 109)
     .sort((a, b) => a.omeId - b.omeId);
   const resumoTjpe252 = gerarResumoFiltrado(eventosTjpe252);
 
   // Eventos da verba 253 na MPPE
   const eventosMppe253 = eventosVerba253
-    .filter((e) => e.omeId >= 1 && e.omeId <= 107)
+    .filter((e) => e.omeId >= 1 && e.omeId <= 109)
     .sort((a, b) => a.omeId - b.omeId);
   const resumoMppe253 = gerarResumoFiltrado(eventosMppe253);
 
   // Eventos da verba 260 na CAMIL
   const eventosCamil260 = eventosVerba260
-    .filter((e) => e.omeId >= 1 && e.omeId <= 107)
+    .filter((e) => e.omeId >= 1 && e.omeId <= 109)
     .sort((a, b) => a.omeId - b.omeId);
   const resumoCamil260 = gerarResumoFiltrado(eventosCamil260);
 
   // Eventos da verba 257 na CPRH
   const eventosCprh257 = eventosVerba257
-    .filter((e) => e.omeId >= 1 && e.omeId <= 107)
+    .filter((e) => e.omeId >= 1 && e.omeId <= 109)
     .sort((a, b) => a.omeId - b.omeId);
   const resumoCprh257 = gerarResumoFiltrado(eventosCprh257);
 
   // Eventos da verba 251 na Alepe
   const eventosAlepe251 = eventosVerba251
-    .filter((e) => e.omeId >= 1 && e.omeId <= 107)
+    .filter((e) => e.omeId >= 1 && e.omeId <= 109)
     .sort((a, b) => a.omeId - b.omeId);
   const resumoAlepe251 = gerarResumoFiltrado(eventosAlepe251);
 
   // Eventos da verba 266 na TCE
   const eventosTce266 = eventosVerba266
-    .filter((e) => e.omeId >= 1 && e.omeId <= 107)
+    .filter((e) => e.omeId >= 1 && e.omeId <= 109)
     .sort((a, b) => a.omeId - b.omeId);
   const resumoTce266 = gerarResumoFiltrado(eventosTce266);
 
@@ -1575,7 +1575,7 @@ export default function PjesPage() {
                       <p>Nenhum evento para esta distribuição.</p>
                     ) : (
                       
-                    <div style={{height:"2000px", overflow:"auto"}}>
+                    <div style={{height:"2500px", overflow:"auto"}}>
                       <ul className={styles.eventoUl}>
                       {eventoSelecionado.map((evento: any) => {
                         let color = "#f7911e";
