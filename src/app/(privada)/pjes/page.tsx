@@ -351,7 +351,7 @@ export default function PjesPage() {
 
   // Eventos da verba 263 na PE
   const eventosPe263 = eventosVerba263
-    .filter((e) => e.omeId >= 1 && e.omeId <= 105)
+    .filter((e) => e.omeId >= 1 && e.omeId <= 109)
     .sort((a, b) => a.omeId - b.omeId);
   const resumoPe263 = gerarResumoFiltrado(eventosPe263);
 
@@ -1023,14 +1023,14 @@ export default function PjesPage() {
                     <table className={styles.tableDist}>
                       <thead>
                         <tr className={styles.theadPrincipal}>
-                          <th colSpan={2} className={styles.thPadrao}>
+                          <th colSpan={2} className={styles.thPadrao} style={{width:"20%"}}>
                             Diretoria
                           </th>
-                          <th className={styles.thPadrao}>Distribuição</th>
-                          <th className={styles.thPadrao}>Oficiais</th>
-                          <th className={styles.thPadrao}>Praças</th>
+                          <th className={styles.thPadrao} style={{width:"30%"}}>Distribuição</th>
+                          <th className={styles.thPadrao} style={{width:"20%"}}>Oficiais</th>
+                          <th className={styles.thPadrao} style={{width:"20%"}}>Praças</th>
                           {cadastrarDist(user?.typeUser) && (
-                            <th className={styles.thPadrao}>#</th>
+                            <th className={styles.thPadrao} style={{width:"10%"}}>#</th>
                           )}
                         </tr>
                       </thead>
