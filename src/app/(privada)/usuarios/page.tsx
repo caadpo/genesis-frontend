@@ -51,9 +51,7 @@ export default function UsuariosPage() {
     fetchUsers();
   }, []);
 
-  const podeAdicionarUsuario =
-    typeof userLogado?.typeUser === "number" &&
-    [1, 5, 10].includes(userLogado.typeUser);
+  const podeAdicionarUsuario =  typeof userLogado?.typeUser === "number" && [1, 5, 10].includes(userLogado.typeUser);
 
   const podeEditarOuExcluir = (usuario: any): boolean => {
     if (typeof userLogado?.typeUser === "number") {

@@ -201,13 +201,12 @@ export default function PjesPage() {
   const cadastrarDist = (type?: number) =>
     type !== undefined && [4, 5, 10].includes(type);
 
-  // 🔁 Gatilho para recarregar dados
   const [pjesevento, setPjesevento] = useState(0);
 
   type EventoComOperacoes = {
     operacoes?: any[];
     escalas?: any[];
-    [key: string]: any; // permite outras chaves sem erro
+    [key: string]: any;
   };
 
   const { eventos, tetos, dists, loading, atualizarOperacao } = useCarregarDadosPjes(
@@ -416,8 +415,6 @@ export default function PjesPage() {
   const handleEventoClick = (id: number) => {
     setSelectedEventoId(id);
     setSelectedOperacaoId(null);
-
-    // O restante dos dados (operações/escalas) virá do hook via eventos
   };
 
   const handleOperacaoClick = (id: number) => {
@@ -583,7 +580,7 @@ export default function PjesPage() {
       }
 
       alert("Operação excluída com sucesso!");
-      atualizarDados(); // ✅ Atualiza os dados após exclusão
+      atualizarDados();
     } catch (error) {
       console.error("Erro ao excluir operação:", error);
       alert("Erro interno ao excluir.");
@@ -609,7 +606,6 @@ export default function PjesPage() {
         return;
       }
 
-      // ✅ FORÇA A ATUALIZAÇÃO DOS DADOS NO HOOK
       atualizarDados();
 
       // Fecha o menu
@@ -638,7 +634,7 @@ export default function PjesPage() {
       }
 
       atualizarTotaisOperacoes(selectedOperacaoId!);
-      atualizarDados(); // ✅ Atualiza os dados após exclusão
+      atualizarDados();
     } catch (err) {
       console.error("Erro ao atualizar status:", err);
       alert("Erro interno ao atualizar status.");
@@ -658,7 +654,7 @@ export default function PjesPage() {
       }
 
       atualizarTotaisOperacoes(selectedOperacaoId!);
-      atualizarDados(); // ✅ Atualiza os dados após exclusão
+      atualizarDados();
     } catch (err) {
       console.error(err);
       alert("Erro inesperado ao excluir.");
@@ -1252,7 +1248,7 @@ export default function PjesPage() {
                       titulo="DPO"
                       resumo={resumoDpo247}
                       omeMin={61}
-                      omeMax={104}
+                      omeMax={105}
                       eventos={eventosDpo247}
                     />
                   )}
