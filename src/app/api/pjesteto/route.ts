@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
     });
 
     const data = await res.json();
-
+    
     if (!res.ok) {
       return NextResponse.json(
         { error: data.message || "Erro ao buscar dados" },

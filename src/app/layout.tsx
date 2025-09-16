@@ -1,16 +1,7 @@
 import type { Metadata } from "next";
-// import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
-// const geistSans = Geist({
-//   variable: "--font-geist-sans",
-//   subsets: ["latin"],
-// });
-
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   subsets: ["latin"],
-// });
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 export const metadata: Metadata = {
   title: "Genesis",
@@ -33,6 +24,16 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         {children}
+
+        {/* Toasts aparecerão no canto inferior direito */}
+        <ToastContainer
+          position="bottom-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          pauseOnHover
+          draggable
+          theme="colored"
+        />
       </body>
     </html>
   );

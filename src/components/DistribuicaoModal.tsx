@@ -81,13 +81,13 @@ export default function DistribuicaoModal({
   };
 
   const handleSubmit = () => {
-    if (!selectedTetoId) {
-      alert("Selecione um teto antes de salvar.");
+    if (!selectedTetoId || typeof selectedTetoId !== "number") {
+      alert("Selecione um teto válido antes de salvar.");
       return;
     }
 
     const dados = {
-      ...(initialData?.id && { id: initialData.id }), // inclui o ID só se estiver editando
+      ...(initialData?.id && { id: initialData.id }),
       nomeDist: form.nomeDist,
       diretoriaId: Number(form.diretoriaId),
       ttCtOfDist: Number(form.ttCtOfDist),

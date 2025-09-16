@@ -5,7 +5,6 @@ const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://191.252.214.36:4000";
 const API_BASE = `${API_BASE_URL}/api/pjesevento`;
 
-// 🔍 GET eventos
 export async function GET(request: NextRequest) {
   const token = request.cookies.get("accessToken")?.value;
 
@@ -16,14 +15,39 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const ano = searchParams.get("ano");
   const mes = searchParams.get("mes");
+  const codVerba = searchParams.get("codVerba");
 
+  // ✅ Recupera usuário decodificando o token JWT
+  let typeUser: number | null = null;
+  let omeId: number | null = null;
+
+  try {
+    const base64Payload = token.split('.')[1];
+    const payload = JSON.parse(Buffer.from(base64Payload, 'base64').toString());
+    typeUser = payload.typeUser;
+    omeId = payload.omeId;
+  } catch (err) {
+    console.error("Erro ao decodificar token:", err);
+    return NextResponse.json({ error: "Token inválido" }, { status: 400 });
+  }
+
+  // 🔀 Monta a URL da API com base no tipo do usuário
   const queryParams = new URLSearchParams();
   if (ano) queryParams.append("ano", ano);
   if (mes) queryParams.append("mes", mes);
+  if (codVerba) queryParams.append("codVerba", codVerba);
 
-  const url = `${API_BASE}${
-    queryParams.toString() ? `?${queryParams.toString()}` : ""
-  }`;
+  let url = "";
+
+  if (typeUser === 1 && omeId) {
+    // Usuário comum: buscar eventos da OME dele
+    url = `${API_BASE_URL}/api/ome/${omeId}/eventos?${queryParams.toString()}`;
+  } else if (typeUser === 3 || typeUser === 5 || typeUser === 10) {
+    // Admin ou tipo especial: buscar eventos de todas as OMEs
+    url = `${API_BASE_URL}/api/ome/eventos?${queryParams.toString()}`;
+  } else {
+    return NextResponse.json({ error: "Tipo de usuário não autorizado" }, { status: 403 });
+  }
 
   try {
     const res = await fetch(url, {
@@ -38,7 +62,7 @@ export async function GET(request: NextRequest) {
 
     if (!res.ok) {
       return NextResponse.json(
-        { error: data.message || "Erro ao buscar dados" },
+        { error: data.message || "Erro ao buscar eventos" },
         { status: res.status }
       );
     }
@@ -49,6 +73,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Erro interno" }, { status: 500 });
   }
 }
+
 
 // 📝 POST novo evento
 export async function POST(request: NextRequest) {

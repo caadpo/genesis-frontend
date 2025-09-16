@@ -82,6 +82,8 @@ export default function OperacaoModal({
 
   const handleSubmit = async () => {
     if (!initialData?.id && !selectedEventoId) {
+      console.log("Esss é o initialData?.id em OperacaoModal", initialData?.id)
+      console.log("Esss é o selectedEventoId em OperacaoModal", selectedEventoId)
       alert("Selecione uma evento antes de salvar.");
       return;
     }

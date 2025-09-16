@@ -103,7 +103,8 @@ export default function PesquisarEscala() {
   const [escalas, setEscalas] = useState<Escala[]>([]);
   const [date, setDate] = useState<Date>(new Date());
   const [matricula, setMatricula] = useState(""); // controla o input
-  const [matriculaPesquisada, setMatriculaPesquisada] = useState(""); // guarda a última matrícula usada
+  const [matriculaPesquisada, setMatriculaPesquisada] = useState("");
+  const [policialPesquisado, setPolicialPesquisado] = useState<Usuario | null>(null);
 
   //FORMATANDO A DATA PARA O TIPO BRASILEIRO
   const formatDate = (dateStr: string) => {
@@ -150,19 +151,28 @@ export default function PesquisarEscala() {
 
   const buscarEscalas = async () => {
     if (matricula.length !== 7) return;
-
+  
     setLoading(true);
     setErro("");
     setEscalas([]);
+    setPolicialPesquisado(null);
+  
     try {
-      const res = await fetch(
-        `/api/pjesescala/escalas-por-matricula?mat=${matricula}`
-      );
+      const res = await fetch(`/api/pjesescala/escalas-por-matricula?mat=${matricula}`);
       const data = await res.json();
 
+      console.log("A variavel data em pesquisarEscala é", data);
+  
       if (!res.ok) throw new Error(data.error || "Erro ao buscar escalas");
+  
       setEscalas(data);
       setMatriculaPesquisada(matricula);
+  
+      // NOVO: Buscar dados do policial
+      const policial = await buscarDadosPolicial(matricula);
+      if (policial) {
+        setPolicialPesquisado(policial);
+      }
     } catch (err: any) {
       setErro(err.message);
     } finally {
@@ -170,6 +180,33 @@ export default function PesquisarEscala() {
     }
   };
   //FIM BUSCAR AS ESCALAS PARA RENDERIZER NO CALENDARIO
+
+  const buscarDadosPolicial = async (matricula: string): Promise<Usuario | null> => {
+    try {
+      const res = await fetch(`/api/dadossgp/${matricula}`);
+      const data = await res.json();
+  
+      if (!res.ok) throw new Error(data.error || "Erro ao buscar policial");
+  
+      const usuario: Usuario = {
+        id: 0,
+        tipo: "",
+        omeId: 0,
+        nomeGuerra: data.nomeGuerraSgp,
+        nomeOme: data.omeSgp,
+        pg: data.pgSgp,
+        imagemUrl: data.imagemUrl || undefined,
+      };
+  
+      return usuario;
+    } catch (error) {
+      console.error("Erro ao buscar policial:", error);
+      return null;
+    }
+  };
+  
+  
+  
 
   // INICIO TRATAMENTO DO CAMPO DO IMPUT PARA BUSCAR OS DADOS PELA MATRICULA
   const handleMatriculaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -242,6 +279,8 @@ export default function PesquisarEscala() {
         alert(data.error || "Erro ao atualizar status da escala.");
         return;
       }
+
+      
 
       const dataAtual = new Date().toISOString();
 
@@ -355,6 +394,25 @@ export default function PesquisarEscala() {
         >
           {loading ? <FaSpinner className="spin" /> : <FaSearch />}
         </button>
+      </div>
+
+      {policialPesquisado && (
+        <div style={{ marginTop: "20px", background: "#eee", padding: "10px", borderRadius: "8px" }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
+              <div style={{ borderRadius: "40px", padding:"5px", border: "1px solid #444", }} ><FaUser size={40} /></div>
+            <div style={{ marginLeft: "10px" }}>
+              <div><strong>{policialPesquisado.pg} {policialPesquisado.nomeGuerra}</strong></div>
+              <div>{policialPesquisado.nomeOme}</div>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+      <div style={{padding:"10px", fontSize:"20px"}}>
+        <h3>
+          <strong>Escala do Policial</strong>
+        </h3>
       </div>
 
       <Calendar

@@ -13,11 +13,13 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const ano = searchParams.get("ano");
   const mes = searchParams.get("mes");
+  const codVerba = searchParams.get("codVerba");
 
-  // Constrói a URL com query string, se ano e mes forem válidos
   const queryParams = new URLSearchParams();
   if (ano) queryParams.append("ano", ano);
-  if (mes) queryParams.append("mes", mes); // já deve vir como número (ex: 7)
+  if (mes) queryParams.append("mes", mes);
+  if (codVerba) queryParams.append("codVerba", codVerba);
+
 
   const url = `${API_BASE_URL}/api/pjesdist${
     queryParams.toString() ? `?${queryParams.toString()}` : ""

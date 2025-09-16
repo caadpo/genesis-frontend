@@ -32,6 +32,7 @@ import { UserProvider } from "../context/UserContext";
 import "react-calendar/dist/Calendar.css";
 import Calendar from "react-calendar";
 import { FaTriangleExclamation } from "react-icons/fa6";
+import Link from "next/link";
 
 interface User {
   id: number;
@@ -105,20 +106,10 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
   const [showUserModal, setShowUserModal] = useState(false);
-  const [mesesPorAno, setMesesPorAno] = useState<{ [ano: string]: string[] }>(
-    {}
-  );
-  const [anosAbertos, setAnosAbertos] = useState<{ [ano: string]: boolean }>(
-    {}
-  );
-
   const [showMesesModalNovo, setShowMesesModalNovo] = useState(false);
-
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-
   const [escalas, setEscalas] = useState<Escala[]>([]);
-  //const [date, setDate] = useState<Date>(new Date());
   const [date, setDate] = useState<Date | null>(null);
 
 
@@ -145,15 +136,12 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
   //FORMATANDO A DATA E HORA TIRAR AUTERAÇÃO
   const formatarDataHoraBR = (dataIso: string): string => {
     if (!dataIso) return "";
-
     const data = new Date(dataIso);
-
     const dia = String(data.getDate()).padStart(2, "0");
     const mes = String(data.getMonth() + 1).padStart(2, "0");
     const ano = data.getFullYear();
     const hora = String(data.getHours()).padStart(2, "0");
     const minuto = String(data.getMinutes()).padStart(2, "0");
-
     return `${dia}/${mes}/${ano} às ${hora}:${minuto}`;
   };
 
@@ -162,76 +150,7 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
 
   const [activeTab, setActiveTab] = useState("perfil");
 
-  const fetchMesesData = async () => {
-    try {
-      const response = await fetch("/api/pjesteto");
-      const data = await response.json();
-
-      const anoAtual = new Date().getFullYear();
-
-      // Filtrar apenas os dados do codVerba 247 e até o ano atual
-      const filtrados = data.filter(
-        (item: any) => item.codVerba === 247 && item.ano <= anoAtual
-      );
-
-      // Array manual com nomes dos meses
-      const nomesMeses = [
-        "JAN",
-        "FEV",
-        "MAR",
-        "ABR",
-        "MAI",
-        "JUN",
-        "JUL",
-        "AGO",
-        "SET",
-        "OUT",
-        "NOV",
-        "DEZ",
-      ];
-
-      // Agrupar por ano com nomes dos meses sem ponto
-      const agrupados: { [ano: string]: string[] } = {};
-
-      filtrados.forEach((item: any) => {
-        const mesNome = nomesMeses[item.mes - 1]; // converte número para nome
-
-        if (!agrupados[item.ano]) agrupados[item.ano] = [];
-
-        if (!agrupados[item.ano].includes(mesNome)) {
-          agrupados[item.ano].push(mesNome);
-        }
-      });
-
-      // Ordenar meses pela ordem correta
-      Object.keys(agrupados).forEach((ano) => {
-        agrupados[ano].sort(
-          (a, b) => nomesMeses.indexOf(a) - nomesMeses.indexOf(b)
-        );
-      });
-
-      setMesesPorAno(agrupados);
-      //setShowMesesModal(true);
-      setShowMesesModalNovo(true);
-    } catch (error) {
-      console.error("Erro ao buscar dados:", error);
-    }
-  };
-
-  const toggleAno = (ano: string) => {
-    setAnosAbertos((prev) => ({
-      ...prev,
-      [ano]: !prev[ano],
-    }));
-  };
-
   const router = useRouter();
-  const handleMesClick = (ano: string, mes: string) => {
-    //setShowMesesModal(false);
-    setShowMesesModalNovo(false);
-    router.push(`/pjes?ano=${ano}&mes=${mes}`);
-  };
-
   function decodeUserData(base64Str: string) {
     return JSON.parse(decodeURIComponent(escape(atob(base64Str))));
   }
@@ -282,8 +201,6 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
   //INICIO BUSCAR AS ESCALAS PARA RENDERIZER NO CALENDARIO
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState("");
-  const [ano, setAno] = useState<string | null>(null);
-  const [mes, setMes] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchMinhasEscalas = async () => {
@@ -358,6 +275,18 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
       alert("Erro inesperado ao alterar senha.");
     }
   };
+
+  //INICIO FUNÇÃO PARA CHMAR OS MESES DO ANO
+    const anosMeses: { [ano: string]: string[] } = {
+    2025: ["AGO", "SET", "OUT" , "NOV" , "DEZ"],
+    2026: ["JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT" , "NOV" , "DEZ"],
+    2027: ["JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT" , "NOV" , "DEZ"],
+    2028: ["JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT" , "NOV" , "DEZ"],
+    2029: ["JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT" , "NOV" , "DEZ"],
+    2030: ["JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT" , "NOV" , "DEZ"],
+  };
+  
+  // FIM FUNÇÃO CHAMAR MESES DO ANO
 
   if (!user) return <div>Você não está autenticado.</div>;
 
@@ -474,7 +403,6 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
               {[1, 3, 5, 10].includes(user?.typeUser) && (
                 <li
                   onClick={() => {
-                    fetchMesesData();
                     setShowMesesModalNovo(true);
                   }}
                   className={pathname === "/pjes" ? styles.active : ""}
@@ -511,498 +439,481 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
         </div>
 
         {/* INICIO MODAL PERFIL DO USUARIO */}
-        {showUserModal && (
-          <div
-            className={styles.modalOverlay}
-            onClick={() => setShowUserModal(false)}
-          >
+          {showUserModal && (
             <div
-              className={styles.userModal}
-              onClick={(e) => e.stopPropagation()}
+              className={styles.modalOverlay}
+              onClick={() => setShowUserModal(false)}
             >
-              <div className={styles.modalLeft}>
-                <ul className={styles.modalMenu}>
-                  <li
-                    className={
-                      activeTab === "geral" ? styles.activeMenuItem : ""
-                    }
-                    onClick={() => setActiveTab("geral")}
-                  >
-                    <FaAlignCenter className={styles.menuIcon} />
-                    <span className={styles.geralSenhaPjes}></span>
-                  </li>
-                  <li
-                    className={
-                      activeTab === "senha" ? styles.activeMenuItem : ""
-                    }
-                    onClick={() => setActiveTab("senha")}
-                  >
-                    <FaKey className={styles.menuIcon} />
-                    <span className={styles.geralSenhaPjes}></span>
-                  </li>
-                  <li
-                    className={
-                      activeTab === "meuspjes" ? styles.activeMenuItem : ""
-                    }
-                    onClick={() => setActiveTab("meuspjes")}
-                  >
-                    <FaSitemap className={styles.menuIcon} />
-                    <span className={styles.geralSenhaPjes}></span>
-                  </li>
-                </ul>
-                <div className={styles.modalFooterLeft}>
-                  <div
-                    className={styles.profileFooterItem}
-                    onClick={() => setShowUserModal(false)}
-                  >
-                    <FaUser />
+              <div
+                className={styles.userModal}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className={styles.modalLeft}>
+                  <ul className={styles.modalMenu}>
+                    <li
+                      className={
+                        activeTab === "geral" ? styles.activeMenuItem : ""
+                      }
+                      onClick={() => setActiveTab("geral")}
+                    >
+                      <FaAlignCenter className={styles.menuIcon} />
+                      <span className={styles.geralSenhaPjes}></span>
+                    </li>
+                    <li
+                      className={
+                        activeTab === "senha" ? styles.activeMenuItem : ""
+                      }
+                      onClick={() => setActiveTab("senha")}
+                    >
+                      <FaKey className={styles.menuIcon} />
+                      <span className={styles.geralSenhaPjes}></span>
+                    </li>
+                    <li
+                      className={
+                        activeTab === "meuspjes" ? styles.activeMenuItem : ""
+                      }
+                      onClick={() => setActiveTab("meuspjes")}
+                    >
+                      <FaSitemap className={styles.menuIcon} />
+                      <span className={styles.geralSenhaPjes}></span>
+                    </li>
+                  </ul>
+                  <div className={styles.modalFooterLeft}>
+                    <div
+                      className={styles.profileFooterItem}
+                      onClick={() => setShowUserModal(false)}
+                    >
+                      <FaUser />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className={styles.modalRight}>
-                {activeTab === "geral" && user && (
-                  <div style={{ textAlign: "center" }}>
-                    {/* Imagem do usuário */}
-                    <div style={{ marginBottom: "1rem" }}>
-                      <Image
-                        width={50}
-                        height={50}
-                        src={user.imagemUrl || "/assets/images/user_padrao.png"}
-                        alt="img_usuario"
-                        className={styles.imgUserModal}
-                      />
-                    </div>
-
-                    {/* Nome, matrícula e função */}
-                    <div className={styles.identificacaoUser}>
-                      <p>
-                        {user.pg} {user.nomeGuerra} {user.ome?.nomeOme}
-                      </p>
-                    </div>
-
-                    {/* Restante dos dados */}
-                    <div className={styles.seiFuncaoTelEmail}>
-                      <div className={styles.divSeiFuncaoTelEmail}>
-                        <FaUserTag style={{ marginRight: "8px" }} />
-                        <span>{user.loginSei}</span>
-                      </div>
-
-                      <div className={styles.divSeiFuncaoTelEmail}>
-                        <FaIdBadge className={styles.faSeiFuncaoTelEmail} />
-                        <span>{user.funcao}</span>
-                      </div>
-
-                      <div className={styles.divSeiFuncaoTelEmail}>
-                        <FaUniversity className={styles.faSeiFuncaoTelEmail} />
-                        <span> {user.ome?.diretoria?.nomeDiretoria}</span>
-                      </div>
-
-                      <div className={styles.divSeiFuncaoTelEmail}>
-                        <FaPhone className={styles.faSeiFuncaoTelEmail} />
-                        <span>{user.phone}</span>
-                      </div>
-
-                      <div className={styles.divSeiFuncaoTelEmail}>
-                        <FaEnvelope className={styles.faSeiFuncaoTelEmail} />
-                        <span>{user.email}</span>
-                      </div>
-                    </div>
-
-                    {/* Linha divisória */}
-                    <hr className={styles.hrSeiFuncaoTelEmail} />
-
-                    <div className={styles.modalFooterLeft}>
-                      <div
-                        className={styles.profileFooterItem}
-                        onClick={handleLogout}
-                      >
-                        <FaSignOutAlt className={styles.menuIcon} />
-                        <span>Desconectar</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {activeTab === "senha" && (
-                  <>
-                    <div style={{ marginBottom: "1rem" }}>
-                      <FaKey className={styles.imgSenhaModal} />
-                    </div>
-
-                    {/* Restante dos dados */}
-                    <div className={styles.seiFuncaoTelEmail}>
-                      <div className={styles.divSeiFuncaoTelEmail}>
-                        <FaKeycdn style={{ marginRight: "8px" }} />
-                        <input
-                          type="password"
-                          placeholder="Senha atual"
-                          value={currentPassword}
-                          onChange={(e) => setCurrentPassword(e.target.value)}
-                          className={styles.input}
+                <div className={styles.modalRight}>
+                  {activeTab === "geral" && user && (
+                    <div style={{ textAlign: "center" }}>
+                      {/* Imagem do usuário */}
+                      <div style={{ marginBottom: "1rem" }}>
+                        <Image
+                          width={50}
+                          height={50}
+                          src={user.imagemUrl || "/assets/images/user_padrao.png"}
+                          alt="img_usuario"
+                          className={styles.imgUserModal}
                         />
                       </div>
 
-                      <div className={styles.divSeiFuncaoTelEmail}>
-                        <FaKey className={styles.faSeiFuncaoTelEmail} />
-                        <input
-                          type="text"
-                          placeholder="Nova senha"
-                          value={newPassword}
-                          onChange={(e) => setNewPassword(e.target.value)}
-                          className={styles.input}
-                        />
+                      {/* Nome, matrícula e função */}
+                      <div className={styles.identificacaoUser}>
+                        <p>
+                          {user.pg} {user.nomeGuerra} {user.ome?.nomeOme}
+                        </p>
+                      </div>
+
+                      {/* Restante dos dados */}
+                      <div className={styles.seiFuncaoTelEmail}>
+                        <div className={styles.divSeiFuncaoTelEmail}>
+                          <FaUserTag style={{ marginRight: "8px" }} />
+                          <span>{user.loginSei}</span>
+                        </div>
+
+                        <div className={styles.divSeiFuncaoTelEmail}>
+                          <FaIdBadge className={styles.faSeiFuncaoTelEmail} />
+                          <span>{user.funcao}</span>
+                        </div>
+
+                        <div className={styles.divSeiFuncaoTelEmail}>
+                          <FaUniversity className={styles.faSeiFuncaoTelEmail} />
+                          <span> {user.ome?.diretoria?.nomeDiretoria}</span>
+                        </div>
+
+                        <div className={styles.divSeiFuncaoTelEmail}>
+                          <FaPhone className={styles.faSeiFuncaoTelEmail} />
+                          <span>{user.phone}</span>
+                        </div>
+
+                        <div className={styles.divSeiFuncaoTelEmail}>
+                          <FaEnvelope className={styles.faSeiFuncaoTelEmail} />
+                          <span>{user.email}</span>
+                        </div>
+                      </div>
+
+                      {/* Linha divisória */}
+                      <hr className={styles.hrSeiFuncaoTelEmail} />
+
+                      <div className={styles.modalFooterLeft}>
+                        <div
+                          className={styles.profileFooterItem}
+                          onClick={handleLogout}
+                        >
+                          <FaSignOutAlt className={styles.menuIcon} />
+                          <span>Desconectar</span>
+                        </div>
                       </div>
                     </div>
+                  )}
 
-                    {/* Linha divisória */}
-                    <hr className={styles.hrSeiFuncaoTelEmail} />
-
-                    <div className={styles.modalFooterLeft}>
-                      <div
-                        className={styles.profileFooterItem}
-                        onClick={handleChangePassword}
-                      >
-                        <FaKey className={styles.menuIcon} />
-                        <span>Atualizar Senha</span>
+                  {activeTab === "senha" && (
+                    <>
+                      <div style={{ marginBottom: "1rem" }}>
+                        <FaKey className={styles.imgSenhaModal} />
                       </div>
-                    </div>
-                  </>
-                )}
 
-                {activeTab === "meuspjes" && (
-                  <>
-                    <Calendar
-                      onChange={(value) => {
-                        if (!value) {
-                          setDate(null); // para tratar caso seja null
-                          return;
-                        }
-                        const selected = Array.isArray(value) ? value[0] : value;
-                        setDate(selected);
-                      }}
-                      value={date}
-                      className={styles.customCalendar}
-                      tileContent={({ date, view }: TileProps) => {
-                        if (view === "month") {
-                          const diaStr = date.toISOString().split("T")[0];
-                          const escalaDoDia = escalas.find(
-                            (esc) => esc.dia === diaStr
-                          );
+                      {/* Restante dos dados */}
+                      <div className={styles.seiFuncaoTelEmail}>
+                        <div className={styles.divSeiFuncaoTelEmail}>
+                          <FaKeycdn style={{ marginRight: "8px" }} />
+                          <input
+                            type="password"
+                            placeholder="Senha atual"
+                            value={currentPassword}
+                            onChange={(e) => setCurrentPassword(e.target.value)}
+                            className={styles.input}
+                          />
+                        </div>
 
-                          if (escalaDoDia) {
-                            return (
-                              <div
-                                style={{ fontSize: "0.6rem", color: "blue" }}
-                              >
-                               <strong>{escalaDoDia.nomeOme}</strong>
-                              </div>
-                            );
+                        <div className={styles.divSeiFuncaoTelEmail}>
+                          <FaKey className={styles.faSeiFuncaoTelEmail} />
+                          <input
+                            type="text"
+                            placeholder="Nova senha"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            className={styles.input}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Linha divisória */}
+                      <hr className={styles.hrSeiFuncaoTelEmail} />
+
+                      <div className={styles.modalFooterLeft}>
+                        <div
+                          className={styles.profileFooterItem}
+                          onClick={handleChangePassword}
+                        >
+                          <FaKey className={styles.menuIcon} />
+                          <span>Atualizar Senha</span>
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {activeTab === "meuspjes" && (
+                    <>
+                      <Calendar
+                        onChange={(value) => {
+                          if (!value) {
+                            setDate(null); // para tratar caso seja null
+                            return;
                           }
-                        }
-                        return null;
-                      }}
-                    />
-
-                    <div style={{ flex: 1, marginTop: "10px" }}>
-                      <div className={styles.eventoTextoMinhaEscala}>
-                        <div className={styles.escalaInfo}>
-                          {(() => {
-
-                            if (!date) return null;
-                            const diaStr = date.toLocaleDateString("sv-SE");
+                          const selected = Array.isArray(value) ? value[0] : value;
+                          setDate(selected);
+                        }}
+                        value={date}
+                        className={styles.customCalendar}
+                        tileContent={({ date, view }: TileProps) => {
+                          if (view === "month") {
+                            const diaStr = date.toISOString().split("T")[0];
                             const escalaDoDia = escalas.find(
                               (esc) => esc.dia === diaStr
                             );
 
                             if (escalaDoDia) {
-                              const { dia, nomeMes } = formatDate(
-                                escalaDoDia.dia
-                              );
                               return (
-                                <div>
-                                  <div
-                                    style={{
-                                      textAlign: "right",
-                                      fontSize: "12px",
-                                    }}
-                                  >
-                                    COP: <strong>{escalaDoDia.codOp}</strong>
-                                  </div>
-                                  <div className={styles.escalaLinha}>
-                                    <div className={styles.dataColuna}>
-                                      <span className={styles.dia}>{dia}</span>
-                                      <span className={styles.mes}>
-                                        {nomeMes}
-                                      </span>
-                                      <span className={styles.horarioEscala}>
-                                        {escalaDoDia.horaInicio.slice(0, 5)} às{" "}
-                                        {escalaDoDia.horaFinal.slice(0, 5)}
-                                      </span>
-                                    </div>
+                                <div
+                                  style={{ fontSize: "0.6rem", color: "blue" }}
+                                >
+                                <strong>{escalaDoDia.nomeOme}</strong>
+                                </div>
+                              );
+                            }
+                          }
+                          return null;
+                        }}
+                      />
 
-                                    <div style={{ width: "60%" }}>
-                                      <span className={styles.nome}>
-                                        {escalaDoDia.nomeOperacao} |{" "}
-                                        {escalaDoDia.nomeOme}
-                                      </span>
-                                      <div
-                                        className={styles.detalhesItemCalendar}
-                                      >
-                                        <FaMapMarkerAlt />
-                                        <span
-                                          className={styles.localApresentacao}
-                                        >
-                                          {escalaDoDia.localApresentacaoSgp}
+                      <div style={{ flex: 1, marginTop: "5px" }}>
+                        <div className={styles.eventoTextoMinhaEscala}>
+                          <div className={styles.escalaInfo}>
+                            {(() => {
+
+                              if (!date) return null;
+                              const diaStr = date.toLocaleDateString("sv-SE");
+                              const escalaDoDia = escalas.find(
+                                (esc) => esc.dia === diaStr
+                              );
+
+                              if (escalaDoDia) {
+                                const { dia, nomeMes } = formatDate(
+                                  escalaDoDia.dia
+                                );
+                                return (
+                                  <div>
+                                    <div
+                                      style={{
+                                        textAlign: "right",
+                                        fontSize: "12px",
+                                      }}
+                                    >
+                                      COP: <strong>{escalaDoDia.codOp}</strong>
+                                    </div>
+                                    <div className={styles.escalaLinha}>
+                                      <div className={styles.dataColuna}>
+                                        <span className={styles.dia}>{dia}</span>
+                                        <span className={styles.mes}>
+                                          {nomeMes}
+                                        </span>
+                                        <span className={styles.horarioEscala}>
+                                          {escalaDoDia.horaInicio.slice(0, 5)} às{" "}
+                                          {escalaDoDia.horaFinal.slice(0, 5)}
                                         </span>
                                       </div>
-                                      <div className={styles.detalhesContainer}>
-                                        <div
-                                          className={
-                                            styles.detalhesItemCalendar
-                                          }
-                                        >
-                                          <FaAirbnb />
-                                          <span className={styles.detalheTexto}>
-                                            Função: {escalaDoDia.funcao}
+
+                                      <div style={{ width: "60%" }}>
+                                        <span className={styles.nome}>
+                                          {escalaDoDia.nomeOperacao} |{" "}
+                                          {escalaDoDia.nomeOme}
+                                        </span>
+                                        <div className={styles.detalhesItemCalendar}>
+                                          <FaMapMarkerAlt />
+                                          <span
+                                            className={styles.localApresentacao}
+                                          >
+                                            {escalaDoDia.localApresentacaoSgp}
                                           </span>
                                         </div>
+                                        <div className={styles.detalhesContainer}>
+                                          <div
+                                            className={
+                                              styles.detalhesItemCalendar
+                                            }
+                                          >
+                                            <FaAirbnb />
+                                            <span className={styles.detalheTexto}>
+                                              Função: {escalaDoDia.funcao}
+                                            </span>
+                                          </div>
+                                          <div
+                                            className={
+                                              styles.detalhesItemCalendar
+                                            }
+                                          >
+                                            <FaUser />
+                                            <span className={styles.detalheTexto}>
+                                              {escalaDoDia.situacaoSgp}
+                                            </span>
+                                          </div>
+                                        </div>
+
                                         <div
                                           className={
-                                            styles.detalhesItemCalendar
+                                            styles.detalhesAnotacaoEscala
                                           }
                                         >
-                                          <FaUser />
-                                          <span className={styles.detalheTexto}>
-                                            {escalaDoDia.situacaoSgp}
-                                          </span>
+                                          <div
+                                            className={
+                                              styles.detalhesItemCalendar
+                                            }
+                                          >
+                                            <FaInfo />
+                                            <span className={styles.detalheTexto}>
+                                              {" "}
+                                            </span>
+                                            <strong>
+                                              {escalaDoDia.anotacaoEscala}
+                                            </strong>
+                                          </div>
+                                        </div>
+                                        <h1>Situação da Escala</h1>
+                                        <div
+                                          className={styles.detalhesItemCalendar}
+                                        >
+                                          {escalaDoDia.statusEscala ===
+                                          "HOMOLOGADA" ? (
+                                            <>
+                                              <FaCheckSquare
+                                                style={{ color: "green" }}
+                                              />
+                                              <span
+                                                className={
+                                                  styles.statusConfirmado
+                                                }
+                                              >
+                                                CONFIRMADA
+                                              </span>
+                                            </>
+                                          ) : (
+                                            <>
+                                              <FaTriangleExclamation
+                                                style={{ color: "#b60b0b" }}
+                                              />
+                                              <span
+                                                className={styles.statusPendente}
+                                              >
+                                                {escalaDoDia.statusEscala}
+                                              </span>
+                                            </>
+                                          )}
+                                        </div>
+                                        <div
+                                          className={styles.detalhesItemCalendar}
+                                        >
+                                          <div className={styles.usuarioLogInfo}>
+                                            {escalaDoDia.statusEscala ===
+                                            "AUTORIZADA" ? (
+                                              <p>Aguardando confirmação</p>
+                                            ) : (
+                                              <>
+                                                <Image
+                                                  width={10}
+                                                  height={10}
+                                                  src={
+                                                    escalaDoDia.ultimoStatusLog
+                                                      ?.imagemUrl ||
+                                                    "/assets/images/user_padrao.png"
+                                                  }
+                                                  alt="img_usuario"
+                                                  className={
+                                                    styles.imgUserModalAlteracao
+                                                  }
+                                                />
+                                                <span
+                                                  className={styles.statusUsuario}
+                                                >
+                                                  <strong>
+                                                    {
+                                                      escalaDoDia.ultimoStatusLog
+                                                        ?.pg
+                                                    }{" "}
+                                                    {
+                                                      escalaDoDia.ultimoStatusLog
+                                                        ?.nomeGuerra
+                                                    }
+                                                  </strong>{" "}
+                                                  {
+                                                    escalaDoDia.ultimoStatusLog
+                                                      ?.nomeOme
+                                                  }{" "}
+                                                  em{" "}
+                                                  {formatarDataHoraBR(
+                                                    escalaDoDia.ultimoStatusLog
+                                                      ?.dataAlteracao ?? ""
+                                                  )}
+                                                </span>
+                                              </>
+                                            )}
+                                          </div>
                                         </div>
                                       </div>
 
-                                      <div
-                                        className={
-                                          styles.detalhesAnotacaoEscala
-                                        }
-                                      >
+                                      <div className={ styles.divPendenteProfilePrincipal}>
+                                        {/* Status Teto */}
                                         <div
                                           className={
-                                            styles.detalhesItemCalendar
+                                            styles.divPendenteProfileSecundaria
                                           }
                                         >
-                                          <FaInfo />
-                                          <span className={styles.detalheTexto}>
-                                            {" "}
-                                          </span>
-                                          <strong>
-                                            {escalaDoDia.anotacaoEscala}
-                                          </strong>
-                                        </div>
-                                      </div>
-                                      <h1>Situação da Escala</h1>
-                                      <div
-                                        className={styles.detalhesItemCalendar}
-                                      >
-                                        {escalaDoDia.statusEscala ===
-                                        "HOMOLOGADA" ? (
-                                          <>
-                                            <FaCheckSquare
-                                              style={{ color: "green" }}
-                                            />
-                                            <span
-                                              className={
-                                                styles.statusConfirmado
-                                              }
-                                            >
-                                              CONFIRMADA
-                                            </span>
-                                          </>
-                                        ) : (
-                                          <>
-                                            <FaTriangleExclamation
-                                              style={{ color: "#b60b0b" }}
-                                            />
-                                            <span
-                                              className={styles.statusPendente}
-                                            >
-                                              {escalaDoDia.statusEscala}
-                                            </span>
-                                          </>
-                                        )}
-                                      </div>
-                                      <div
-                                        className={styles.detalhesItemCalendar}
-                                      >
-                                        <div className={styles.usuarioLogInfo}>
-                                          {escalaDoDia.statusEscala ===
-                                          "AUTORIZADA" ? (
-                                            <p>Aguardando confirmação</p>
+                                          {escalaDoDia.tetoStatusTeto ===
+                                          "ENVIADO" ? (
+                                            <>
+                                              <FaCheck color="green" />
+                                              <div
+                                                className={
+                                                  styles.divPendenteProfileTerciaria
+                                                }
+                                              >
+                                                Enviado para pagamento em{" "}
+                                                {formatarDataHoraBR(escalaDoDia.tetoCreatedAtStatusTeto ?? "")}
+
+                                              </div>
+                                            </>
                                           ) : (
                                             <>
-                                              <Image
-                                                width={10}
-                                                height={10}
-                                                src={
-                                                  escalaDoDia.ultimoStatusLog
-                                                    ?.imagemUrl ||
-                                                  "/assets/images/user_padrao.png"
-                                                }
-                                                alt="img_usuario"
+                                              <FaTriangleExclamation color="orange" />
+                                              <div
                                                 className={
-                                                  styles.imgUserModalAlteracao
+                                                  styles.divPendenteProfileTerciaria
                                                 }
-                                              />
-                                              <span
-                                                className={styles.statusUsuario}
                                               >
-                                                <strong>
-                                                  {
-                                                    escalaDoDia.ultimoStatusLog
-                                                      ?.pg
-                                                  }{" "}
-                                                  {
-                                                    escalaDoDia.ultimoStatusLog
-                                                      ?.nomeGuerra
-                                                  }
-                                                </strong>{" "}
-                                                {
-                                                  escalaDoDia.ultimoStatusLog
-                                                    ?.nomeOme
-                                                }{" "}
-                                                em{" "}
+                                                Não Enviado
+                                              </div>
+                                            </>
+                                          )}
+                                        </div>
+
+                                        {/* Status Pg */}
+                                        <div
+                                          className={
+                                            styles.divPagamentoProfileSecundaria
+                                          }
+                                        >
+                                          {escalaDoDia.tetoStatusPg === "PAGO" ? (
+                                            <>
+                                              <FaCheck color="green" />
+                                              <div
+                                                className={
+                                                  styles.divPagamentoProfileTerciaria
+                                                }
+                                              >
+                                                Pagamento realizado em{" "}
                                                 {formatarDataHoraBR(
-                                                  escalaDoDia.ultimoStatusLog
-                                                    ?.dataAlteracao ?? ""
-                                                )}
-                                              </span>
+                                                  escalaDoDia.tetoCreatedAtStatusPg ?? "")}
+                                              </div>
+                                            </>
+                                          ) : (
+                                            <>
+                                              <FaTriangleExclamation color="orange" />
+                                              <div
+                                                className={
+                                                  styles.divPagamentoProfileTerciaria
+                                                }
+                                              >
+                                                Pendente
+                                              </div>
                                             </>
                                           )}
                                         </div>
                                       </div>
                                     </div>
-
-                                    <div className={ styles.divPendenteProfilePrincipal}>
-                                      {/* Status Teto */}
-                                      <div
-                                        className={
-                                          styles.divPendenteProfileSecundaria
-                                        }
-                                      >
-                                        {escalaDoDia.tetoStatusTeto ===
-                                        "ENVIADO" ? (
-                                          <>
-                                            <FaCheck color="green" />
-                                            <div
-                                              className={
-                                                styles.divPendenteProfileTerciaria
-                                              }
-                                            >
-                                              Enviado para pagamento em{" "}
-                                              {formatarDataHoraBR(escalaDoDia.tetoCreatedAtStatusTeto ?? "")}
-
-                                            </div>
-                                          </>
-                                        ) : (
-                                          <>
-                                            <FaTriangleExclamation color="orange" />
-                                            <div
-                                              className={
-                                                styles.divPendenteProfileTerciaria
-                                              }
-                                            >
-                                              Não Enviado
-                                            </div>
-                                          </>
-                                        )}
-                                      </div>
-
-                                      {/* Status Pg */}
-                                      <div
-                                        className={
-                                          styles.divPagamentoProfileSecundaria
-                                        }
-                                      >
-                                        {escalaDoDia.tetoStatusPg === "PAGO" ? (
-                                          <>
-                                            <FaCheck color="green" />
-                                            <div
-                                              className={
-                                                styles.divPagamentoProfileTerciaria
-                                              }
-                                            >
-                                              Pagamento realizado em{" "}
-                                              {formatarDataHoraBR(
-                                                escalaDoDia.tetoCreatedAtStatusPg ?? "")}
-                                            </div>
-                                          </>
-                                        ) : (
-                                          <>
-                                            <FaTriangleExclamation color="orange" />
-                                            <div
-                                              className={
-                                                styles.divPagamentoProfileTerciaria
-                                              }
-                                            >
-                                              Pendente
-                                            </div>
-                                          </>
-                                        )}
-                                      </div>
-                                    </div>
                                   </div>
-                                </div>
-                              );
-                            } else {
-                              return <p>Não há escala para você neste dia.</p>;
-                            }
-                          })()}
+                                );
+                              } else {
+                                return <p>Não há escala para você neste dia.</p>;
+                              }
+                            })()}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </>
-                )}
+                    </>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
         {/* FIM MODAL PERFIL DO USUARIO */}
 
         {showMesesModalNovo && (
           <div className={styles.modalOverlayMeses}>
-            <div
-              className={styles.mesesModal}
-              ref={mesesModalRef}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className={styles.modalLeftMeses}>
-                <ul className={styles.modalMenu}>
-                  {Object.keys(mesesPorAno)
-                    .sort((a, b) => Number(b) - Number(a))
-                    .map((ano) => (
+            <div className={styles.mesesModal}>
+                <div className={styles.modalLeftMeses}>
+                  <ul className={styles.modalMenu}>
+                    {Object.keys(anosMeses).map((ano) => (
                       <li
                         key={ano}
-                        className={`${styles.botaoVerde} ${
-                          activeTab === ano ? styles.activeBotaoVerde : ""
-                        }`}
+                        className={activeTab === ano ? styles.activeMenuItem : ""}
                         onClick={() => setActiveTab(ano)}
                       >
                         <FaCalendar className={styles.menuIcon} />
-                        <span style={{ fontSize: "15px", marginLeft: "5px" }}>
-                          {ano}
-                        </span>
+                        <span style={{ fontSize: "15px", marginLeft: "5px" }}>{ano}</span>
                       </li>
                     ))}
-                </ul>
-
-                <div className={styles.modalFooterLeft}>
-                  <div
-                    className={styles.mesesFooterItem}
-                    onClick={() => setShowUserModal(false)}
-                  >
-                    <FaCalendar className={styles.menuIcon} />
+                  </ul>
+                  <div className={styles.modalFooterLeft}>
+                    <div className={styles.mesesFooterItem}>
+                      <FaCalendar className={styles.menuIcon} />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className={styles.modalRight}>
-                {mesesPorAno[activeTab] && (
+                <div className={styles.modalRight}>
                   <div
                     style={{
                       textAlign: "left",
@@ -1011,20 +922,19 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
                       gap: "0.5rem",
                     }}
                   >
-                    {mesesPorAno[activeTab].map((mes, idx) => (
-                      <div
-                        key={idx}
+                    {anosMeses[activeTab]?.map((mes) => (
+                      <a
+                        key={mes}
                         className={styles.botaoVerde}
-                        onClick={() => handleMesClick(activeTab, mes)}
+                        href={`/pjes?ano=${activeTab}&mes=${mes}`}
                       >
                         <FaCalendar style={{ marginRight: "8px" }} />
-                        <span>{mes}</span>
-                      </div>
+                        {mes}
+                      </a>
                     ))}
                   </div>
-                )}
+                </div>
               </div>
-            </div>
           </div>
         )}
       </div>

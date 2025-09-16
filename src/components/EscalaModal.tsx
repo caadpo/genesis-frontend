@@ -39,7 +39,7 @@ export default function EscalaModal({
 }: Props) {
   const [ome, setOme] = useState<Ome[]>([]);
 
-  const operacaoSelecionada = operacoes.find(
+  const operacaoSelecionada = operacoes?.find(
     (op) => op.id === selectedOperacaoId
   );
 
@@ -196,7 +196,7 @@ export default function EscalaModal({
       ...(initialData?.id && { id: initialData.id }),
 
       omeId: Number(form.omeId) || omeId,
-      pjesOperacaoId: initialData?.pjesOperacaoId || selectedOperacaoId,
+      pjesOperacaoId: selectedOperacaoId || initialData?.pjesOperacaoId,
       pjesEventoId,
 
       pgSgp: form.pgSgp,
@@ -205,17 +205,18 @@ export default function EscalaModal({
 
       funcao: funcaoSelecionada,
 
-      nomeCompletoSgp: form.nomeCompletoSgp || "Nome Completo", // mock se vazio
+      nomeCompletoSgp: form.nomeCompletoSgp || "Nome Completo",
       omeSgp: form.omeSgp || "OME Placeholder", // mock
-      tipoSgp: form.tipoSgp || "P", // ou "O" — você pode automatizar depois com base no PG
+      tipoSgp: form.tipoSgp || "P",
       nunfuncSgp: Number(form.nunfuncSgp) || 111111,
       nunvincSgp: Number(form.nunvincSgp) || 222222,
       situacaoSgp: form.situacaoSgp || "ATIVO",
 
-      dataInicio: form.dataInicio,
-      dataFinal: form.dataFinal || form.dataInicio, // obrigatório
-      horaInicio: form.horaInicio,
-      horaFinal: form.horaFinal,
+      dataInicio: form.dataInicio.split("T")[0],
+      dataFinal: (form.dataFinal || form.dataInicio).split("T")[0],
+      horaInicio: form.horaInicio?.slice(0, 5),
+      horaFinal: form.horaFinal?.slice(0, 5),
+
 
       phone: form.phone,
       localApresentacaoSgp: form.localApresentacaoSgp,
@@ -225,7 +226,13 @@ export default function EscalaModal({
       userId,
     };
 
+    if (initialData?.pjesOperacaoId && selectedOperacaoId && initialData.pjesOperacaoId !== selectedOperacaoId) {
+      alert("Você não pode alterar a operação de uma escala existente.");
+      return;
+    }
+    
     const sucesso = await onSubmit(dados);
+    console.log("📤 Enviando dados da escala:", dados);
     if (sucesso) {
       if (onSuccess) {
         onSuccess();
@@ -234,10 +241,7 @@ export default function EscalaModal({
     }
   };
 
-  {
-    /* inicio METODO PARA BUSCAR A QUANTIDADE DE COTAS COM AS DATAS E NOME DA OME */
-  }
-
+  /* INICIO METODO PARA BUSCAR A QUANTIDADE DE COTAS COM AS DATAS E NOME DA OME */
   const [cotas, setCotas] = useState<
     { dia: string; nomeOme: string; ttCota: number }[]
   >([]);
@@ -246,7 +250,10 @@ export default function EscalaModal({
     if (form.matSgp && mes && ano) {
       fetch(`/api/cotas?matSgp=${form.matSgp}&ano=${ano}&mes=${mes}`)
         .then((res) => res.json())
-        .then((data) => setCotas(data))
+        .then((data) => {
+          console.log("📦 Dados das cotas:", data); // <-- AQUI
+          setCotas(data);
+        })
         .catch((err) => console.error("Erro ao buscar cotas:", err));
     }
   }, [form.matSgp, mes, ano]);
@@ -257,9 +264,8 @@ export default function EscalaModal({
     return `${dia}/${mes}`;
   }
 
-  {
-    /* fim METODO PARA BUSCAR A QUANTIDADE DE COTAS COM AS DATAS E NOME DA OME */
-  }
+  /* FIM METODO PARA BUSCAR A QUANTIDADE DE COTAS COM AS DATAS E NOME DA OME */
+  
 
   {
     /* INICIO MANTER ALGUNS DADOS JA PREENCHIDOS APOS SALVAR */
@@ -280,13 +286,11 @@ export default function EscalaModal({
         situacaoSgp: "",
         phone: "",
         localApresentacaoSgp: "",
-        // mantém os valores atuais de data/hora
-        // mesmo se estiverem vazios, eles continuam iguais
         dataInicio: prev.dataInicio,
         horaInicio: prev.horaInicio,
         horaFinal: prev.horaFinal,
         statusEscala: "AUTORIZADA",
-        funcao: prev.funcao, // este não é usado diretamente, mas mantemos para consistência
+        funcao: prev.funcao,
         anotacaoEscala: prev.anotacaoEscala,
       }));
       // MANTER a função selecionada

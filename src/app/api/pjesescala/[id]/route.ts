@@ -3,13 +3,22 @@ import { NextRequest, NextResponse } from "next/server";
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://191.252.214.36:4000";
 
-export async function GET(request: NextRequest, context: any) {
+// 🔧 Utilitário para extrair ID da URL
+function extractIdFromUrl(url: string): string | null {
+  const parts = url.split("/");
+  return parts[parts.length - 1] || null;
+}
+
+export async function GET(request: NextRequest) {
   const token = request.cookies.get("accessToken")?.value;
   if (!token) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
   }
 
-  const { id } = await context.params;
+  const id = extractIdFromUrl(request.url);
+  if (!id) {
+    return NextResponse.json({ error: "ID não fornecido" }, { status: 400 });
+  }
 
   try {
     const res = await fetch(`${API_BASE_URL}/api/pjesescala/${id}`, {
@@ -30,17 +39,24 @@ export async function GET(request: NextRequest, context: any) {
   }
 }
 
-export async function PUT(request: NextRequest, context: any) {
+export async function PUT(request: NextRequest) {
   const token = request.cookies.get("accessToken")?.value;
   if (!token) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
   }
 
-  const { id } = await context.params;
+  const id = extractIdFromUrl(request.url);
+  if (!id) {
+    return NextResponse.json({ error: "ID não fornecido" }, { status: 400 });
+  }
+
   const body = await request.json();
+  const { searchParams } = new URL(request.url);
+  const ano = searchParams.get("ano");
+  const mes = searchParams.get("mes");
 
   try {
-    const res = await fetch(`${API_BASE_URL}/api/pjesescala/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/api/pjesescala/${id}?ano=${ano}&mes=${mes}`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -61,13 +77,16 @@ export async function PUT(request: NextRequest, context: any) {
   }
 }
 
-export async function DELETE(request: NextRequest, context: any) {
+export async function DELETE(request: NextRequest) {
   const token = request.cookies.get("accessToken")?.value;
   if (!token) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
   }
 
-  const { id } = await context.params;
+  const id = extractIdFromUrl(request.url);
+  if (!id) {
+    return NextResponse.json({ error: "ID não fornecido" }, { status: 400 });
+  }
 
   try {
     const res = await fetch(`${API_BASE_URL}/api/pjesescala/${id}`, {

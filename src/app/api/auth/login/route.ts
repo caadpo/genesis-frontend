@@ -28,6 +28,7 @@ export async function POST(request: Request) {
 
     // Define se está em produção para configurar o cookie secure
     const isProduction = process.env.NODE_ENV === "production";
+    
 
     // Resposta com cookie HTTP-only para o accessToken
     const response = NextResponse.json({
