@@ -32,8 +32,6 @@ export async function GET(request: NextRequest) {
   }
 
   const arrayBuffer = await res.arrayBuffer();
-  console.log("Tamanho do arquivo:", arrayBuffer.byteLength);
-
   return new Response(arrayBuffer, {
     status: 200,
     headers: {

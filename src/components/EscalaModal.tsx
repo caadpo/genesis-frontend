@@ -232,7 +232,6 @@ export default function EscalaModal({
     }
     
     const sucesso = await onSubmit(dados);
-    console.log("📤 Enviando dados da escala:", dados);
     if (sucesso) {
       if (onSuccess) {
         onSuccess();
@@ -251,7 +250,6 @@ export default function EscalaModal({
       fetch(`/api/cotas?matSgp=${form.matSgp}&ano=${ano}&mes=${mes}`)
         .then((res) => res.json())
         .then((data) => {
-          console.log("📦 Dados das cotas:", data); // <-- AQUI
           setCotas(data);
         })
         .catch((err) => console.error("Erro ao buscar cotas:", err));

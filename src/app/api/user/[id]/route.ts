@@ -22,9 +22,6 @@ export async function PATCH(request: Request) {
     const userId = url.pathname.split("/").pop(); // ID do usuário na URL
     const body = await request.json();
 
-    console.log("Editando usuário ID:", userId);
-    console.log("Dados recebidos:", body);
-
     const response = await fetch(`${API_BASE_URL}/api/user/${userId}`, {
       method: "PATCH",
       headers: {

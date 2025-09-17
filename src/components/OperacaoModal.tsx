@@ -11,8 +11,9 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (dados: any) => Promise<boolean>;
-  eventos: any[];
+  eventos?: any[];
   selectedEventoId: number | null;
+  selectedOperacaoId?: number | null;
   mes: number;
   ano: number;
   userId: number;
@@ -82,8 +83,6 @@ export default function OperacaoModal({
 
   const handleSubmit = async () => {
     if (!initialData?.id && !selectedEventoId) {
-      console.log("Esss é o initialData?.id em OperacaoModal", initialData?.id)
-      console.log("Esss é o selectedEventoId em OperacaoModal", selectedEventoId)
       alert("Selecione uma evento antes de salvar.");
       return;
     }

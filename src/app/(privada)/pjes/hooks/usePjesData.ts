@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
 interface Teto {
+  id: number;
   codVerba: string;
   imagemUrl: string;
   nomeVerba: string;

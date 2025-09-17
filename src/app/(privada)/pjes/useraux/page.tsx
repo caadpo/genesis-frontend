@@ -97,8 +97,6 @@ export default function UserAuxPage() {
 
     const { tetos, tetoSelecionado, eventosOme, handleTetoClick, loading, refreshEventos } = usePjesAuxData( ano, mes, user?.omeId ?? null);
 
-    console.log("os eventosOme são", eventosOme) 
-
     useEffect(() => {
       if (!eventoSelecionado && eventosOme && eventosOme.eventos.length > 0) {
         setSelectedEventoId(eventosOme.eventos[0].id);
@@ -1199,205 +1197,205 @@ export default function UserAuxPage() {
 
 
 
-        <EventoModal
-          isOpen={mostrarModalEvento}
-          onClose={() => {
-            setMostrarModalEvento(false);
-            setModalDataEvento(null);
-          }}
-          onSubmit={async (dados) => {
-            const isEdit = Boolean(dados.id);
+  <EventoModal
+    isOpen={mostrarModalEvento}
+    onClose={() => {
+      setMostrarModalEvento(false);
+      setModalDataEvento(null);
+    }}
+    onSubmit={async (dados) => {
+      const isEdit = Boolean(dados.id);
 
-            const params = new URLSearchParams({
-              ano: String(ano),
-              mes: String(mes),
-            });
+      const params = new URLSearchParams({
+        ano: String(ano),
+        mes: String(mes),
+      });
 
-            const url = isEdit
-              ? `/api/pjesevento/${dados.id}?${params.toString()}`
-              : `/api/pjesevento?${params.toString()}`;
+      const url = isEdit
+        ? `/api/pjesevento/${dados.id}?${params.toString()}`
+        : `/api/pjesevento?${params.toString()}`;
 
-            const method = isEdit ? "PUT" : "POST";
+      const method = isEdit ? "PUT" : "POST";
 
-            const toastId = toast.loading(isEdit ? "Atualizando evento..." : "Criando evento...");
+      const toastId = toast.loading(isEdit ? "Atualizando evento..." : "Criando evento...");
 
-            try {
-              const res = await fetch(url, {
-                method,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(dados),
-              });
+      try {
+        const res = await fetch(url, {
+          method,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(dados),
+        });
 
-              const text = await res.text();
-              let result;
+        const text = await res.text();
+        let result;
 
-              try {
-                result = JSON.parse(text);
-              } catch {
-                console.error("Resposta não é JSON válido:", text);
-                toast.update(toastId, {
-                  render: "Erro inesperado ao salvar evento.",
-                  type: "error",
-                  isLoading: false,
-                  autoClose: 3000,
-                });
-                return false;
-              }
+        try {
+          result = JSON.parse(text);
+        } catch {
+          console.error("Resposta não é JSON válido:", text);
+          toast.update(toastId, {
+            render: "Erro inesperado ao salvar evento.",
+            type: "error",
+            isLoading: false,
+            autoClose: 3000,
+          });
+          return false;
+        }
 
-              if (!res.ok) {
-                toast.update(toastId, {
-                  render: result?.error || "Erro ao salvar evento.",
-                  type: "error",
-                  isLoading: false,
-                  autoClose: 3000,
-                });
-                return false;
-              }
+        if (!res.ok) {
+          toast.update(toastId, {
+            render: result?.error || "Erro ao salvar evento.",
+            type: "error",
+            isLoading: false,
+            autoClose: 3000,
+          });
+          return false;
+        }
 
-              toast.update(toastId, {
-                render: isEdit ? "Evento atualizado com sucesso!" : "Evento criado com sucesso!",
-                type: "success",
-                isLoading: false,
-                autoClose: 3000,
-              });
+        toast.update(toastId, {
+          render: isEdit ? "Evento atualizado com sucesso!" : "Evento criado com sucesso!",
+          type: "success",
+          isLoading: false,
+          autoClose: 3000,
+        });
 
-              setMostrarModalEvento(false);
-              setModalDataEvento(null);
-              return true;
-            } catch (error) {
-              console.error("Erro ao salvar evento:", error);
+        setMostrarModalEvento(false);
+        setModalDataEvento(null);
+        return true;
+      } catch (error) {
+        console.error("Erro ao salvar evento:", error);
 
-              toast.update(toastId, {
-                render: "Erro interno ao salvar evento.",
-                type: "error",
-                isLoading: false,
-                autoClose: 3000,
-              });
+        toast.update(toastId, {
+          render: "Erro interno ao salvar evento.",
+          type: "error",
+          isLoading: false,
+          autoClose: 3000,
+        });
 
-              return false;
-            }
-          }}
-          mes={Number(mes)}
-          ano={Number(ano)}
-          userId={userId}
-          initialData={modalDataEvento}
-          dists={pjesdist}
-          selectedDistId={selectedDistId}
-        />
+        return false;
+      }
+    }}
+    mes={Number(mes)}
+    ano={Number(ano)}
+    userId={userId ?? 0}
+    initialData={modalDataEvento}
+    dists={pjesdist}
+    selectedDistId={selectedDistId}
+  />
 
-        <OperacaoModal
-          isOpen={mostrarModalOperacao}
-          onClose={() => {
-            setMostrarModalOperacao(false);
-            setModalDataOperacao(null);
-          }}
-          onSubmit={async (dados) => {
-            const isEdit = Boolean(dados.id);
+  <OperacaoModal
+    isOpen={mostrarModalOperacao}
+    onClose={() => {
+      setMostrarModalOperacao(false);
+      setModalDataOperacao(null);
+    }}
+    onSubmit={async (dados) => {
+      const isEdit = Boolean(dados.id);
 
-            const params = new URLSearchParams({
-              ano: String(ano),
-              mes: String(mes),
-            });
+      const params = new URLSearchParams({
+        ano: String(ano),
+        mes: String(mes),
+      });
 
-            const url = isEdit
-              ? `/api/pjesoperacao/${dados.id}?${params.toString()}`
-              : `/api/pjesoperacao?${params.toString()}`;
+      const url = isEdit
+        ? `/api/pjesoperacao/${dados.id}?${params.toString()}`
+        : `/api/pjesoperacao?${params.toString()}`;
 
-            const method = isEdit ? "PUT" : "POST";
+      const method = isEdit ? "PUT" : "POST";
 
-            const toastId = toast.loading(isEdit ? "Salvando operação..." : "Adicionando operação...");
+      const toastId = toast.loading(isEdit ? "Salvando operação..." : "Adicionando operação...");
 
-            try {
-              const res = await fetch(url, {
-                method,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(dados),
-              });
+      try {
+        const res = await fetch(url, {
+          method,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(dados),
+        });
 
-              const text = await res.text();
-              let result: Operacao;
+        const text = await res.text();
+        let result: Operacao;
 
-              try {
-                result = JSON.parse(text);
-              } catch {
-                console.error("Resposta não é JSON válido:", text);
-                toast.update(toastId, {
-                  render: "Erro inesperado ao salvar Operação.",
-                  type: "error",
-                  isLoading: false,
-                  autoClose: 3000,
-                });
-                return false;
-              }
+        try {
+          result = JSON.parse(text);
+        } catch {
+          console.error("Resposta não é JSON válido:", text);
+          toast.update(toastId, {
+            render: "Erro inesperado ao salvar Operação.",
+            type: "error",
+            isLoading: false,
+            autoClose: 3000,
+          });
+          return false;
+        }
 
-              if (!res.ok) {
-                toast.update(toastId, {
-                  render: result?.error || "Erro ao salvar operação.",
-                  type: "error",
-                  isLoading: false,
-                  autoClose: 3000,
-                });
-                return false;
-              }
+        if (!res.ok) {
+          toast.update(toastId, {
+            render: result?.error || "Erro ao salvar operação.",
+            type: "error",
+            isLoading: false,
+            autoClose: 3000,
+          });
+          return false;
+        }
 
-              // Atualiza os eventos
-              await refreshEventos();
+        // Atualiza os eventos
+        await refreshEventos();
 
-              setMostrarModalOperacao(false);
-              setModalDataOperacao(null);
+        setMostrarModalOperacao(false);
+        setModalDataOperacao(null);
 
-              toast.update(toastId, {
-                render: isEdit ? "Operação atualizada com sucesso!" : "Operação adicionada com sucesso!",
-                type: "success",
-                isLoading: false,
-                autoClose: 3000,
-              });
+        toast.update(toastId, {
+          render: isEdit ? "Operação atualizada com sucesso!" : "Operação adicionada com sucesso!",
+          type: "success",
+          isLoading: false,
+          autoClose: 3000,
+        });
 
-              return true;
-            } catch (error) {
-              console.error("Erro ao salvar Operação:", error);
-              toast.update(toastId, {
-                render: "Erro interno ao salvar operação.",
-                type: "error",
-                isLoading: false,
-                autoClose: 3000,
-              });
-              return false;
-            }
-          }}
-          mes={Number(mes)}
-          ano={Number(ano)}
-          userId={userId}
-          initialData={modalDataOperacao}
-          selectedEventoId={selectedEventoId}
-          selectedOperacaoId={selectedOperacaoId}
-          eventos={[]} // mantém vazio, a não ser que OperacaoModal use isso internamente
-        />
+        return true;
+      } catch (error) {
+        console.error("Erro ao salvar Operação:", error);
+        toast.update(toastId, {
+          render: "Erro interno ao salvar operação.",
+          type: "error",
+          isLoading: false,
+          autoClose: 3000,
+        });
+        return false;
+      }
+    }}
+    mes={Number(mes)}
+    ano={Number(ano)}
+    userId={userId ?? 0}
+    initialData={modalDataOperacao}
+    selectedEventoId={selectedEventoId}
+    selectedOperacaoId={selectedOperacaoId}
+    eventos={[]} // mantém vazio, a não ser que OperacaoModal use isso internamente
+  />
 
 
-        <EscalaModal
-          isOpen={mostrarModalEscala}
-          onClose={() => {
-            setMostrarModalEscala(false);
-            setModalDataEscala(null);
-          }}
-          onSuccess={async () => {
-            // Recarrega eventos após salvar ou atualizar escala
-            await refreshEventos();
+  <EscalaModal
+    isOpen={mostrarModalEscala}
+    onClose={() => {
+      setMostrarModalEscala(false);
+      setModalDataEscala(null);
+    }}
+    onSuccess={async () => {
+      // Recarrega eventos após salvar ou atualizar escala
+      await refreshEventos();
 
-            setMostrarModalEscala(false);
-            setModalDataEscala(null);
-          }}
-          onSubmit={salvarOuAtualizarEscala}
-          mes={Number(mes)}
-          ano={Number(ano)}
-          userId={userId}
-          initialData={modalDataEscala}
-          selectedOperacaoId={selectedOperacaoId}
-          omeId={eventoSelecionado?.omeId ?? 0}
-          pjesEventoId={eventoSelecionado?.id ?? 0}
-          operacoes={eventoSelecionado?.pjesoperacoes ?? []}
-        />
+      setMostrarModalEscala(false);
+      setModalDataEscala(null);
+    }}
+    onSubmit={salvarOuAtualizarEscala}
+    mes={Number(mes)}
+    ano={Number(ano)}
+    userId={userId ?? 0}
+    initialData={modalDataEscala}
+    selectedOperacaoId={selectedOperacaoId}
+    omeId={eventoSelecionado?.omeId ?? 0}
+    pjesEventoId={eventoSelecionado?.id ?? 0}
+    operacoes={eventoSelecionado?.pjesoperacoes ?? []}
+  />
 
 
         <PrestacaoContasModal

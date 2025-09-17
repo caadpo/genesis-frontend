@@ -161,8 +161,6 @@ export default function PesquisarEscala() {
       const res = await fetch(`/api/pjesescala/escalas-por-matricula?mat=${matricula}`);
       const data = await res.json();
 
-      console.log("A variavel data em pesquisarEscala é", data);
-  
       if (!res.ok) throw new Error(data.error || "Erro ao buscar escalas");
   
       setEscalas(data);

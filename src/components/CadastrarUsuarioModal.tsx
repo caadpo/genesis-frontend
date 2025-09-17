@@ -159,8 +159,6 @@ export default function CadastrarUsuarioModal({
     const typeUser =
       funcaoToTypeUser[form.funcao as keyof typeof funcaoToTypeUser];
 
-    console.log("DEBUG - Envio do formulário", form);
-
     if (
       !form.loginSei ||
       !form.mat ||

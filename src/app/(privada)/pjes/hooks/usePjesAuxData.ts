@@ -63,7 +63,6 @@ export function usePjesAuxData(ano: number | null, mes: number | null, omeId: nu
         setTetos(data);
         setTetoSelecionado(data[0] || null);
 
-        console.log("Tetos retornados pela API:", data);
       } catch (e) {
         console.error(e);
         setTetos([]);
@@ -101,16 +100,12 @@ export function usePjesAuxData(ano: number | null, mes: number | null, omeId: nu
       if (!eventosRes.ok) throw new Error("Erro ao buscar eventos");
       const data = await eventosRes.json();
 
-      console.log("Eventos retornados pela API:", data);
-
       // 2. Buscar TODAS as operações daquele mês/ano
       const operacoesRes = await fetch(`/api/pjesoperacao?ano=${ano}&mes=${mes}`);
       if (!operacoesRes.ok) throw new Error("Erro ao buscar operações");
       const operacoes = await operacoesRes.json();
-
-      console.log("Operações retornadas pela API:", operacoes);
-
-      // 3. Associar operações aos seus eventos
+ 
+     // 3. Associar operações aos seus eventos
       const eventosComOperacoes: Evento[] = data.eventos.map((evento: Evento) => {
         const operacoesDoEvento = operacoes.filter(
           (op: Operacao) => op.pjesEventoId === evento.id

@@ -7,16 +7,12 @@ const API_BASE_URL =
     const token = request.cookies.get("accessToken")?.value;
     const { id } = context.params;
   
-    console.log("🔐 Token:", token);
-    console.log("🔎 ID recebido:", id);
-  
     if (!token) {
       return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
     }
   
     const url = `${API_BASE_URL}/api/pjesdist/${id}`;
-    console.log("🌐 Fazendo fetch para:", url);
-  
+    
     try {
       const res = await fetch(url, {
         method: "GET",
@@ -27,8 +23,7 @@ const API_BASE_URL =
       });
   
       const text = await res.text(); // Pega resposta como texto bruto
-      console.log("📥 Resposta da API externa:", res.status, text);
-  
+     
       if (!res.ok) {
         return NextResponse.json({ error: text || "Erro ao buscar distribuição" }, { status: res.status });
       }

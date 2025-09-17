@@ -260,8 +260,6 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
 
       const data = await res.json();
 
-      console.log("Resposta da API:", res.status, data);
-
       if (!res.ok) {
         // Exibe a mensagem que vem do backend, ou erro genérico
         alert(data.message || data.error || "Erro ao alterar senha");

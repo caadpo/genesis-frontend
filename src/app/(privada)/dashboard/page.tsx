@@ -152,7 +152,6 @@ export default function Dashboard() {
         if (!res.ok) throw new Error("Erro ao buscar eventos");
   
         const data = await res.json();
-        console.log("O data em pjesevento dashboard é", data);
         setEventos(data);
         
       } catch (err) {

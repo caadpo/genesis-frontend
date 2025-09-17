@@ -115,11 +115,6 @@ export default function UserMasterPage() {
       loadingDetalhes,
     } = usePjesData(ano, mes);
 
-    console.log("A vatiavel tetos é", tetos);
-
-    console.log("A vatiavel distribuicoes é", distribuicoes);
-
-
     //Função para fecha o menu toogle apos clicar fora nos eventos
     useEffect(() => {
       const handleClickForaDoMenu = (event: MouseEvent) => {
@@ -145,12 +140,6 @@ export default function UserMasterPage() {
         (dist) => dist.codVerba === tetoSelecionado.codVerba
       );
     }, [distribuicoes, tetoSelecionado]);
-
-
-
-    console.log("A vatiavel distribuicoesDoTeto é", distribuicoesDoTeto);
-
-
 
     const distSelecionada = distribuicoesDoTeto.find((d) => d.id === selectedDistId);
     // função para trazer o resumo por diretoria
@@ -1721,7 +1710,7 @@ export default function UserMasterPage() {
         selectedTetoId={tetoSelecionado?.id ?? null}
         mes={Number(mes)}
         ano={Number(ano)}
-        userId={userId}
+        userId={userId ?? 0}
         initialData={modalData}
       />
 
@@ -1810,7 +1799,7 @@ export default function UserMasterPage() {
         }}
         mes={Number(mes)}
         ano={Number(ano)}
-        userId={userId}
+        userId={userId ?? 0}
         initialData={modalDataEvento}
         dists={pjesdist}
         selectedDistId={selectedDistId}
@@ -1846,6 +1835,7 @@ export default function UserMasterPage() {
             });
         
             const text = await res.text();
+            type Operacao = any;
             let result: Operacao;
         
             try {
@@ -1906,9 +1896,11 @@ export default function UserMasterPage() {
 
         mes={Number(mes)}
         ano={Number(ano)}
-        userId={userId}
+        userId={userId ?? 0}
         initialData={modalDataOperacao}
         selectedEventoId={selectedEventoId}
+        selectedOperacaoId={selectedOperacaoId} // <== PASSE ESSA PROP
+        eventos={[]}
       />
 
       <EscalaModal
@@ -1924,7 +1916,7 @@ export default function UserMasterPage() {
         onSubmit={salvarOuAtualizarEscala}
         mes={Number(mes)}
         ano={Number(ano)}
-        userId={userId}
+        userId={userId ?? 0}
         initialData={modalDataEscala}
         selectedOperacaoId={selectedOperacaoId}
         omeId={eventoSelecionadoObj?.omeId ?? 0}
