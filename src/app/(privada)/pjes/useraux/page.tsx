@@ -1313,7 +1313,7 @@ export default function UserAuxPage() {
         });
 
         const text = await res.text();
-        let result: Operacao;
+        let result: any;
 
         try {
           result = JSON.parse(text);
