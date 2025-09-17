@@ -832,6 +832,9 @@ export default function UserMasterPage() {
       const ttSomaCotaPrcSaldo = tetoPrc - somaCotaPrcEscala;
       return {ttSomaCtOfDist, ttSomaCtPrcDist, ttSomaCotaOfSaldo, ttSomaCotaPrcSaldo };
     }
+
+    const visualizarDist = (type?: number) =>
+    type !== undefined && [4, 5, 10].includes(type);
     
     
   return (
@@ -872,6 +875,10 @@ export default function UserMasterPage() {
                       />
 
                       {teto.nomeVerba}
+
+                      {visualizarDist(user?.typeUser) && (
+
+
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                           <div>
                             <span className={styles.spanDistribuicaoCotas}>
@@ -894,6 +901,9 @@ export default function UserMasterPage() {
                             </span>
                           </div>
                         </div>
+
+                      )}
+
 
                     </li>
                   );
