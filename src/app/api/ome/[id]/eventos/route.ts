@@ -1,15 +1,24 @@
-// src/app/api/ome/[id]/eventos/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://191.252.214.36:4000";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+function getIdFromUrl(url: string): string | null {
+  const parts = url.split("/");
+  // Pega o penúltimo item, porque o último é 'eventos'
+  // Exemplo: /api/ome/123/eventos -> '123' está no penúltimo índice
+  return parts[parts.length - 2] || null;
+}
+
+export async function GET(request: NextRequest) {
   const token = request.cookies.get("accessToken")?.value;
+  const id = getIdFromUrl(request.url);
+
   if (!token) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
+  }
+
+  if (!id) {
+    return NextResponse.json({ error: "ID não fornecido" }, { status: 400 });
   }
 
   const searchParams = request.nextUrl.searchParams;
@@ -22,7 +31,7 @@ export async function GET(
   if (mes) queryParams.append("mes", mes);
   if (codVerba) queryParams.append("codVerba", codVerba);
 
-  const url = `${API_BASE_URL}/api/ome/${params.id}/eventos?${queryParams.toString()}`;
+  const url = `${API_BASE_URL}/api/ome/${id}/eventos?${queryParams.toString()}`;
 
   try {
     const response = await fetch(url, {
