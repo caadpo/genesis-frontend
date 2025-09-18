@@ -73,8 +73,11 @@ export default function UserAuxPage() {
   const [carregandoEscalas, setCarregandoEscalas] = useState(false);
   const [impedidosPorEvento, setImpedidosPorEvento] = useState<Record<number, number>>({});
   const [cotasTotais, setCotasTotais] = useState<Record<number, number>>({});
-
+  const [totalPaginas, setTotalPaginas] = useState(1);
+  const [paginaAtual, setPaginaAtual] = useState(1);
+  const [registrosPorPagina] = useState(100);
   
+
     useEffect(() => {
       const anoParam = searchParams.get("ano");
       const mesParam = searchParams.get("mes");
@@ -178,20 +181,47 @@ export default function UserAuxPage() {
         .replace(/\s+/g, "_"); // substitui espaços por _
     }
 
+    useEffect(() => {
+      if (operacaoSelecionada?.id) {
+        buscarEscalas(operacaoSelecionada.id);
+      }
+    }, [paginaAtual, buscaEscala]);
+    
+    
     async function buscarEscalas(operacaoId: number) {
       if (!ano || !mes) return;
+    
       try {
         setCarregandoEscalas(true);
-        const res = await fetch(`/api/pjesescala?operacaoId=${operacaoId}&ano=${ano}&mes=${mes}`);
+    
+        const params = new URLSearchParams({
+          operacaoId: String(operacaoId),
+          ano: String(ano),
+          mes: String(mes),
+          page: String(paginaAtual),
+          limit: String(registrosPorPagina),
+        });
+    
+        if (buscaEscala.trim()) {
+          params.append("busca", buscaEscala.trim());
+        }
+    
+        const res = await fetch(`/api/pjesescala?${params.toString()}`);
         const data = await res.json();
-        setEscalas(data);
+    
+        setEscalas(data.escalas);
+        setTotalPaginas(Math.ceil(data.total / registrosPorPagina));
       } catch (e) {
         console.error("Erro ao carregar escalas:", e);
         setEscalas([]);
+        setTotalPaginas(1);
       } finally {
         setCarregandoEscalas(false);
       }
     }
+    
+
+ 
 
     //Buscar impedidos por evento e a soma total
     useEffect(() => {
@@ -634,24 +664,7 @@ export default function UserAuxPage() {
       }, [selectedEventoId, modalDataOperacao]);
 
 
-      //Paginar e contar os registros da tabela
-        const [paginaAtual, setPaginaAtual] = useState(1);
-        const registrosPorPagina = 80;
-
-        const escalasFiltradas = escalas.filter((escala) =>
-          [escala.pgSgp, escala.matSgp, escala.nomeGuerraSgp, escala.funcao, escala.localApresentacaoSgp]
-            .join(" ")
-            .toLowerCase()
-            .includes(buscaEscala.toLowerCase())
-        );
-
-        const totalPaginas = Math.ceil(escalasFiltradas.length / registrosPorPagina);
-        const escalasPaginadas = escalasFiltradas.slice(
-          (paginaAtual - 1) * registrosPorPagina,
-          paginaAtual * registrosPorPagina
-        );
-      //Paginar e contar os registros da tabela
-
+      
       
 
     return (
@@ -902,7 +915,10 @@ export default function UserAuxPage() {
                         placeholder="Buscar..."
                         className={styles.operacaoInputBuscar}
                         value={buscaEscala}
-                        onChange={(e) => setBuscaEscala(e.target.value)}
+                        onChange={(e) => {
+                          setBuscaEscala(e.target.value);
+                          setPaginaAtual(1); // reinicia a paginação ao buscar
+                        }}
                       />
                         {/* INICIO BOTAO DE ADIOCNAR OPERAÇÃO*/}
                     <div className={styles.operacaoCadastrar}
@@ -1102,7 +1118,7 @@ export default function UserAuxPage() {
                                             </tr>
                                           </thead>
                                           <tbody>
-                                            {escalasPaginadas.map((escala, index) => (
+                                            {escalas.map((escala, index) => (
                                               <tr style={{ fontSize:"14px"}} key={index}>
                                                 <td>{escala.pgSgp} {escala.matSgp} {escala.nomeGuerraSgp}</td>
                                                 <td style={{ textAlign: "center"}}>
@@ -1137,7 +1153,7 @@ export default function UserAuxPage() {
                                         </table>
                                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0" }}>
                                           <span style={{ fontSize: "14px" }}>
-                                            Registros: <strong>{escalasFiltradas.length}</strong>
+                                            Registros: <strong>{escalas.length}</strong>
                                           </span>
 
                                           {totalPaginas > 1 && (
