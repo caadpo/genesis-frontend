@@ -108,6 +108,8 @@ export default function EscalaModal({
 
   useEffect(() => {
     if (initialData) {
+      const isEdicao = !!initialData.id;
+  
       setForm((prev) => ({
         omeId: String(omeId),
         pgSgp: String(initialData.pgSgp || ""),
@@ -119,23 +121,29 @@ export default function EscalaModal({
         nunfuncSgp: String(initialData.nunfuncSgp || ""),
         nunvincSgp: String(initialData.nunvincSgp || ""),
         situacaoSgp: String(initialData.situacaoSgp || ""),
-        dataInicio: prev.dataInicio || String(initialData.dataInicio || ""),
+        dataInicio: isEdicao
+          ? String(initialData.dataInicio || "")
+          : prev.dataInicio || "",
         dataFinal: String(initialData.dataFinal || ""),
-        horaInicio: prev.horaInicio || String(initialData.horaInicio || ""),
-        horaFinal: prev.horaFinal || String(initialData.horaFinal || ""),
+        horaInicio: isEdicao
+          ? String(initialData.horaInicio || "")
+          : prev.horaInicio || "",
+        horaFinal: isEdicao
+          ? String(initialData.horaFinal || "")
+          : prev.horaFinal || "",
         phone: String(initialData.phone || ""),
         localApresentacaoSgp: String(initialData.localApresentacaoSgp || ""),
-        funcao: prev.funcao || String(initialData.funcao || ""),
+        funcao: isEdicao ? String(initialData.funcao || "") : prev.funcao || "",
         anotacaoEscala: String(initialData.anotacaoEscala || ""),
         statusEscala: initialData.statusEscala || "AUTORIZADA",
       }));
-
-      // manter o estado da função selecionada
+  
       if (initialData.funcao) {
         setFuncaoSelecionada(initialData.funcao);
       }
     }
   }, [initialData, omeId]);
+  
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>

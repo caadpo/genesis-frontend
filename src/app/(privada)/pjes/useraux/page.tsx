@@ -1104,7 +1104,7 @@ export default function UserAuxPage() {
                                           <tbody>
                                             {escalasPaginadas.map((escala, index) => (
                                               <tr style={{ fontSize:"14px"}} key={index}>
-                                                <td>{escala.pgSgp} {escala.matSgp} {escala.nomeGuerraSgp}</td>
+                                                <td>{escala.pgSgp} {escala.matSgp} {escala.nomeGuerraSgp} {escala.omeSgp}</td>
                                                 <td style={{ textAlign: "center"}}>
                                                   {new Date(escala.dataInicio + 'T00:00:00').toLocaleDateString("pt-BR")} {" "}
                                                   {escala.horaInicio.slice(0, 5)} às{" "} {escala.horaFinal.slice(0, 5)}

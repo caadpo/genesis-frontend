@@ -1588,7 +1588,7 @@ export default function UserMasterPage() {
                                         
                                           <tr key={escala.id}>
                                             <td style={{ textAlign: "center"}}>
-                                              {escala.pgSgp} {escala.matSgp} {escala.nomeGuerraSgp}
+                                              {escala.pgSgp} {escala.matSgp} {escala.nomeGuerraSgp} {escala.omeSgp}
                                             </td>
                                             <td style={{ textAlign: "center"}}>
                                               {new Date(escala.dataInicio + 'T00:00:00').toLocaleDateString("pt-BR")} {" "}
