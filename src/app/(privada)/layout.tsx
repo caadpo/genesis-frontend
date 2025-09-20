@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode, useEffect, useRef, useState } from "react";
+import { MdAttachMoney } from "react-icons/md";
 import { usePathname, useRouter } from "next/navigation";
 import styles from "./privateLayout.module.css";
 import {
@@ -111,6 +112,11 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
   const [newPassword, setNewPassword] = useState("");
   const [escalas, setEscalas] = useState<Escala[]>([]);
   const [date, setDate] = useState<Date | null>(null);
+  const [resumo, setResumo] = useState<{ mes: string, totalCotas: number, valorTotal: number } | null>(null);
+  const [anoSelecionado, setAnoSelecionado] = useState<number>(new Date().getFullYear());
+  const [mesSelecionado, setMesSelecionado] = useState<number>(new Date().getMonth() + 1); // de 1 a 12
+
+
 
 
   //FORMATANDO A DATA PARA O TIPO BRASILEIRO
@@ -206,23 +212,23 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
     const fetchMinhasEscalas = async () => {
       setLoading(true);
       try {
-        const res = await fetch("/api/pjesescala/minhas-escalas");
+        const res = await fetch(`/api/pjesescala/minhas-escalas?ano=${anoSelecionado}&mes=${mesSelecionado}`);
         const data = await res.json();
-
-        if (!res.ok)
-          throw new Error(data.error || "Erro ao buscar minhas escalas");
-
-        setEscalas(data);
-      } catch (err: any) {
-        setErro(err.message);
+  
+        if (!res.ok) throw new Error(data.error || "Erro ao buscar escalas");
+  
+        setEscalas(data.escalas);
+        setResumo(data.resumo);
+      } catch (error: any) {
+        setErro(error.message);
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchMinhasEscalas();
-  }, []);
-
+  }, [anoSelecionado, mesSelecionado]);
+  
   //FIM BUSCAR AS ESCALAS PARA RENDERIZER NO CALENDARIO
 
   //METODO PARA DESLOGAR
@@ -606,6 +612,12 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
                           const selected = Array.isArray(value) ? value[0] : value;
                           setDate(selected);
                         }}
+                        onActiveStartDateChange={({ activeStartDate }) => {
+                          if (activeStartDate) {
+                            setAnoSelecionado(activeStartDate.getFullYear());
+                            setMesSelecionado(activeStartDate.getMonth() + 1);
+                          }
+                        }}
                         value={date}
                         className={styles.customCalendar}
                         tileContent={({ date, view }: TileProps) => {
@@ -628,6 +640,25 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
                           return null;
                         }}
                       />
+
+                      
+                        {resumo && (
+                          <>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                            <div className={styles.divIconeConsumo}>
+                              <MdAttachMoney fontSize={60} color="#ccc" />
+                            </div>
+                            <div style={{display:"block", textAlign:"end"}}>
+                              <div style={{fontSize:"13px", color:"grey"}}>Minha Escala: {resumo.totalCotas} Cota(s)</div>
+                              <div style={{fontSize:"13px", color:"grey"}}>Repasses: 0 Cota(s)</div>
+                              <div style={{fontSize:"14px", color:"green"}}><strong>Total: {resumo.totalCotas} Cota(s)</strong>{" "}| {" "}
+                              <strong>R$ {resumo.valorTotal.toFixed(2).replace(".", ",")}</strong></div>
+                              <div></div>
+                            </div>
+                          </div>
+                            </>
+                        )}
+                      
 
                       <div style={{ flex: 1, marginTop: "5px" }}>
                         <div className={styles.eventoTextoMinhaEscala}>
