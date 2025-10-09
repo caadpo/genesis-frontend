@@ -1,16 +1,9 @@
-// src/app/api/diretoria/[id]/route.ts
 import { NextRequest, NextResponse } from "next/server";
+import { parse } from "url";
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://191.252.214.36:4000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://191.252.214.36:4000";
 
-// 🔧 Função auxiliar para extrair o ID da URL
-function getIdFromUrl(url: string): string | null {
-  const parts = url.split("/");
-  return parts[parts.length - 1] || null;
-}
-
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   const token = request.cookies.get("accessToken")?.value;
 
   if (!token) {
@@ -22,11 +15,7 @@ export async function GET(request: NextRequest) {
   const ano = searchParams.get("ano");
   const codVerba = searchParams.get("codVerba");
 
-  const id = getIdFromUrl(request.url);
-
-  if (!id) {
-    return NextResponse.json({ error: "ID não fornecido" }, { status: 400 });
-  }
+  const id = params.id;
 
   try {
     const url = new URL(`${API_BASE_URL}/api/diretoria/${id}`);
@@ -44,7 +33,9 @@ export async function GET(request: NextRequest) {
 
     const data = await res.json();
 
+
     if (!res.ok) {
+      console.error("❌ Erro ao buscar diretoria:", data);
       return NextResponse.json(
         { error: data.message || "Erro ao buscar diretoria" },
         { status: res.status }
@@ -53,7 +44,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(data);
   } catch (error) {
-    console.error("Erro ao buscar diretoria:", error);
+    console.error("❌ Erro interno ao buscar diretoria:", error);
     return NextResponse.json({ error: "Erro interno" }, { status: 500 });
   }
 }

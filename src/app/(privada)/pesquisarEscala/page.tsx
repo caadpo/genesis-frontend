@@ -160,10 +160,9 @@ export default function PesquisarEscala() {
     try {
       const res = await fetch(`/api/pjesescala/escalas-por-matricula?mat=${matricula}`);
       const data = await res.json();
-
       if (!res.ok) throw new Error(data.error || "Erro ao buscar escalas");
   
-      setEscalas(data);
+      setEscalas(data.escalas);
       setMatriculaPesquisada(matricula);
   
       // NOVO: Buscar dados do policial

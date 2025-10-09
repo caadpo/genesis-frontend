@@ -266,7 +266,7 @@ export default function Dashboard() {
         url.searchParams.append("mes", String(mesSelecionado));
         url.searchParams.append("ano", String(anoSelecionado));
         if (codVerba) url.searchParams.append("codVerba", String(codVerba));
-  
+
         const res = await fetch(url.toString());
         if (!res.ok) throw new Error("Erro ao buscar OMEs da diretoria");
         const data = await res.json();
@@ -283,8 +283,7 @@ export default function Dashboard() {
     setExpandedDiretorias((prev) => [...prev, diretoriaId]);
   };
   
-
-    
+  
   return (
   <div className={styles.divReturn}>
     <div className={styles.divTetoPrincipal}>
@@ -898,13 +897,17 @@ export default function Dashboard() {
 
                                         {/* Sublinhas com OMEs associadas */}
                                         {expandedDiretorias.includes(dist.diretoriaId) &&
-                                          omesPorDiretoria[dist.diretoriaId]?.map((ome: any) => (
-                                            <tr key={ome.id}>
-                                              <td>{ome.nomeOme}</td>
-                                              <td>{ome.SomattCtOfEvento} | {ome.SomattCtOfEscala}</td>
-                                              <td>{ome.SomattCtPrcEvento} | {ome.SomattCtPrcEscala}</td>
-                                            </tr>
-                                          ))}
+                                          omesPorDiretoria[dist.diretoriaId]?.map((ome: any) => {
+                                            console.log("OME:", ome);
+                                            return (
+                                              <tr key={ome.id}>
+                                                <td>{ome.nomeOme}</td>
+                                                <td>{Number(ome.SomattCtOfEvento || 0)} | {Number(ome.SomattCtOfEscala || 0)}</td>
+                                                <td>{Number(ome.SomattCtPrcEvento || 0)} | {Number(ome.SomattCtPrcEscala || 0)}</td>
+                                              </tr>
+                                            );
+                                          })}
+
                                       </React.Fragment>
                                     ))}
                                   </tbody>
