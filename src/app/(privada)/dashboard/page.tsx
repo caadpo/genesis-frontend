@@ -85,6 +85,25 @@ export default function Dashboard() {
   const [loadingEventos, setLoadingEventos] = useState(false);
   const temEventosValidos = eventos !== null && Array.isArray(eventos.eventos) && eventos.eventos.length > 0;
 
+  const previstoTotalData =
+  diretoriaGraficoId && omesPorDiretoria[diretoriaGraficoId]
+    ? omesPorDiretoria[diretoriaGraficoId].map(
+        (ome: any) =>
+          (parseInt(ome.SomattCtOfEvento ?? 0) || 0) +
+          (parseInt(ome.SomattCtPrcEvento ?? 0) || 0)
+      )
+    : [];
+
+const executadoData =
+  diretoriaGraficoId && omesPorDiretoria[diretoriaGraficoId]
+    ? omesPorDiretoria[diretoriaGraficoId].map(
+        (ome: any) =>
+          (parseInt(ome.SomattCtOfEscala ?? 0) || 0) +
+          (parseInt(ome.SomattCtPrcEscala ?? 0) || 0)
+      )
+    : [];
+
+
   
   useEffect(() => {
     const handleResize = () => setIsSmallScreen(window.innerWidth < 768);
@@ -384,6 +403,7 @@ export default function Dashboard() {
                   );
                 })}
               </ul>
+              
 
               {/* Detalhes do teto selecionado */}
               {loadingDetalhes ? (
@@ -554,12 +574,12 @@ export default function Dashboard() {
                     </div>
                   )}
 
-
                     <div className={styles.divGraficoWrapper}>
                       {/* INÍCIO GRAFICO DE CONSUMO */}
                       {(user?.typeUser === 1 && temEventosValidos) || [3, 4, 5, 10].includes(user?.typeUser ?? -1) ? (
                         <div className={styles.divGraficoEsquerda}>
                           {user?.typeUser === 1 && temEventosValidos ? (
+
                             // 👉 Gráfico para typeUser === 1
                             <div className={styles.divGrafico}>
                               <span
@@ -625,12 +645,12 @@ export default function Dashboard() {
                                     },
                                     scales: {
                                       x: {
-                                        stacked: true,
+                                        stacked: false,
                                         ticks: { display: false },
                                         grid: { display: false },
                                       },
                                       y: {
-                                        stacked: true,
+                                        stacked: false,
                                         ticks: {
                                           color: "#ffffff",
                                           font: {
@@ -712,32 +732,55 @@ export default function Dashboard() {
                                           tooltip: {
                                             callbacks: {
                                               label: function (context) {
-                                                const previsto = context.chart.data.datasets?.[0]?.data?.[context.dataIndex];
-                                                const executado = context.chart.data.datasets?.[1]?.data?.[context.dataIndex];
-                                                const valor = context.raw;
-
-                                                const previstoNum = typeof previsto === "number" ? previsto : 0;
-                                                const executadoNum = typeof executado === "number" ? executado : 0;
-                                                const total = previstoNum + executadoNum;
-
-                                                if (typeof valor === "number" && total > 0) {
-                                                  const porcentagem = ((valor / total) * 100).toFixed(1);
-                                                  return `${context.dataset.label}: ${valor} (${porcentagem}%)`;
-                                                } else {
-                                                  return `${context.dataset.label}: ${valor}`;
+                                                
+                                                if (diretoriaGraficoId === null) {
+                                                  console.warn("diretoriaGraficoId está null no tooltip!");
+                                                  return "";
                                                 }
-                                              },
+                                                
+                                                const ome = omesPorDiretoria[diretoriaGraficoId][context.dataIndex];
+                                                
+                                                const executado =
+                                                (parseInt(ome.SomattCtOfEscala ?? "") || 0) +
+                                                (parseInt(ome.SomattCtPrcEscala ?? "") || 0);
+                                              
+                                                const previsto =
+                                                (parseInt(ome.SomattCtOfEvento ?? "") || 0) +
+                                                (parseInt(ome.SomattCtPrcEvento ?? "") || 0);
+                                              
+                                                const valor = context.raw;
+                                                const porcentagem = previsto > 0 ? ((executado / previsto) * 100).toFixed(1) : "0";
+
+                                              return `${context.dataset.label}: ${valor} (${porcentagem}%)`;
+                                            },
+
                                             },
                                           },
+                                          
                                           datalabels: {
-                                            display: (ctx) => ctx.datasetIndex === 1,
+                                            display: (ctx) => ctx.datasetIndex === 0, // só no "Executado"
                                             align: "end",
                                             anchor: "end",
                                             formatter: (value, context) => {
-                                              const total =
-                                                value +
-                                                context.chart.data.datasets[0].data[context.dataIndex];
-                                              const percent = ((value / total) * 100).toFixed(0);
+                                              const index = context.dataIndex;
+                                          
+                                              // Se estiver visualizando por diretoria (antes de clicar)
+                                              if (diretoriaGraficoId === null) {
+                                                const dist = tetoSelecionado.distribuições?.[index];
+                                          
+                                                if (!dist) return "";
+                                          
+                                                const previsto =
+                                                  (parseInt(dist.SomattCtOfDist ?? "") || 0) +
+                                                  (parseInt(dist.SomattCtPrcDist ?? "") || 0);
+                                          
+                                                const percent = previsto > 0 ? ((value / previsto) * 100).toFixed(0) : "0";
+                                                return `${percent}%`;
+                                              }
+                                          
+                                              // Se clicou e está visualizando por OME
+                                              const previsto = previstoTotalData?.[index] ?? 0;
+                                              const percent = previsto > 0 ? ((value / previsto) * 100).toFixed(0) : "0";
                                               return `${percent}%`;
                                             },
                                             color: "#000000",
@@ -745,6 +788,8 @@ export default function Dashboard() {
                                               weight: "bold",
                                             },
                                           },
+                                          
+                                          
                                         },
                                         scales: {
                                           x: {
@@ -771,21 +816,13 @@ export default function Dashboard() {
                                               datasets: [
                                                 {
                                                   label: "Executado",
-                                                  data: omesPorDiretoria[diretoriaGraficoId].map(
-                                                    (ome: any) =>
-                                                      (parseInt(ome.SomattCtOfEscala ?? 0) || 0) +
-                                                      (parseInt(ome.SomattCtPrcEscala ?? 0) || 0)
-                                                  ),
+                                                  data: executadoData,
                                                   backgroundColor: "rgba(62, 179, 62, 0.9)",
                                                   stack: "total",
                                                 },
                                                 {
                                                   label: "Previsto",
-                                                  data: omesPorDiretoria[diretoriaGraficoId].map(
-                                                    (ome: any) =>
-                                                      (parseInt(ome.SomattCtOfEvento ?? 0) || 0) +
-                                                      (parseInt(ome.SomattCtPrcEvento ?? 0) || 0)
-                                                  ),
+                                                  data: previstoTotalData.map((prev, i) => Math.max(prev - executadoData[i], 0)),
                                                   backgroundColor: "rgb(243, 238, 238)",
                                                   stack: "total",
                                                 },
@@ -802,21 +839,27 @@ export default function Dashboard() {
                                                       (parseInt(dist.SomaCtPrcExec ?? 0) || 0)
                                                   ),
                                                   backgroundColor: "rgba(62, 179, 62, 0.9)",
-                                                  stack: "total",
+                                                  barThickness: 20,
                                                 },
                                                 {
                                                   label: "Previsto",
                                                   data: tetoSelecionado.distribuições.map(
-                                                    (dist: any) =>
-                                                      (parseInt(dist.SomattCtOfDist ?? 0) || 0) +
-                                                      (parseInt(dist.SomattCtPrcDist ?? 0) || 0)
+                                                    (dist: any) => {
+                                                      const previsto = (parseInt(dist.SomattCtOfDist ?? 0) || 0) +
+                                                                       (parseInt(dist.SomattCtPrcDist ?? 0) || 0);
+                                                      const executado = (parseInt(dist.SomaCtOfExec ?? 0) || 0) +
+                                                                        (parseInt(dist.SomaCtPrcExec ?? 0) || 0);
+                                                      return Math.max(previsto - executado, 0);
+                                                    }
                                                   ),
                                                   backgroundColor: "rgb(243, 238, 238)",
-                                                  stack: "total",
+                                                  barThickness: 20,
                                                 },
                                               ],
                                             }
                                       }
+                                      
+                                      
                                     />
                                   </div>
                                 ) : (
