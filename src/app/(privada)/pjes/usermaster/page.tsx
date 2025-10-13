@@ -143,19 +143,22 @@ export default function UserMasterPage() {
 
     const distSelecionada = distribuicoesDoTeto.find((d) => d.id === selectedDistId);
     // função para trazer o resumo por diretoria
-    const resumoPorVerba = useMemo(() => {
+    const resumoPorVerbaDiretoria = useMemo(() => {
       const resumo: Record<string, {
         nomeVerba: string;
-        omes: Record<string, {
-          nomeOme: string;
-          codVerba: string;
-          ttCtOfEvento: number;
-          ttCtPrcEvento: number;
-          somaCotaOfEscala: number;
-          somaCotaPrcEscala: number;
-          valorTtPlanejado: number;
-          valorTtExecutado: number;
-          saldoFinal: number;
+        diretorias: Record<string, {
+          nomeDiretoria: string;
+          omes: Record<string, {
+            nomeOme: string;
+            codVerba: string;
+            ttCtOfEvento: number;
+            ttCtPrcEvento: number;
+            somaCotaOfEscala: number;
+            somaCotaPrcEscala: number;
+            valorTtPlanejado: number;
+            valorTtExecutado: number;
+            saldoFinal: number;
+          }>
         }>
       }> = {};
     
@@ -163,20 +166,36 @@ export default function UserMasterPage() {
         const nomeVerba = dist?.nomeVerba || "SEM VERBA";
     
         (dist.eventos || []).forEach(evento => {
+          const nomeDiretoria =
+          typeof evento?.ome === 'object' && 'diretoria' in evento.ome
+            ? (evento.ome as any).diretoria?.nomeDiretoria || "SEM DIRETORIA"
+            : "SEM DIRETORIA";
+
           const nomeOme = evento?.nomeOme || "SEM OME";
           const codVerba = evento?.codVerba || "N/A";
           const keyVerba = nomeVerba;
+          const keyDiretoria = nomeDiretoria;
           const keyOme = `${nomeOme}-${codVerba}`;
     
+          // Se não existe a verba
           if (!resumo[keyVerba]) {
             resumo[keyVerba] = {
               nomeVerba,
-              omes: {},
+              diretorias: {}
             };
           }
     
-          if (!resumo[keyVerba].omes[keyOme]) {
-            resumo[keyVerba].omes[keyOme] = {
+          // Se não existe a diretoria dentro da verba
+          if (!resumo[keyVerba].diretorias[keyDiretoria]) {
+            resumo[keyVerba].diretorias[keyDiretoria] = {
+              nomeDiretoria,
+              omes: {}
+            };
+          }
+    
+          // Se não existe a OME dentro da diretoria
+          if (!resumo[keyVerba].diretorias[keyDiretoria].omes[keyOme]) {
+            resumo[keyVerba].diretorias[keyDiretoria].omes[keyOme] = {
               nomeOme,
               codVerba,
               ttCtOfEvento: 0,
@@ -185,11 +204,11 @@ export default function UserMasterPage() {
               somaCotaPrcEscala: 0,
               valorTtPlanejado: 0,
               valorTtExecutado: 0,
-              saldoFinal: 0,
+              saldoFinal: 0
             };
           }
     
-          const omeData = resumo[keyVerba].omes[keyOme];
+          const omeData = resumo[keyVerba].diretorias[keyDiretoria].omes[keyOme];
           omeData.ttCtOfEvento += evento.ttCtOfEvento || 0;
           omeData.ttCtPrcEvento += evento.ttCtPrcEvento || 0;
           omeData.somaCotaOfEscala += evento.somaCotaOfEscala || 0;
@@ -202,7 +221,9 @@ export default function UserMasterPage() {
     
       return resumo;
     }, [distribuicoes]);
+
     // função para trazer o resumo por diretoria
+
     
     useEffect(() => {
       const anoParam = searchParams.get("ano");
@@ -1105,547 +1126,570 @@ export default function UserMasterPage() {
 
             <div style={{ display: "flex", flex: 1, border: "1px solid #cac3c3" }}>
 
-                  {/* INICIO RESUMO POR DIRETORIA */}
-                  <div className={styles.eventoPrincipal}>
-                    {Object.values(resumoPorVerba).map((verbaResumo) => (
-                      <div key={verbaResumo.nomeVerba} className={styles.larguraDiretoria}>
-                        <div className={styles.abasContainer}>
-                          <button className={ abaAtiva === "diretorias" ? styles.abaAtiva : styles.aba} onClick={() => setAbaAtiva("diretorias")}>
-                            {verbaResumo.nomeVerba}
-                          </button>
-                        </div>
-                        
+              {/* INICIO RESUMO POR DIRETORIA */}
+              <div className={styles.eventoPrincipal}>
+              {Object.values(resumoPorVerbaDiretoria).map((verbaResumo) => (
+                <div key={verbaResumo.nomeVerba} className={styles.larguraDiretoria}>
+                    <div className={styles.abasContainer}>
+                  <button
+                    className={abaAtiva === "diretorias" ? styles.abaAtiva : styles.aba}
+                    
+                  >
+                    {verbaResumo.nomeVerba}
+                  </button>
+                </div>
 
-                        <table className={styles["tabela-zebra-ome"]}>
-                          <thead>
-                            <tr>
-                              <th>Unidade</th>
-                              <th>Cod Verba</th>
-                              <th>Oficiais</th>
-                              <th>Praças</th>
-                              <th>#</th>
+                  {Object.values(verbaResumo.diretorias).map((diretoriaResumo) => (
+                    <div key={diretoriaResumo.nomeDiretoria}>
+                      <h3 style={{paddingTop:"20px", fontSize:"15px", fontWeight:"bold"}}>{diretoriaResumo.nomeDiretoria}</h3>
+
+                      <table className={styles["tabela-zebra-ome"]}>
+                        <thead>
+                          <tr>
+                            <th>Unidade</th>
+                            <th>Cod Verba</th>
+                            <th>Oficiais</th>
+                            <th>Praças</th>
+                            <th>#</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {Object.values(diretoriaResumo.omes).map((omeResumo) => (
+                            <tr key={`${omeResumo.nomeOme}-${omeResumo.codVerba}`}>
+                              <td>{omeResumo.nomeOme}</td>
+                              <td>{omeResumo.codVerba}</td>
+                              <td>{omeResumo.ttCtOfEvento} | {omeResumo.somaCotaOfEscala}</td>
+                              <td>{omeResumo.ttCtPrcEvento} | {omeResumo.somaCotaPrcEscala}</td>
+                              <td><FaCheck /></td>
                             </tr>
-                          </thead>
-                          <tbody>
-                            {Object.values(verbaResumo.omes).map((omeResumo) => (
-                              <tr key={`${omeResumo.nomeOme}-${omeResumo.codVerba}`}>
-                                <td>{omeResumo.nomeOme}</td>
-                                <td>{omeResumo.codVerba}</td>
-                                <td>{omeResumo.ttCtOfEvento} | {omeResumo.somaCotaOfEscala}</td>
-                                <td>{omeResumo.ttCtPrcEvento} | {omeResumo.somaCotaPrcEscala}</td>
-                                <td><FaCheck /></td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
+                          ))}
+                        </tbody>
+                      </table>
 
-                        <div className={styles.resumoPrincipalOme}>
-                          <h3 className={styles.h3ResumoOme}><strong>Planejado:</strong></h3>
-                          <span className={styles.spanResumoOme}>
-                            R$ {
-                              Object.values(verbaResumo.omes).reduce(
-                                (soma, ome) => soma + ome.valorTtPlanejado,
-                                0
-                              ).toFixed(2)
-                            }
-                          </span>
-                        </div>
-                        <hr className={styles.hrResumoOme} />
-
-                        <div className={styles.resumoPrincipalOme}>
-                          <h3 className={styles.h3ResumoOme}><strong>Executado:</strong></h3>
-                          <span className={styles.spanResumoOme}>
-                            R$ {
-                              Object.values(verbaResumo.omes).reduce(
-                                (soma, ome) => soma + ome.valorTtExecutado,
-                                0
-                              ).toFixed(2)
-                            }
-                          </span>
-                        </div>
-                        <hr className={styles.hrResumoOme} />
-
-                        <div className={styles.resumoSaldoOme}>
-                          <h3 className={styles.h3ResumoOme}><strong>Saldo:</strong></h3>
-                          <span className={styles.spanResumoOme}>
-                            R$ {
-                              Object.values(verbaResumo.omes).reduce(
-                                (soma, ome) => soma + ome.saldoFinal,
-                                0
-                              ).toFixed(2)
-                            }
-                          </span>
-                        </div>
+                      <div className={styles.resumoPrincipalOme}>
+                        <h4><strong>Planejado:</strong></h4>
+                        <span>
+                          R$ {
+                            Object.values(diretoriaResumo.omes).reduce(
+                              (soma, ome) => soma + ome.valorTtPlanejado,
+                              0
+                            ).toFixed(2)
+                          }
+                        </span>
                       </div>
-                    ))}
+
+                      <div className={styles.resumoPrincipalOme}>
+                        <h4><strong>Executado:</strong></h4>
+                        <span>
+                          R$ {
+                            Object.values(diretoriaResumo.omes).reduce(
+                              (soma, ome) => soma + ome.valorTtExecutado,
+                              0
+                            ).toFixed(2)
+                          }
+                        </span>
+                      </div>
+
+                      <div className={styles.resumoSaldoOme}>
+                        <h4><strong>Saldo:</strong></h4>
+                        <span>
+                          R$ {
+                            Object.values(diretoriaResumo.omes).reduce(
+                              (soma, ome) => soma + ome.saldoFinal,
+                              0
+                            ).toFixed(2)
+                          }
+                        </span>
+                      </div>
+
+                      <hr className={styles.hrResumoOme} />
+                    </div>
+                  ))}
+                </div>
+              ))}
+
+
+              </div>
+              {/* FIM RESUMO POR DIRETORIA */}
+
+              {/* INICIO EVENTOS */}
+                <div className={styles.eventoPrincipal}>
+                  <div className={styles.eventoTitulo}>
+                    <h3>EVENTOS</h3>
                   </div>
-                  {/* FIM RESUMO POR DIRETORIA */}
+                  <div className={styles.eventoNomePrincipal}>
+                      <input
+                        type="text"
+                        placeholder="Buscar..."
+                        value={buscaEventos}
+                        onChange={(e) => setBuscaEventos(e.target.value)}
+                        className={styles.eventoInputBuscar}
+                      />
 
-                  {/* INICIO EVENTOS */}
-                    <div className={styles.eventoPrincipal}>
-                      <div className={styles.eventoTitulo}>
-                        <h3>EVENTOS</h3>
-                      </div>
-                      <div className={styles.eventoNomePrincipal}>
-                          <input
-                            type="text"
-                            placeholder="Buscar..."
-                            value={buscaEventos}
-                            onChange={(e) => setBuscaEventos(e.target.value)}
-                            className={styles.eventoInputBuscar}
-                          />
-
-                          {/* inicio botao add eventos*/}
-                            <div
-                              className={styles.eventoCadastrar}
-                              onClick={() => {
-                                if (!selectedDistId) {
-                                  alert("Selecione uma distribuição primeiro.");
-                                  return;
-                                }
-
-                                setModalDataEvento({
-                                  pjesDistId: selectedDistId,
-                                  mes: Number(mes),
-                                  ano: Number(ano),
-                                  userId: userId,
-                                  statusEvento: "AUTORIZADA",
-                                });
-                                setMostrarModalEvento(true);
-                              }}
-                            >
-                              <FaPlus color="#ff8800" />
-                            </div>
-                         {/* fim botao add eventos*/}
-
-
-
-                        {/* inicio botao homologar todos eventos*/}
+                      {/* inicio botao add eventos*/}
                         <div
-                          className={styles.operacaoCadastrar}
-                          onClick={() => homologarEventos(Number(mes), Number(ano))}
-                          title="Homologar todos eventos"
-                          style={{ cursor: "pointer" }}
+                          className={styles.eventoCadastrar}
+                          onClick={() => {
+                            if (!selectedDistId) {
+                              alert("Selecione uma distribuição primeiro.");
+                              return;
+                            }
+
+                            setModalDataEvento({
+                              pjesDistId: selectedDistId,
+                              mes: Number(mes),
+                              ano: Number(ano),
+                              userId: userId,
+                              statusEvento: "AUTORIZADA",
+                            });
+                            setMostrarModalEvento(true);
+                          }}
                         >
-                          <FaLock color="#f40606" />
+                          <FaPlus color="#ff8800" />
                         </div>
-                      {/* fim botao homologar todos eventos*/}
+                      {/* fim botao add eventos*/}
 
 
-                        {/* inicio botao baixar planilha*/}
-                        <div
-                            className={styles.operacaoCadastrar}
-                            onClick={() => setMostrarModalPrestacaoContas(true)}
-                            title="Prestar Contas"
-                          >
-                          <FaDownload color="#1f9c00" />
-                      </div>
-                        {/* fim botao baixar planilha*/}
-                      </div>
 
-                      {Array.isArray(eventosDistribuicao) && eventosDistribuicao.length > 0 && (
-                        <div>
-                          {Object.entries(
-                              eventosDistribuicao
-                                .filter((evento: any) => {
-                                  const busca = buscaEventos.toLowerCase();
-                                  return (
-                                    evento.nomeEvento?.toLowerCase().includes(busca) ||
-                                    evento.ome?.nomeOme?.toLowerCase().includes(busca) ||
-                                    getNomeDiretoriaOrigemByEvento(evento)?.toLowerCase().includes(busca)
-                                  );
-                                })
-                                .reduce((acc: any, evento: any) => {
-                                  const omeId = evento.ome?.id;
-                                  if (!acc[omeId]) {
-                                    acc[omeId] = {
-                                      nomeOme: evento.ome?.nomeOme || "OME Desconhecida",
-                                      eventos: [],
-                                    };
-                                  }
-                                  acc[omeId].eventos.push(evento);
-                                  return acc;
-                                }, {})
-                            ).map(([omeId, { nomeOme, eventos }]: any) => (
+                    {/* inicio botao homologar todos eventos*/}
+                    <div
+                      className={styles.operacaoCadastrar}
+                      onClick={() => homologarEventos(Number(mes), Number(ano))}
+                      title="Homologar todos eventos"
+                      style={{ cursor: "pointer" }}
+                    >
+                      <FaLock color="#f40606" />
+                    </div>
+                  {/* fim botao homologar todos eventos*/}
 
-                            <div key={omeId}>
-                             {eventos.map((evento: any) => {
-                              const imagemUrl = getImagemUrlByCodVerba(evento.codVerba);
-                              const isEventoSelecionado = evento.id === eventoSelecionadoObj?.id;
-                                return (
-                                  <div key={evento.id}>
-                                    <ul className={styles.eventoUl} onClick={() => handleExpandirEvento(evento.id)}>
-                                        <li
-                                          className={styles.eventoImagemLi}
-                                          style={{
-                                            fontWeight: eventoExpandido === evento.id ? "bold" : "normal",
-                                            backgroundColor: eventoExpandido === evento.id ? "#ffdcba" : "#ffffff",
+
+                    {/* inicio botao baixar planilha*/}
+                    <div
+                        className={styles.operacaoCadastrar}
+                        onClick={() => setMostrarModalPrestacaoContas(true)}
+                        title="Prestar Contas"
+                      >
+                      <FaDownload color="#1f9c00" />
+                  </div>
+                    {/* fim botao baixar planilha*/}
+                  </div>
+
+                  {Array.isArray(eventosDistribuicao) && eventosDistribuicao.length > 0 && (
+                    <div>
+                      {Object.entries(
+                          eventosDistribuicao
+                            .filter((evento: any) => {
+                              const busca = buscaEventos.toLowerCase();
+                              return (
+                                evento.nomeEvento?.toLowerCase().includes(busca) ||
+                                evento.ome?.nomeOme?.toLowerCase().includes(busca) ||
+                                getNomeDiretoriaOrigemByEvento(evento)?.toLowerCase().includes(busca)
+                              );
+                            })
+                            .reduce((acc: any, evento: any) => {
+                              const omeId = evento.ome?.id;
+                              if (!acc[omeId]) {
+                                acc[omeId] = {
+                                  nomeOme: evento.ome?.nomeOme || "OME Desconhecida",
+                                  eventos: [],
+                                };
+                              }
+                              acc[omeId].eventos.push(evento);
+                              return acc;
+                            }, {})
+                        ).map(([omeId, { nomeOme, eventos }]: any) => (
+
+                        <div key={omeId}>
+                          {eventos.map((evento: any) => {
+                          const imagemUrl = getImagemUrlByCodVerba(evento.codVerba);
+                          const isEventoSelecionado = evento.id === eventoSelecionadoObj?.id;
+                            return (
+                              <div key={evento.id}>
+                                <ul className={styles.eventoUl} onClick={() => handleExpandirEvento(evento.id)}>
+                                    <li
+                                      className={styles.eventoImagemLi}
+                                      style={{
+                                        fontWeight: eventoExpandido === evento.id ? "bold" : "normal",
+                                        backgroundColor: eventoExpandido === evento.id ? "#ffdcba" : "#ffffff",
+                                      }}
+                                    >
+                                      {/* Botão de menu (três pontinhos) */}
+                                      <div
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            toggleMenu(evento.id);
                                           }}
+                                          className={styles.eventoMenuEditarExcluir}
                                         >
-                                          {/* Botão de menu (três pontinhos) */}
+                                        ⋮
+                                      </div>
+
+                                      {/* Submenu */}
+                                        {menuAbertoId === evento.id && (
+                                        <div
+                                          ref={menuRef}
+                                          className={styles.eventoSubMenuEditarExcluir}
+                                        >
                                           <div
-                                              onClick={(e) => {
-                                                e.stopPropagation();
-                                                toggleMenu(evento.id);
-                                              }}
-                                              className={styles.eventoMenuEditarExcluir}
-                                            >
-                                            ⋮
+                                            style={menuItemStyle} onClick={() => handleToggleStatus(evento)}>
+                                            {evento.statusEvento === "AUTORIZADA" ? "Homologar" : "Autorizar"}
                                           </div>
 
-                                          {/* Submenu */}
-                                            {menuAbertoId === evento.id && (
-                                            <div
-                                              ref={menuRef}
-                                              className={styles.eventoSubMenuEditarExcluir}
-                                            >
-                                              <div
-                                                style={menuItemStyle} onClick={() => handleToggleStatus(evento)}>
-                                                {evento.statusEvento === "AUTORIZADA" ? "Homologar" : "Autorizar"}
-                                              </div>
+                                          <div style={menuItemStyle} onClick={() => handleEditarEvento(evento)}>Editar</div>
+                                          <div style={{...menuItemStyle, borderBottom: "none",}}
+                                            onClick={() => handleExcluirEvento(evento.id)}
+                                          >
+                                            Excluir
+                                          </div>
+                                        </div>
+                                      )}
 
-                                              <div style={menuItemStyle} onClick={() => handleEditarEvento(evento)}>Editar</div>
-                                              <div style={{...menuItemStyle, borderBottom: "none",}}
-                                                onClick={() => handleExcluirEvento(evento.id)}
-                                              >
-                                                Excluir
+                                    {/* Imagem do teto */}
+                                    <div className={styles.eventoImagem}>
+                                      <Image
+                                        src={imagemUrl}
+                                        alt="logo"
+                                        width={40}
+                                        height={40}
+                                        style={{ borderRadius: "50%" }}
+                                      />
+                                      <span style={{ fontSize: "8px" }}>
+                                        {getNomeDiretoriaOrigemByEvento(evento)}
+                                      </span>
+                                    </div>
+
+                                    {/* Texto à direita */}
+                                    <div style={{ flex: 1}}>
+                                      <div className={styles.eventoTextoADireita}>
+                                        {evento.ome?.nomeOme} <br />
+                                        {evento.nomeEvento}
+                                      </div>
+                                      <div className={styles.conteudoEvento}>
+                                      <span style={{ paddingRight: "20px" }}>
+                                          Oficiais: {evento.ttCtOfEvento} | {isEventoSelecionado
+                                          ? eventoSelecionadoObj?.pjesoperacoes?.reduce(
+                                              (soma: number, op: any) => soma + (op.ttCtOfExeOper || 0),
+                                              0
+                                            ) ?? "-"
+                                          : "-"
+                                        }
+
+                                        </span>
+                                        <span style={{ paddingRight: "20px" }}>
+                                          Praças: {evento.ttCtPrcEvento} | {isEventoSelecionado
+                                          ? eventoSelecionadoObj?.pjesoperacoes?.reduce(
+                                              (soma: number, op: any) => soma + (op.ttCtPrcExeOper || 0),
+                                              0
+                                            ) ?? "-"
+                                          : "-"
+                                        }
+
+                                        </span>
+                                        <FaUserSlash color="orange" style={{ marginRight: "5px" }} />
+                                        {impedidosPorEvento[evento.id] ?? 0}
+                                      </div>
+                                    </div>
+
+                                    <div style={{ fontSize: "20px", paddingTop: "5px" }}>
+                                      <div style={{ fontSize: "20px", paddingBottom: "5px", marginRight: "33px",}}>
+                                        {evento.statusEvento === "AUTORIZADA" ? (
+                                          <FaLockOpen color="green" />
+                                        ) : evento.statusEvento === "HOMOLOGADA" ? (
+                                          <FaLock color="red" />
+                                        ) : null}
+                                      </div>
+                                    </div>
+                                  </li>
+                                </ul>
+                              </div>
+                            );
+                          })}
+
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              {/* FIM EVENTOS */}
+
+              {/* INICIO OPERAÇÕES */}
+                <div className={styles.operacaoPrincipal}>
+                  <div className={styles.operacaoTitulo}>
+                    <h3>OPERAÇÕES</h3>
+                  </div>
+
+                  <div className={styles.operacaoNomePrincipal}>
+                  <input
+                      type="text"
+                      placeholder="Buscar..."
+                      className={styles.operacaoInputBuscar}
+                      value={buscaEscala}
+                      onChange={(e) => setBuscaEscala(e.target.value)}
+                    />
+                    {/* INICIO BOTAO DE ADIOCNAR OPERAÇÃO*/}
+                    <div className={styles.operacaoCadastrar}
+                        onClick={() => {
+                          if (!selectedEventoId) {
+                            alert("Selecione um Evento primeiro.");
+                            return;
+                          }
+                          setModalDataOperacao({
+                            pjesEventoId: selectedEventoId,
+                            omeId: eventoSelecionadoObj?.omeId ?? "",
+                            mes: Number(mes),
+                            ano: Number(ano),
+                            userId: userId,
+                            statusOperacao: "AUTORIZADA",
+                          });
+                          setMostrarModalOperacao(true);
+                        }}
+                      >
+                        <div>
+                          <FaPlus color="#4400ff" />
+                        </div>
+                    </div>
+                    {/* FIM BOTAO DE ADIOCNAR OPERAÇÃO*/}
+                  </div>
+
+                  <ul>
+                    {eventoExpandido && operacoesEvento.length > 0 ? (
+                      operacoesEvento.map((op) => {
+                        const isAberto = selectedOperacaoId === op.id;
+
+                        return (
+                          <li key={op.codOp} className={styles.operacaoImagemLi}>
+                            <div className={styles.operacaoImagem}>
+                              <div className={styles.operacaoImagemSecundaria}>
+                                <Image
+                                  src={getImagemUrlByCodVerba(op.codVerba)}
+                                  alt="logo"
+                                  width={40}
+                                  height={40}
+                                  style={{ borderRadius: "50%", padding: "5px" }}
+                                />
+                                <span style={{ marginLeft: "15px" }}>
+                                  <span style={{ color: "#777474" }}>CODIGO DA OPERAÇÃO:</span>{" "}
+                                  <strong>{op.codOp}</strong>
+                                </span>
+                              </div>
+                              <div className={styles.operacaoBotaoAddPms}>
+                                {/* botao add policiais */}
+                                <button
+                                  disabled={!isAberto}
+                                  onClick={() => {
+                                    setModalDataEscala({
+                                      pjesOperacaoId: op.id,
+                                      mes: Number(mes),
+                                      ano: Number(ano),
+                                      userId: userId,
+                                      statusEscala: "AUTORIZADA",
+                                    });
+                                    setMostrarModalEscala(true);
+                                  }}
+                                  className={styles.operacaoBotaoAddPmsReal}
+                                  style={{
+                                    cursor: isAberto
+                                      ? "pointer"
+                                      : "not-allowed",
+                                    opacity: isAberto ? 1 : 0.3,
+                                  }}
+                                >
+                                  ADICIONAR POLICIAIS
+                                </button>
+
+                                {/* botao editar operação */}
+                                <button
+                                  disabled={!isAberto}
+                                  onClick={() => {
+                                    setModalDataOperacao(op);
+                                    setMostrarModalOperacao(true);
+                                  }}
+                                  className={styles.operacaoBotaoEditarPmsReal}
+                                  style={{
+                                    cursor: isAberto
+                                      ? "pointer"
+                                      : "not-allowed",
+                                    opacity: isAberto ? 1 : 0.3,
+                                    paddingLeft: "10px",
+                                    paddingRight: "10px",
+                                  }}
+                                >
+                                  <FaEdit />
+                                </button>
+
+                                {/* botao excluir operação */}
+                                <button
+                                  disabled={!isAberto}
+                                  onClick={() => handleExcluirOperacao(op.id)}
+                                  className={styles.operacaoBotaoExcluirPmsReal}
+                                  style={{
+                                    cursor: isAberto
+                                      ? "pointer"
+                                      : "not-allowed",
+                                    opacity: isAberto ? 1 : 0.3,
+                                    paddingLeft: "10px",
+                                    paddingRight: "10px",
+                                  }}
+                                >
+                                  <FaTrash />
+                                </button>
+
+                                {/* inicio botao gerar pdf */}
+                                <button
+                                  disabled={!isAberto}
+                                  onClick={() => {
+                                    // codOp que pode conter "/", separar em segmentos para a rota catch-all
+                                    const codOpPath = op.codOp
+                                      .split("/")
+                                      .map(encodeURIComponent)
+                                      .join("/");
+
+                                    // abre a rota do Next.js que vai chamar sua API e baixar o PDF
+                                    window.open(
+                                      `/api/pjesoperacao/pdf-codop/${codOpPath}?mes=${mes}&ano=${ano}`,
+                                      "_blank"
+                                    );
+                                  }}
+                                  className={styles.operacaoBotaoPdfPmsReal}
+                                  style={{
+                                    cursor: isAberto ? "pointer" : "not-allowed",
+                                    opacity: isAberto ? 1 : 0.3,
+                                    paddingLeft: "10px",
+                                    paddingRight: "10px",
+                                  }}
+                                >
+                                  <FaFilePdf />
+                                </button>
+                                {/* fim botao gerar pdf */}
+                              </div>
+
+                            </div>
+
+                            <div className={styles.operacaoNomeTabela}>
+                              <div
+                                className={styles.operacaoNomeClickTabela}
+                                style={{
+                                  fontWeight: isAberto ? "bold" : "normal",
+                                  background: isAberto ? "#2a6fa8" : "#7d7e80",
+                                }}
+                                onClick={() => fetchEscalasDaOperacao(op.id)}
+                              >
+                                <div style={{ flex: 2 }}>
+                                  {op.nomeOme} | {op.nomeOperacao || "Operação"}
+                                </div>
+
+                                <div className={styles.operacaoIconOfPrc}>
+                                  <FaStar /> {op.ttCtOfOper} | {op.ttCtOfExeOper}
+                                </div>
+
+                                <div className={styles.operacaoIconOfPrc}>
+                                  <FaForward /> {op.ttCtPrcOper} | {op.ttCtPrcExeOper}
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Só renderiza se estiver aberta */}
+                            {isAberto && (
+                              <div style={{ paddingLeft: "10px", paddingRight: "10px" }}>
+                                <table
+                                  className={styles["tabela-zebra"]}
+                                  style={{
+                                    width: "100%",
+                                    fontSize: "12px",
+                                    borderCollapse: "collapse",
+                                    borderBottom: "2px solid black",
+                                  }}
+                                >
+                                  <thead>
+                                    <tr style={{ background: "#0d5997", color: "white" }}>
+                                      <th className={styles.operacaoTableTh}>IDENTIFICAÇÃO</th>
+                                      <th className={styles.operacaoTableTh}>DATA E HORA</th>
+                                      <th className={styles.operacaoTableTh}>APRESENTAÇÃO</th>
+                                      <th className={styles.operacaoTableTh}>TELEFONE</th>
+                                      <th className={styles.operacaoTableTh}>FUNÇÃO</th>
+                                      <th className={styles.operacaoTableTh}>SITUAÇÃO</th>
+                                      <th className={styles.operacaoTableTh}>ANOTAÇÕES</th>
+                                      <th className={styles.operacaoTableTh}>AÇÕES</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                      {(escalasOperacao[op.id] || [])
+                                        .filter((escala) => {
+                                          const busca = buscaEscala.toLowerCase();
+                                          return (
+                                            String(escala.nomeGuerraSgp || "")
+                                            .toLowerCase()
+                                            .includes(busca) ||
+                                          String(escala.pgSgp || "")
+                                            .toLowerCase()
+                                            .includes(busca) ||
+                                          String(escala.matSgp || "")
+                                            .toLowerCase()
+                                            .includes(busca)
+                                          
+                                          );
+                                        })
+                                        .map((escala) => (
+                                    
+                                      <tr key={escala.id}>
+                                        <td style={{ textAlign: "center"}}>
+                                          {escala.pgSgp} {escala.matSgp} {escala.nomeGuerraSgp} {escala.omeSgp}
+                                        </td>
+                                        <td style={{ textAlign: "center"}}>
+                                          {new Date(escala.dataInicio + 'T00:00:00').toLocaleDateString("pt-BR")} {" "}
+                                          {escala.horaInicio.slice(0, 5)} às{" "} {escala.horaFinal.slice(0, 5)}
+                                        </td>
+                                        <td style={{ textAlign: "center"}}>
+                                          {escala.localApresentacaoSgp}
+                                        </td>
+                                        <td style={{ textAlign: "center"}}>
+                                          {escala.phone}
+                                        </td>
+                                        <td style={{ textAlign: "center"}}>
+                                          {escala.funcao}
+                                        </td>
+                                        <td style={{ textAlign: "center"}}>
+                                          {escala.situacaoSgp}
+                                        </td>
+                                        <td style={{ textAlign: "center"}}>
+                                          {escala.anotacaoEscala}
+                                        </td>
+                                        <td style={{ textAlign: "center"}}>
+                                          <div style={{ display:"flex", alignContent:"center", alignItems:"center" }}>
+                                            <div style={{ display: "inline-flex", alignItems: "center"}}>
+                                              <div style={{ marginRight: "5px", padding: "2px", cursor: "pointer",}}
+                                                onClick={() => handleEditarEscala(escala)} title="Editar escala">
+                                                <FaEdit color="red" />
                                               </div>
                                             </div>
-                                          )}
-
-                                        {/* Imagem do teto */}
-                                        <div className={styles.eventoImagem}>
-                                          <Image
-                                            src={imagemUrl}
-                                            alt="logo"
-                                            width={40}
-                                            height={40}
-                                            style={{ borderRadius: "50%" }}
-                                          />
-                                          <span style={{ fontSize: "8px" }}>
-                                            {getNomeDiretoriaOrigemByEvento(evento)}
-                                          </span>
-                                        </div>
-
-                                        {/* Texto à direita */}
-                                        <div style={{ flex: 1}}>
-                                          <div className={styles.eventoTextoADireita}>
-                                            {evento.ome?.nomeOme} <br />
-                                            {evento.nomeEvento}
-                                          </div>
-                                          <div className={styles.conteudoEvento}>
-                                          <span style={{ paddingRight: "20px" }}>
-                                              Oficiais: {evento.ttCtOfEvento} | {isEventoSelecionado ? eventoSelecionadoObj?.somaCotaOfEscala ?? "-" : "-"}
-                                            </span>
-                                            <span style={{ paddingRight: "20px" }}>
-                                              Praças: {evento.ttCtPrcEvento} | {isEventoSelecionado ? eventoSelecionadoObj?.somaCotaPrcEscala ?? "-" : "-"}
-                                            </span>
-                                            <FaUserSlash color="orange" style={{ marginRight: "5px" }} />
-                                            {impedidosPorEvento[evento.id] ?? 0}
-                                          </div>
-                                        </div>
-
-                                        <div style={{ fontSize: "20px", paddingTop: "5px" }}>
-                                          <div style={{ fontSize: "20px", paddingBottom: "5px", marginRight: "33px",}}>
-                                            {evento.statusEvento === "AUTORIZADA" ? (
-                                              <FaLockOpen color="green" />
-                                            ) : evento.statusEvento === "HOMOLOGADA" ? (
-                                              <FaLock color="red" />
-                                            ) : null}
-                                          </div>
-                                        </div>
-                                      </li>
-                                    </ul>
-                                  </div>
-                                );
-                              })}
-
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  {/* FIM EVENTOS */}
-
-                  {/* INICIO OPERAÇÕES */}
-                    <div className={styles.operacaoPrincipal}>
-                      <div className={styles.operacaoTitulo}>
-                        <h3>OPERAÇÕES</h3>
-                      </div>
-
-                      <div className={styles.operacaoNomePrincipal}>
-                      <input
-                          type="text"
-                          placeholder="Buscar..."
-                          className={styles.operacaoInputBuscar}
-                          value={buscaEscala}
-                          onChange={(e) => setBuscaEscala(e.target.value)}
-                        />
-                        {/* INICIO BOTAO DE ADIOCNAR OPERAÇÃO*/}
-                        <div className={styles.operacaoCadastrar}
-                            onClick={() => {
-                              if (!selectedEventoId) {
-                                alert("Selecione um Evento primeiro.");
-                                return;
-                              }
-                              setModalDataOperacao({
-                                pjesEventoId: selectedEventoId,
-                                omeId: eventoSelecionadoObj?.omeId ?? "",
-                                mes: Number(mes),
-                                ano: Number(ano),
-                                userId: userId,
-                                statusOperacao: "AUTORIZADA",
-                              });
-                              setMostrarModalOperacao(true);
-                            }}
-                          >
-                            <div>
-                              <FaPlus color="#4400ff" />
-                            </div>
-                        </div>
-                        {/* FIM BOTAO DE ADIOCNAR OPERAÇÃO*/}
-                      </div>
-
-                      <ul>
-                        {eventoExpandido && operacoesEvento.length > 0 ? (
-                          operacoesEvento.map((op) => {
-                            const isAberto = selectedOperacaoId === op.id;
-
-                            return (
-                              <li key={op.codOp} className={styles.operacaoImagemLi}>
-                                <div className={styles.operacaoImagem}>
-                                  <div className={styles.operacaoImagemSecundaria}>
-                                    <Image
-                                      src={getImagemUrlByCodVerba(op.codVerba)}
-                                      alt="logo"
-                                      width={40}
-                                      height={40}
-                                      style={{ borderRadius: "50%", padding: "5px" }}
-                                    />
-                                    <span style={{ marginLeft: "15px" }}>
-                                      <span style={{ color: "#777474" }}>CODIGO DA OPERAÇÃO:</span>{" "}
-                                      <strong>{op.codOp}</strong>
-                                    </span>
-                                  </div>
-                                  <div className={styles.operacaoBotaoAddPms}>
-                                    {/* botao add policiais */}
-                                    <button
-                                      disabled={!isAberto}
-                                      onClick={() => {
-                                        setModalDataEscala({
-                                          pjesOperacaoId: op.id,
-                                          mes: Number(mes),
-                                          ano: Number(ano),
-                                          userId: userId,
-                                          statusEscala: "AUTORIZADA",
-                                        });
-                                        setMostrarModalEscala(true);
-                                      }}
-                                      className={styles.operacaoBotaoAddPmsReal}
-                                      style={{
-                                        cursor: isAberto
-                                          ? "pointer"
-                                          : "not-allowed",
-                                        opacity: isAberto ? 1 : 0.3,
-                                      }}
-                                    >
-                                      ADICIONAR POLICIAIS
-                                    </button>
-
-                                    {/* botao editar operação */}
-                                    <button
-                                      disabled={!isAberto}
-                                      onClick={() => {
-                                        setModalDataOperacao(op);
-                                        setMostrarModalOperacao(true);
-                                      }}
-                                      className={styles.operacaoBotaoEditarPmsReal}
-                                      style={{
-                                        cursor: isAberto
-                                          ? "pointer"
-                                          : "not-allowed",
-                                        opacity: isAberto ? 1 : 0.3,
-                                        paddingLeft: "10px",
-                                        paddingRight: "10px",
-                                      }}
-                                    >
-                                      <FaEdit />
-                                    </button>
-
-                                    {/* botao excluir operação */}
-                                    <button
-                                      disabled={!isAberto}
-                                      onClick={() => handleExcluirOperacao(op.id)}
-                                      className={styles.operacaoBotaoExcluirPmsReal}
-                                      style={{
-                                        cursor: isAberto
-                                          ? "pointer"
-                                          : "not-allowed",
-                                        opacity: isAberto ? 1 : 0.3,
-                                        paddingLeft: "10px",
-                                        paddingRight: "10px",
-                                      }}
-                                    >
-                                      <FaTrash />
-                                    </button>
-
-                                    {/* inicio botao gerar pdf */}
-                                    <button
-                                      disabled={!isAberto}
-                                      onClick={() => {
-                                        // codOp que pode conter "/", separar em segmentos para a rota catch-all
-                                        const codOpPath = op.codOp
-                                          .split("/")
-                                          .map(encodeURIComponent)
-                                          .join("/");
-
-                                        // abre a rota do Next.js que vai chamar sua API e baixar o PDF
-                                        window.open(
-                                          `/api/pjesoperacao/pdf-codop/${codOpPath}?mes=${mes}&ano=${ano}`,
-                                          "_blank"
-                                        );
-                                      }}
-                                      className={styles.operacaoBotaoPdfPmsReal}
-                                      style={{
-                                        cursor: isAberto ? "pointer" : "not-allowed",
-                                        opacity: isAberto ? 1 : 0.3,
-                                        paddingLeft: "10px",
-                                        paddingRight: "10px",
-                                      }}
-                                    >
-                                      <FaFilePdf />
-                                    </button>
-                                    {/* fim botao gerar pdf */}
-                                  </div>
-
-                                </div>
-
-                                <div className={styles.operacaoNomeTabela}>
-                                  <div
-                                    className={styles.operacaoNomeClickTabela}
-                                    style={{
-                                      fontWeight: isAberto ? "bold" : "normal",
-                                      background: isAberto ? "#2a6fa8" : "#7d7e80",
-                                    }}
-                                    onClick={() => fetchEscalasDaOperacao(op.id)}
-                                  >
-                                    <div style={{ flex: 2 }}>
-                                      {op.nomeOme} | {op.nomeOperacao || "Operação"}
-                                    </div>
-
-                                    <div className={styles.operacaoIconOfPrc}>
-                                      <FaStar /> {op.ttCtOfOper} | {op.ttCtOfExeOper}
-                                    </div>
-
-                                    <div className={styles.operacaoIconOfPrc}>
-                                      <FaForward /> {op.ttCtPrcOper} | {op.ttCtPrcExeOper}
-                                    </div>
-                                  </div>
-                                </div>
-
-                                {/* Só renderiza se estiver aberta */}
-                                {isAberto && (
-                                  <div style={{ paddingLeft: "10px", paddingRight: "10px" }}>
-                                    <table
-                                      className={styles["tabela-zebra"]}
-                                      style={{
-                                        width: "100%",
-                                        fontSize: "12px",
-                                        borderCollapse: "collapse",
-                                        borderBottom: "2px solid black",
-                                      }}
-                                    >
-                                      <thead>
-                                        <tr style={{ background: "#0d5997", color: "white" }}>
-                                          <th className={styles.operacaoTableTh}>IDENTIFICAÇÃO</th>
-                                          <th className={styles.operacaoTableTh}>DATA E HORA</th>
-                                          <th className={styles.operacaoTableTh}>APRESENTAÇÃO</th>
-                                          <th className={styles.operacaoTableTh}>TELEFONE</th>
-                                          <th className={styles.operacaoTableTh}>FUNÇÃO</th>
-                                          <th className={styles.operacaoTableTh}>SITUAÇÃO</th>
-                                          <th className={styles.operacaoTableTh}>ANOTAÇÕES</th>
-                                          <th className={styles.operacaoTableTh}>AÇÕES</th>
-                                        </tr>
-                                      </thead>
-                                      <tbody>
-                                          {(escalasOperacao[op.id] || [])
-                                            .filter((escala) => {
-                                              const busca = buscaEscala.toLowerCase();
-                                              return (
-                                                String(escala.nomeGuerraSgp || "")
-                                                .toLowerCase()
-                                                .includes(busca) ||
-                                              String(escala.pgSgp || "")
-                                                .toLowerCase()
-                                                .includes(busca) ||
-                                              String(escala.matSgp || "")
-                                                .toLowerCase()
-                                                .includes(busca)
-                                              
-                                              );
-                                            })
-                                            .map((escala) => (
-                                        
-                                          <tr key={escala.id}>
-                                            <td style={{ textAlign: "center"}}>
-                                              {escala.pgSgp} {escala.matSgp} {escala.nomeGuerraSgp} {escala.omeSgp}
-                                            </td>
-                                            <td style={{ textAlign: "center"}}>
-                                              {new Date(escala.dataInicio + 'T00:00:00').toLocaleDateString("pt-BR")} {" "}
-                                              {escala.horaInicio.slice(0, 5)} às{" "} {escala.horaFinal.slice(0, 5)}
-                                            </td>
-                                            <td style={{ textAlign: "center"}}>
-                                              {escala.localApresentacaoSgp}
-                                            </td>
-                                            <td style={{ textAlign: "center"}}>
-                                              {escala.phone}
-                                            </td>
-                                            <td style={{ textAlign: "center"}}>
-                                              {escala.funcao}
-                                            </td>
-                                            <td style={{ textAlign: "center"}}>
-                                              {escala.situacaoSgp}
-                                            </td>
-                                            <td style={{ textAlign: "center"}}>
-                                              {escala.anotacaoEscala}
-                                            </td>
-                                            <td style={{ textAlign: "center"}}>
-                                              <div style={{ display:"flex", alignContent:"center", alignItems:"center" }}>
-                                                <div style={{ display: "inline-flex", alignItems: "center"}}>
-                                                  <div style={{ marginRight: "5px", padding: "2px", cursor: "pointer",}}
-                                                    onClick={() => handleEditarEscala(escala)} title="Editar escala">
-                                                    <FaEdit color="red" />
-                                                  </div>
-                                                </div>
-                                                <div style={{ display: "inline-flex", alignItems: "center"}}>
-                                                  <div style={{ marginRight: "5px", padding: "2px", cursor: "pointer",}}
-                                                    onClick={() => handleExcluirEscala(escala.id)} title="Excluir escala">
-                                                    <FaTrash color="red" />
-                                                  </div>
-                                                </div>  
-                                                <div style={{ fontSize:"12px" }}>({cotasTotais[escala.matSgp] !== undefined ? cotasTotais[escala.matSgp] : <FaClock />})</div>
+                                            <div style={{ display: "inline-flex", alignItems: "center"}}>
+                                              <div style={{ marginRight: "5px", padding: "2px", cursor: "pointer",}}
+                                                onClick={() => handleExcluirEscala(escala.id)} title="Excluir escala">
+                                                <FaTrash color="red" />
                                               </div>
-                                            </td>
-                                          </tr>
-                                        ))}
-                                      </tbody>
-                                    </table>
-                                  </div>
-                                )}
-                              </li>
-                            );
-                          })
-                        ) : eventoExpandido && operacoesEvento.length === 0 ? (
-                          <li style={{ padding: "1rem" }}>Nenhuma operação encontrada para este evento.</li>
-                        ) : (
-                          <li style={{ padding: "1rem", color: "#888" }}>
-                            Clique em um evento para visualizar suas operações.
+                                            </div>  
+                                            <div style={{ fontSize:"12px" }}>({cotasTotais[escala.matSgp] !== undefined ? cotasTotais[escala.matSgp] : <FaClock />})</div>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            )}
                           </li>
-                        )}
-                      </ul>
-                    </div>
-                  {/* FIM OPERAÇÕES */}
-
+                        );
+                      })
+                    ) : eventoExpandido && operacoesEvento.length === 0 ? (
+                      <li style={{ padding: "1rem" }}>Nenhuma operação encontrada para este evento.</li>
+                    ) : (
+                      <li style={{ padding: "1rem", color: "#888" }}>
+                        Clique em um evento para visualizar suas operações.
+                      </li>
+                    )}
+                  </ul>
+                </div>
+              {/* FIM OPERAÇÕES */}
 
             </div>
             
