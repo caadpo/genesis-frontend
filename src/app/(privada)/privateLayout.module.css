@@ -351,10 +351,6 @@
   margin-top:2rem;
 }
 
-.divDesconectar {
-
-}
-
 .imgSenhaModal {
   width:100px;
   height: 100px;
@@ -362,21 +358,19 @@
   object-fit: cover;
 }
 
-
-
 .modalContainer {
   background-color: #ffffff;
-  width:80%;
+  width:25%;
 }
 
 .divCodOperacaoLayout {
   width:100%;
-  height: 730px;
+  height: 760px;
   box-sizing: border-box;
   overflow-y: auto;
   margin-right:2px;
   animation: slideUp 0.2s ease-out;
-  border: 1px solid #000000;
+  border: 1px solid #d3cccc;
 }
 
 /*INICIO TELA DASHBOARD*/
@@ -748,6 +742,10 @@
   }
   .tituloPjes {
     display: none;
+  }
+
+  .modalContainer {
+    width:90%;
   }
 
   .spamItensConsumo {

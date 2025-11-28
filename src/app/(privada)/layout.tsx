@@ -1060,6 +1060,7 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
                 
                 {/* Header com COP + Filtro Hoje */}
                 <div>
+                  Escala de Serviço
                   <div className={styles.nomeOperacaoTelaPesquisar}>
                     <strong>{operacaoCodOp.nomeOme} | {operacaoCodOp?.pjesevento?.nomeEvento}</strong>
                   </div>
