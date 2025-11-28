@@ -9,7 +9,7 @@ import {
   FaUser,
   FaSignOutAlt,
   FaBars,
-  FaEllipsisV,
+  FaFilter,
   FaKey,
   FaEnvelope,
   FaPhone,
@@ -115,6 +115,13 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
   const [resumo, setResumo] = useState<{ mes: string, totalCotas: number, valorTotal: number } | null>(null);
   const [anoSelecionado, setAnoSelecionado] = useState<number>(new Date().getFullYear());
   const [mesSelecionado, setMesSelecionado] = useState<number>(new Date().getMonth() + 1); // de 1 a 12
+
+  const [showCodOpModal, setShowCodOpModal] = useState(false);
+  const [operacaoCodOp, setOperacaoCodOp] = useState<any>(null);
+  const [loadingCodOp, setLoadingCodOp] = useState(false);
+  const [errorCodOp, setErrorCodOp] = useState("");
+  const [selectedEscala, setSelectedEscala] = useState<Escala | null>(null);
+
 
 
 
@@ -299,6 +306,64 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
     router.push("/login");
     return null;
   }
+
+
+  async function abrirModalCodOp(codOp: string) {
+    try {
+      setLoadingCodOp(true);
+      setErrorCodOp("");
+      setShowCodOpModal(true);
+  
+      const res = await fetch(`/api/pjesoperacao/by-codop?codOp=${codOp}`);
+  
+      if (!res.ok) {
+        const data = await res.json();
+        setErrorCodOp(data.error || "Erro desconhecido");
+        return;
+      }
+  
+      const data = await res.json();
+      setOperacaoCodOp(data);
+    } catch (err) {
+      setErrorCodOp("Erro ao conectar com o servidor");
+    } finally {
+      setLoadingCodOp(false);
+    }
+  }
+
+  const ordenarEscalas = (escalas: any[]) => {
+    const funcaoOrdem: Record<string, number> = { FISCAL: 1, MOT: 2, PAT: 3 };
+  
+    return escalas.slice().sort((a, b) => {
+      const dataA = new Date(`${a.dataInicio}T${a.horaInicio}`);
+      const dataB = new Date(`${b.dataInicio}T${b.horaInicio}`);
+  
+      const compareDate = dataA.getTime() - dataB.getTime();
+      if (compareDate !== 0) return compareDate;
+  
+      const funcaoA = funcaoOrdem[a.funcao] || 99;
+      const funcaoB = funcaoOrdem[b.funcao] || 99;
+  
+      return funcaoA - funcaoB;
+    });
+  };
+
+
+  const formatarDataParaDiaMes = (dataStr: string) => {
+    const data = getDataLocal(dataStr); // <- isso evita o erro de fuso
+    return data
+      .toLocaleDateString("pt-BR", {
+        day: "2-digit",
+        month: "2-digit",
+      })
+      .slice(0, 5);
+  };
+
+  const getDataLocal = (dataISO: string) => {
+    const [ano, mes, dia] = dataISO.split("T")[0].split("-");
+    return new Date(parseInt(ano), parseInt(mes) - 1, parseInt(dia));
+  };
+  
 
   return (
     <UserProvider>
@@ -683,7 +748,13 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
                                         fontSize: "12px",
                                       }}
                                     >
-                                      COP: <strong>{escalaDoDia.codOp}</strong>
+                                      COP: <strong
+                                        style={{ cursor: "pointer", color: "#064fb4" }}
+                                        onClick={() => abrirModalCodOp(escalaDoDia.codOp)}
+                                      >
+                                        {escalaDoDia.codOp}
+                                      </strong>
+
                                     </div>
                                     <div className={styles.escalaLinha}>
                                       <div className={styles.dataColuna}>
@@ -965,6 +1036,93 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
                 </div>
               </div>
           </div>
+        )}
+
+        {showCodOpModal && (
+        <div className={styles.modalOverlay}
+          onClick={() => {
+            setShowCodOpModal(false);
+            setOperacaoCodOp(null);
+          }}
+        >
+          <div className={styles.modalContainer}
+            onClick={(e) => e.stopPropagation()}>
+            {loadingCodOp && <p>Carregando...</p>}
+
+            {errorCodOp && (
+              <p style={{ color: "red", fontWeight: "bold" }}>{errorCodOp}</p>
+            )}
+
+            {operacaoCodOp && (
+              <div className={styles.divCodOperacaoLayout} style={{ padding: "10px",
+              maxHeight: "70vh",
+              overflowY: "auto", }}>
+                
+                {/* Header com COP + Filtro Hoje */}
+                <div>
+                  <div className={styles.nomeOperacaoTelaPesquisar}>
+                    <strong>{operacaoCodOp.nomeOme} | {operacaoCodOp?.pjesevento?.nomeEvento}</strong>
+                  </div>
+                  <div>
+                    <strong>{operacaoCodOp.nomeOperacao}</strong> | COP: {operacaoCodOp.codOp}
+                  </div>
+                </div>
+
+                
+                {/* Lista de escalas */}
+                {ordenarEscalas(
+                null
+                  ? operacaoCodOp.pjesescalas.filter((escala: any) => {
+                      const dataEscala = new Date(escala.dataInicio);
+                      const hoje = new Date();
+                      return (
+                        dataEscala.getDate() === hoje.getDate() &&
+                        dataEscala.getMonth() === hoje.getMonth() &&
+                        dataEscala.getFullYear() === hoje.getFullYear()
+                      );
+                    })
+                  : operacaoCodOp.pjesescalas
+              ).map((escala: any) => (
+                <div key={escala.id} className={styles.usuarioCard}>
+                  <div style={{ display: "flex", width: "100%" }}>
+                    <FaUser className={styles.usuarioSemImagemTelaPesquisar} />
+
+
+                      <div className={styles.usuarioInfo}>
+                        <span className={styles.usuarioNomePesquisarOperacao}>
+                          {escala.pgSgp} {escala.matSgp} {escala.nomeGuerraSgp} {escala.omeSgp}
+                          <span style={{ paddingLeft: "5px", color: "#0740dd" }}>
+                            | {escala.funcao}
+                          </span>
+                        </span>
+
+                        <div className={styles.usuarioLinha}>
+                          <div style={{ display: "flex" }}>
+                            <FaCalendar className={styles.iconUsuarioList} />
+                            <span className={styles.usuarioFuncao}>
+                              {formatarDataParaDiaMes(escala.dataInicio)}{" "}
+                              <span style={{ marginLeft: "10px", marginRight: "10px" }}>
+                                {escala.horaInicio.slice(0, 5)} às{" "}
+                                {escala.horaFinal.slice(0, 5)}
+                              </span>
+                            </span>
+                          </div>
+
+                          <div style={{ display: "flex" }}>
+                            <FaPhone className={styles.iconUsuarioList} />
+                            <span className={styles.usuarioFuncao}>{escala.phone}</span>
+                          </div>
+                        </div>
+                      </div>
+                      {/* Ícones de ação */}
+                    </div>
+                  </div>
+                ))}
+
+              </div>
+            )}
+          </div>
+        </div>
         )}
       </div>
     </UserProvider>
