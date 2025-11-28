@@ -1070,19 +1070,7 @@ export default function TemplateLayout({ children }: { children: ReactNode }) {
 
                 
                 {/* Lista de escalas */}
-                {ordenarEscalas(
-                null
-                  ? operacaoCodOp.pjesescalas.filter((escala: any) => {
-                      const dataEscala = new Date(escala.dataInicio);
-                      const hoje = new Date();
-                      return (
-                        dataEscala.getDate() === hoje.getDate() &&
-                        dataEscala.getMonth() === hoje.getMonth() &&
-                        dataEscala.getFullYear() === hoje.getFullYear()
-                      );
-                    })
-                  : operacaoCodOp.pjesescalas
-              ).map((escala: any) => (
+                {ordenarEscalas(operacaoCodOp.pjesescalas).map((escala: any) => (
                 <div key={escala.id} className={styles.usuarioCard}>
                   <div style={{ display: "flex", width: "100%" }}>
                     <FaUser className={styles.usuarioSemImagemTelaPesquisar} />
